@@ -1,0 +1,17 @@
+﻿.search-btn-style {
+    background-color: white;
+    border-width: 1px;
+    border-radius: 10px;
+    border-color: #D6D6D6;
+}
+
+.search-btn-style:hover {
+        background-color: #D6D6D6;
+}
+
+.search-textbox-style {
+    background-color: #F2F2F2;
+    border-width: 1px;
+    border-radius: 10px;
+    border-color: #D6D6D6;
+}
