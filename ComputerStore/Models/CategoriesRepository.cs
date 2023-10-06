@@ -75,5 +75,12 @@ namespace ComputerStore.Models
             }
             throw new Exception("Invalid category item");
         }
+
+        public async Task<List<Category>> FindAll(string value)
+        {
+            if(value != null && value != string.Empty)
+                return await Get(c => c.Name.Contains(value));
+            return new List<Category>();
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace ComputerStore.Models
         Task Update(TEntity item);
         Task Delete(string id);
         bool IsValid(TEntity item);
+        Task<List<TEntity>> FindAll(string value);
     }
 }

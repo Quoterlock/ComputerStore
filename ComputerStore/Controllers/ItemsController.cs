@@ -17,67 +17,57 @@ namespace ComputerStore.Controllers
     //[Authorize(Roles = RolesContainer.MANAGER)]
     public class ItemsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IRepository<Item> _repository;
 
-        public ItemsController(ApplicationDbContext context, IRepository<Item> repository)
+        public ItemsController(IRepository<Item> repository)
         {
-            _context = context;
             _repository = repository;
         }
 
         // GET: Items/?categoryId
         public async Task<IActionResult> Index(string categoryId)
         {
+            List<Item> items;
             if (categoryId != null)
             {
-                var items = await _context.Items.Include(i=>i.Category).Where(i => i.Category.Id == categoryId).ToListAsync();
-                if (items != null)
-                {
+                items = await _repository.Get(item => item.Category.Id == categoryId);
+                if (items != null && items.Count > 0) 
                     ViewData["CategoryName"] = items[0].Category.Name;
-                }
-                else items = new List<Item>();
-                return View(items);
-                
             }
             else
             {
-                return _context.Items != null ?
-                    View(await _context.Items.ToListAsync()) :
-                    Problem("Items is null");
+                items = await _repository.GetAll();
+                ViewData["CategoryName"] = "All";
             }
+
+            if(items == null)
+                items = new List<Item>();
+
+            return View(items);
+
         }
 
         public async Task<IActionResult> Search(string value)
         {
-            // write class to work with Items (repo)
-            return RedirectToAction(nameof(Index));
+            var items = await _repository.FindAll(value);
+            ViewData["SearchValue"] = value;
+            return View(items);
         }
 
         // Get: Items/List
         public async Task<IActionResult> List()
         {
-            return _context.Items != null ?
-                        View(await _context.Items.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Items'  is null.");
+            return View(await _repository.GetAll());
         }
 
         // GET: Items/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Items == null)
-            {
+            var item = await _repository.GetById(id);
+            if(item == null) 
                 return NotFound();
-            }
-
-            var item = await _context.Items
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
+            else 
+                return View(item);
         }
 
         // GET: Items/Create
@@ -87,16 +77,13 @@ namespace ComputerStore.Controllers
         }
 
         // POST: Items/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUri,Price")] Item item)
         {
-            if (ModelState.IsValid)
+            if (item.Name != null)
             {
-                _context.Add(item);
-                await _context.SaveChangesAsync();
+                await _repository.Add(item);
                 return RedirectToAction(nameof(Index));
             }
             return View(item);
@@ -105,50 +92,24 @@ namespace ComputerStore.Controllers
         // GET: Items/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null || _context.Items == null)
+            if (id != null)
             {
-                return NotFound();
+                var item = await _repository.GetById(id);
+                if (item != null)
+                    return View(item);
             }
-
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return View(item);
+            return NotFound();
         }
 
         // POST: Items/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description,ImageUri,Price")] Item item)
         {
-            if (id != item.Id)
+            if(id != null && id != item.Id && item.Name != null)
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ItemExists(item.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _repository.Update(item);
+                return RedirectToAction(nameof(List));
             }
             return View(item);
         }
@@ -156,19 +117,12 @@ namespace ComputerStore.Controllers
         // GET: Items/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null || _context.Items == null)
+            if(id != null && id != string.Empty)
             {
-                return NotFound();
+                var item = await _repository.GetById(id);
+                if (item != null) return View(item);
             }
-
-            var item = await _context.Items
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
+            return NotFound();
         }
 
         // POST: Items/Delete/5
@@ -176,23 +130,12 @@ namespace ComputerStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Items == null)
+            if (id != null && id != string.Empty)
             {
-                return Problem("Entity set 'ApplicationDbContext.Items'  is null.");
+                await _repository.Delete(id);
+                return RedirectToAction(nameof(List));
             }
-            var item = await _context.Items.FindAsync(id);
-            if (item != null)
-            {
-                _context.Items.Remove(item);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ItemExists(string id)
-        {
-          return (_context.Items?.Any(e => e.Id == id)).GetValueOrDefault();
+            return NotFound();
         }
     }
 }

@@ -16,8 +16,27 @@ namespace ComputerStore
             var app = builder.Build();
             ConfigureHttpRequest(app);
             //await SeedRoles(app); (done)
+            await SeedDefaultCategory(app);
             //SeedDataToDb(app); (undone)
             app.Run();
+        }
+
+        private static async Task SeedDefaultCategory(WebApplication app)
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var categoriesRepository = scope.ServiceProvider.GetRequiredService<IRepository<Category>>();
+                var result = await categoriesRepository.Get(category => category.Name == "Other");
+                if (result.Count < 1)
+                {
+                    var defaultCategory = new Category
+                    {
+                        Name = "Other",
+                        ThumbnailImageUri = "none"
+                    };
+                    await categoriesRepository.Add(defaultCategory); 
+                }
+            }
         }
 
         private static async Task SeedRoles(WebApplication app)
