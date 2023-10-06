@@ -7,24 +7,59 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ComputerStore.Data;
 using ComputerStore.Models.Domains;
+using ComputerStore.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ComputerStore.Controllers
 {
+    //[Authorize(Roles = RolesContainer.MANAGER)]
     public class ItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IRepository<Item> _repository;
 
-        public ItemsController(ApplicationDbContext context)
+        public ItemsController(ApplicationDbContext context, IRepository<Item> repository)
         {
             _context = context;
+            _repository = repository;
         }
 
-        // GET: Items
-        public async Task<IActionResult> Index()
+        // GET: Items/?categoryId
+        public async Task<IActionResult> Index(string categoryId)
         {
-              return _context.Items != null ? 
-                          View(await _context.Items.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Items'  is null.");
+            if (categoryId != null)
+            {
+                var items = await _context.Items.Include(i=>i.Category).Where(i => i.Category.Id == categoryId).ToListAsync();
+                if (items != null)
+                {
+                    ViewData["CategoryName"] = items[0].Category.Name;
+                }
+                else items = new List<Item>();
+                return View(items);
+                
+            }
+            else
+            {
+                return _context.Items != null ?
+                    View(await _context.Items.ToListAsync()) :
+                    Problem("Items is null");
+            }
+        }
+
+        public async Task<IActionResult> Search(string value)
+        {
+            // write class to work with Items (repo)
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Get: Items/List
+        public async Task<IActionResult> List()
+        {
+            return _context.Items != null ?
+                        View(await _context.Items.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Items'  is null.");
         }
 
         // GET: Items/Details/5

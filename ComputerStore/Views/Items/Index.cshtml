@@ -1,53 +1,59 @@
-﻿@model IEnumerable<ComputerStore.Models.Domains.Item>
+﻿@model List<ComputerStore.Models.Domains.Item>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUri)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUri)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container mt-4 col-md-7 col-sm-12 mx-auto">
+    <div class="row">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Home" class="styless-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="Categories" class="styless-link">Categories</a>
+                </li>
+                <li class="breadcrumb-item active styless-link" aria-current="page">
+                    @ViewData["CategoryName"]
+                </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row g-1">
+        <div class="col d-flex">
+            <h4 class="my-auto"> <b>@ViewData["CategoryName"]</b> <span class="light-text">Items: @Model.Count</span></h4>
+        </div>
+        <div class="col text-end">
+            <div class="dropdown">
+                <a class="btn btn-light dropdown-toggle light-text" href="#" id="navbarDarkDropdownMenuLink"
+                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    sort by:
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item" href="#">sort by: cost up</a></li>
+                    <li><a class="dropdown-item" href="#">sort by: cost down</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row g-1 mt-2">
+        @foreach(var item in Model)
+        {
+            <div class="col-lg-4 col-6">
+                <div class="card item-card-style rounded-card">
+                    <img src=@item.ImageUri class="card-img-top img-fluid p-1" alt="" />
+                    <div class="card-body ">
+                        <h5 class="card-title">@item.Name</h5>
+                        <div class="container-flex mt-2">
+                            <div class="row ">
+                                <div class="col">
+                                    <h4> @item.Price<span>$</span></h4>
+                                </div>
+                                <div class="col text-end">
+                                    <a href="#" class="btn active-btn">+</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

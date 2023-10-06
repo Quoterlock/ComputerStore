@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ComputerStore.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 
 namespace ComputerStore.Controllers
 {
+    //[Authorize(Roles = RolesContainer.ADMINISTRATOR)]
     public class RolesController : Controller
     {
         private RoleManager<IdentityRole> _roleManager;

@@ -15,3 +15,22 @@
     border-radius: 10px;
     border-color: #D6D6D6;
 }
+
+.styless-link {
+    color: grey;
+    text-decoration: none;
+}
+
+.category-block {
+    width: 100%;
+    padding: 30px;
+    border: 1px;
+    border-radius: 10px;
+    border-color: rgb(178, 178, 178);
+    border-style: solid;
+}
+
+.category-block:hover {
+    transition: 0.2s;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}

@@ -1,5 +1,6 @@
 using ComputerStore.Data;
 using ComputerStore.Models;
+using ComputerStore.Models.Domains;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +71,9 @@ namespace ComputerStore
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            builder.Services.AddScoped<IRepository<Item>, ItemsRepository>();
+            builder.Services.AddScoped<IRepository<Category>, CategoriesRepository>();
 
             builder.Services.AddRazorPages();
 
