@@ -34,3 +34,15 @@
     transition: 0.2s;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+
+.item-block-style {
+    border-radius: 10px !important;
+    border: 2 !important;
+    border-color: #C4C4C4 !important;
+    transition: 0.2s;
+}
+
+.item-block-style:hover {
+    transition: 0.2s;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}

@@ -23,9 +23,9 @@ namespace ComputerStore.Models
                         item.Category = defaultCategory;   
                     }
                     else throw new Exception("Cannot find default category");
-                    _context.Add(item);
-                    await _context.SaveChangesAsync();
                 }
+                _context.Add(item);
+                await _context.SaveChangesAsync();
             }
             else throw new Exception("Item is not valid!!!");
         }

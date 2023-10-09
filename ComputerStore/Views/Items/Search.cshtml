@@ -18,7 +18,7 @@
     </div>
     <div class="row g-1">
         <div class="col d-flex">
-            <h4 class="my-auto"> <b>Search request : @ViewData["SearchValue"]</b> <span class="light-text">Items: @Model.Count</span></h4>
+            <h4 class="my-auto"> <b>Search request : @ViewData["SearchValue"]</b> <span class="styless-link">Items: @Model.Count</span></h4>
         </div>
         <div class="col text-end">
             <div class="dropdown">
@@ -33,7 +33,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row g-1 mt-2">
         <partial name="_ItemsListPartial" model="Model" />
     </div>
 </div>

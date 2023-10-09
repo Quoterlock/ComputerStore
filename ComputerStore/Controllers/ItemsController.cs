@@ -11,6 +11,8 @@ using ComputerStore.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Runtime.CompilerServices;
+using System.Net;
 
 namespace ComputerStore.Controllers
 {
@@ -18,10 +20,12 @@ namespace ComputerStore.Controllers
     public class ItemsController : Controller
     {
         private readonly IRepository<Item> _repository;
+        private readonly IRepository<Category> _categoriesRepo;
 
-        public ItemsController(IRepository<Item> repository)
+        public ItemsController(IRepository<Item> repository, IRepository<Category> categoriesRepo)
         {
             _repository = repository;
+            _categoriesRepo = categoriesRepo;
         }
 
         // GET: Items/?categoryId
@@ -71,22 +75,26 @@ namespace ComputerStore.Controllers
         }
 
         // GET: Items/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            List<Category> categoriesList = await _categoriesRepo.GetAll();
+            ItemFormModel model = new ItemFormModel {
+                Categories = categoriesList
+            };
+            return View(model);
         }
 
         // POST: Items/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageUri,Price")] Item item)
+        public async Task<IActionResult> Create(ItemFormModel model)
         {
-            if (item.Name != null)
+            var item = model.Item;
+            if(item != null && item.Name != null)
             {
-                await _repository.Add(item);
+                item.Category = await _categoriesRepo.GetById(model.SelectedCategoryId);
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return RedirectToAction(nameof(Create));
         }
 
         // GET: Items/Edit/5
@@ -95,8 +103,15 @@ namespace ComputerStore.Controllers
             if (id != null)
             {
                 var item = await _repository.GetById(id);
+                var categoriesList = await _categoriesRepo.GetAll();
+                var model = new ItemFormModel
+                {
+                    Item = item,
+                    Categories = categoriesList, 
+                    SelectedCategoryId = item.Category.Id
+                };
                 if (item != null)
-                    return View(item);
+                    return View(model);
             }
             return NotFound();
         }
@@ -104,10 +119,13 @@ namespace ComputerStore.Controllers
         // POST: Items/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description,ImageUri,Price")] Item item)
+        public async Task<IActionResult> Edit(ItemFormModel model)
         {
-            if(id != null && id != item.Id && item.Name != null)
+            var item = model.Item;
+            if(item != null && item.Name != null)
             {
+                if (model.SelectedCategoryId != null)
+                    item.Category = await _categoriesRepo.GetById(model.SelectedCategoryId);
                 await _repository.Update(item);
                 return RedirectToAction(nameof(List));
             }
