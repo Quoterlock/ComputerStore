@@ -7,7 +7,7 @@ namespace ComputerStore.Models.Domains
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public string? Name { get; set; }
         public string? ThumbnailImageUri { get; set; }
     }

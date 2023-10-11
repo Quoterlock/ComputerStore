@@ -21,7 +21,9 @@ namespace ComputerStore.Controllers
             var rolesList = _roleManager.Roles.ToList();
             List<string> rolesNames = new List<string>();
             foreach (var role in rolesList) { 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 rolesNames.Add(role.Name.ToString());
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
             return View(rolesNames);
         }

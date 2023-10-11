@@ -89,7 +89,7 @@ namespace ComputerStore.Controllers
             if (id != category.Id) return NotFound();
             try
             {
-                _repository.Update(category);
+                await _repository.Update(category);
                 return RedirectToAction(nameof(List));
             }
             catch (Exception ex)

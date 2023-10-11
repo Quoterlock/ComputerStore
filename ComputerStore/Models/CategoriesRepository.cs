@@ -79,7 +79,9 @@ namespace ComputerStore.Models
         public async Task<List<Category>> FindAll(string value)
         {
             if(value != null && value != string.Empty)
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 return await Get(c => c.Name.Contains(value));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             return new List<Category>();
         }
     }

@@ -45,29 +45,42 @@ namespace ComputerStore.Models
             throw new Exception("Item doesn't exist => id : " + id);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<List<Item>> Get(Func<Item, bool> predicate)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            var items = _context.Items.Include(item=>item.Category).Where(predicate).ToList();
+            var items = _context.Items
+                .Include(item=>item.Category)
+                .Include(item=>item.Image)
+                .Where(predicate).ToList();
             if (items == null) items = new List<Item>();
             return items;
         }
 
         public async Task<List<Item>> GetAll()
         {
-            var items = await _context.Items.ToListAsync();
+            var items = await _context.Items
+                .Include(item => item.Category)
+                .Include(item => item.Image)
+                .ToListAsync();
             if (items == null) items = new List<Item>();
             return items;
         }
 
         public async Task<Item> GetById(string id)
         {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             Item result = null;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             if (id != null && id != string.Empty)
             {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 result = await _context.Items
                     .Include(item => item.Category)
+                    .Include(item => item.Image)
                     .Where(item => item.Id == id)
                     .FirstOrDefaultAsync();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             }
             if (result == null) throw new Exception("Item not found");
             return result;
@@ -99,10 +112,12 @@ namespace ComputerStore.Models
                     .Include(item => item.Category)
                     .Where(item => item.Name != null && item.Name.Contains(value))
                     .ToListAsync());
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 items.AddRange(await _context.Items
                     .Include(item=>item.Category)
                     .Where(item => item.Category.Name != null && item.Category.Name.Contains(value))
                     .ToArrayAsync());
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 items.AddRange(await _context.Items
                     .Include(item => item.Category)
                     .Where(item => item.Description != null && item.Description.Contains(value))

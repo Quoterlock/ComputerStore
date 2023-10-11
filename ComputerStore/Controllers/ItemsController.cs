@@ -34,9 +34,13 @@ namespace ComputerStore.Controllers
             List<Item> items;
             if (categoryId != null)
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 items = await _repository.Get(item => item.Category.Id == categoryId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (items != null && items.Count > 0) 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                     ViewData["CategoryName"] = items[0].Category.Name;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
             else
             {
@@ -92,6 +96,14 @@ namespace ComputerStore.Controllers
             if(item != null && item.Name != null)
             {
                 item.Category = await _categoriesRepo.GetById(model.SelectedCategoryId);
+                using (var stream = new MemoryStream())
+                {
+                    await model.ImageFile.CopyToAsync(stream);
+                    item.Image = new Image();
+                    item.Image.Bytes = stream.ToArray();
+                    item.Image.Alt = model.Item.Name;
+                    await _repository.Add(item);
+                }
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Create));

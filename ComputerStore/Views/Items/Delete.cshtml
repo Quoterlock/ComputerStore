@@ -24,10 +24,10 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUri)
+            @Html.DisplayNameFor(model => model.Image)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUri)
+            <img src="@Url.Action(" DisplayImg", "Images" , new { Id = Model.Image.Id})" alt="@Model.Image.Alt" />
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
