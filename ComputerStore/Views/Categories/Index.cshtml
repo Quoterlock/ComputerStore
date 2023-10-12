@@ -30,20 +30,11 @@
             <a href="/Items/?categoryId=@category.Id" class="styless-link col-lg-4 col-sm-6">
                 <div class="category-block">
                     <div class="mx-auto d-flex justify-items-center">
-                        <img class="mx-auto" src="icons/icons8-ram-62.png" alt="RAM" width="50" height="50">
+                        <img class="mx-auto" src="@Url.Action("DisplayIcon", "Images", new { Id = category.Thumbnail.Id})" alt="RAM" width="50" height="50">
                     </div>
                     <h5 class="text-center mt-2 styless-link">@category.Name</h5>
                 </div>
             </a>
         }
-
-        <div class="col-lg-4 col-sm-6">
-                <div class="category-block">
-                    <div class="mx-auto d-flex justify-items-center">
-                        <img class="mx-auto" src="icons/icons8-ram-62.png" alt="RAM" width="50" height="50">
-                    </div>
-                    <h5 class="text-center mt-2">Default</h5>
-                </div>
-        </div>
     </div>
 </div>

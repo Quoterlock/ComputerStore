@@ -31,10 +31,12 @@ namespace ComputerStore.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("ThumbnailImageUri")
+                    b.Property<string>("ThumbnailId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ThumbnailId");
 
                     b.ToTable("Categories");
                 });
@@ -280,6 +282,15 @@ namespace ComputerStore.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ComputerStore.Models.Domains.Category", b =>
+                {
+                    b.HasOne("ComputerStore.Models.Domains.Image", "Thumbnail")
+                        .WithMany()
+                        .HasForeignKey("ThumbnailId");
+
+                    b.Navigation("Thumbnail");
                 });
 
             modelBuilder.Entity("ComputerStore.Models.Domains.Item", b =>

@@ -10,6 +10,7 @@ using ComputerStore.Models.Domains;
 using ComputerStore.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using ComputerStore.Models.ViewModels;
 
 namespace ComputerStore.Controllers
 {
@@ -57,14 +58,22 @@ namespace ComputerStore.Controllers
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,ThumbnailImageUri")] Category category)
+        public async Task<IActionResult> Create(CategoryFormModel model)
         {
-            if (isValidToCreate(category)) 
+            if (model != null && model.Name != null && model.ThumbnailFile != null)
             {
-                await _repository.Add(category);
+                var category = new Category() { Name = model.Name };
+                using (var stream = new MemoryStream())
+                {
+                    await model.ThumbnailFile.CopyToAsync(stream);
+                    category.Thumbnail = new Image();
+                    category.Thumbnail.Bytes = stream.ToArray();
+                    category.Thumbnail.Alt = model.Name + "- Category thumbnail";
+                    await _repository.Add(category);
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(model);
         }
 
         // GET: Categories/Edit/5
@@ -127,13 +136,6 @@ namespace ComputerStore.Controllers
             {
                 return NotFound(id);
             }
-        }
-
-        private bool isValidToCreate(Category category)
-        {
-            if (category.Name != null && category.ThumbnailImageUri != null)
-                return true;
-            return false;
         }
     }
 }

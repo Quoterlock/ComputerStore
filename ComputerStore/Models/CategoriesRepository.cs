@@ -14,7 +14,7 @@ namespace ComputerStore.Models
         }
         public async Task Add(Category item)
         {
-            if(item.Name != null && item.ThumbnailImageUri != null)
+            if(item.Name != null && item.Thumbnail != null)
             {
                 await _context.Categories.AddAsync(item);
                 await _context.SaveChangesAsync();
@@ -41,7 +41,7 @@ namespace ComputerStore.Models
 
         public async Task<List<Category>> Get(Func<Category, bool> predicate)
         {
-            List<Category> result = _context.Categories.Where(predicate).ToList();
+            List<Category> result = _context.Categories.Include(c=>c.Thumbnail).Where(predicate).ToList();
             if(result == null) 
                 result = new List<Category>();
             return result;
@@ -49,7 +49,7 @@ namespace ComputerStore.Models
 
         public async Task<List<Category>> GetAll()
         {
-            List<Category> result = await _context.Categories.ToListAsync();
+            List<Category> result = await _context.Categories.Include(c => c.Thumbnail).ToListAsync();
             if (result == null)
                 result = new List<Category>();
             return result;
@@ -57,7 +57,7 @@ namespace ComputerStore.Models
 
         public async Task<Category> GetById(string id)
         {
-            var item = await _context.Categories.Where(c => c.Id == id).FirstOrDefaultAsync();
+            var item = await _context.Categories.Include(c => c.Thumbnail).Where(c => c.Id == id).FirstOrDefaultAsync();
             return item;
         }
 
@@ -79,9 +79,7 @@ namespace ComputerStore.Models
         public async Task<List<Category>> FindAll(string value)
         {
             if(value != null && value != string.Empty)
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 return await Get(c => c.Name.Contains(value));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             return new List<Category>();
         }
     }

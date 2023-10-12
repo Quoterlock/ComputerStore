@@ -1,6 +1,6 @@
 ﻿using ComputerStore.Models.Domains;
 
-namespace ComputerStore.Models
+namespace ComputerStore.Models.ViewModels
 {
     public class ItemFormModel
     {

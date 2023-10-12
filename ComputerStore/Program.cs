@@ -15,8 +15,8 @@ namespace ComputerStore
             ConfigureServices(builder);
             var app = builder.Build();
             ConfigureHttpRequest(app);
-            //await SeedRoles(app); (done)
-            await SeedDefaultCategory(app);
+            await SeedRoles(app);
+            //await SeedDefaultCategory(app);
             app.Run();
         }
 
@@ -31,7 +31,6 @@ namespace ComputerStore
                     var defaultCategory = new Category
                     {
                         Name = "Other",
-                        ThumbnailImageUri = "none"
                     };
                     await categoriesRepository.Add(defaultCategory); 
                 }

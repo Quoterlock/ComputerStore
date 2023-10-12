@@ -1,4 +1,4 @@
-﻿@model ComputerStore.Models.ItemFormModel
+﻿@model ComputerStore.Models.ViewModels.ItemFormModel
 
 @{
     ViewData["Title"] = "Create";
@@ -11,21 +11,17 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Item.Name" class="control-label"></label>
                 <input asp-for="Item.Name" class="form-control" />
-                <span asp-validation-for="Item.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Item.Description" class="control-label"></label>
                 <input asp-for="Item.Description" class="form-control" />
-                <span asp-validation-for="Item.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Item.Price" class="control-label"></label>
                 <input asp-for="Item.Price" class="form-control" />
-                <span asp-validation-for="Item.Price" class="text-danger"></span>
             </div>
             <select class="form-select" aria-label="Default" asp-for="SelectedCategoryId">
                 <option selected>Open this select menu</option>
@@ -34,7 +30,7 @@
                     <option value="@item.Id">@item.Name</option>
                 }
             </select>
-            <input type="file" asp-for="ImageFile"/>
+            <input type="file" accept=".jpeg" asp-for="ImageFile"/>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -45,7 +41,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

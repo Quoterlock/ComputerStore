@@ -110,16 +110,17 @@ namespace ComputerStore.Models
             {
                 items.AddRange(await _context.Items
                     .Include(item => item.Category)
+                    .Include(item => item.Image)
                     .Where(item => item.Name != null && item.Name.Contains(value))
                     .ToListAsync());
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 items.AddRange(await _context.Items
                     .Include(item=>item.Category)
+                    .Include(item => item.Image)
                     .Where(item => item.Category.Name != null && item.Category.Name.Contains(value))
                     .ToArrayAsync());
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 items.AddRange(await _context.Items
                     .Include(item => item.Category)
+                    .Include(item => item.Image)
                     .Where(item => item.Description != null && item.Description.Contains(value))
                     .ToListAsync());
             }

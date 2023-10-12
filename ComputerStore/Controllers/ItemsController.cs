@@ -13,6 +13,7 @@ using System.Data;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Runtime.CompilerServices;
 using System.Net;
+using ComputerStore.Models.ViewModels;
 
 namespace ComputerStore.Controllers
 {
@@ -34,13 +35,9 @@ namespace ComputerStore.Controllers
             List<Item> items;
             if (categoryId != null)
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 items = await _repository.Get(item => item.Category.Id == categoryId);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (items != null && items.Count > 0) 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                     ViewData["CategoryName"] = items[0].Category.Name;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
             else
             {

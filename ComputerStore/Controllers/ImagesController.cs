@@ -22,5 +22,16 @@ namespace ComputerStore.Controllers
             }
             return NotFound();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> DisplayIcon(string id)
+        {
+            var image = await _context.Images.Where(img => img.Id == id).FirstOrDefaultAsync();
+            if (image != null && image.Bytes != null)
+            {
+                return File(image.Bytes, "image/png");
+            }
+            return NotFound();
+        }
     }
 }

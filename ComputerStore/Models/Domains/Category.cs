@@ -9,6 +9,6 @@ namespace ComputerStore.Models.Domains
         [Key]
         public string? Id { get; set; }
         public string? Name { get; set; }
-        public string? ThumbnailImageUri { get; set; }
+        public Image? Thumbnail { get; set; }
     }
 }
