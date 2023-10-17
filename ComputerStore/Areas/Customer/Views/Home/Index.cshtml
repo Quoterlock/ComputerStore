@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <a asp-action="List" asp-controller="Categories">Categories</a>
+    <h1>@ViewData["UserId"]</h1>
+    <h1>@ViewData["UserLogin"]</h1>
+    <a asp-action="Cart" asp-controller="Orders">To Cart</a>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>

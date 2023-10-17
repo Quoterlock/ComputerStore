@@ -15,7 +15,7 @@
                                     <h4>@item.Price<span>$</span> </h4>
                                 </div>
                                 <div class="col text-end">
-                                    <a href="AddItemToCart.html" class="btn active-btn">+</a>
+                                    <a asp-action="AddToCart" asp-controller="Orders" asp-all-route-data='new Dictionary<string,string> { { "itemId", item.Id }}' class="btn active-btn">+</a>
                                 </div>
                             </div>
                         </div>

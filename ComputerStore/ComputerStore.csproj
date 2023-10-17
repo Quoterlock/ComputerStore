@@ -22,8 +22,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Customer\ViewModels\" />
+    <Folder Include="Areas\Manager\ViewModels\" />
+    <Folder Include="Areas\Manager\Views\Orders\" />
     <Folder Include="ViewComponents\" />
     <Folder Include="Views\Shared\ViewComponents\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ComputerStore.BusinessLogic\ComputerStore.BusinessLogic.csproj" />
+    <ProjectReference Include="..\ComputerStore.DataAccess\ComputerStore.DataAccess.csproj" />
+    <ProjectReference Include="..\ComputerStore.Utilities\ComputerStore.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

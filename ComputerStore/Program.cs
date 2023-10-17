@@ -1,6 +1,5 @@
-using ComputerStore.Data;
-using ComputerStore.Models;
-using ComputerStore.Models.Domains;
+using ComputerStore.DataAccess;
+using ComputerStore.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +21,10 @@ namespace ComputerStore
 
         private static async Task SeedDefaultCategory(WebApplication app)
         {
+
             using (var scope = app.Services.CreateScope())
             {
+                /*
                 var categoriesRepository = scope.ServiceProvider.GetRequiredService<IRepository<Category>>();
                 var result = await categoriesRepository.Get(category => category.Name == "Other");
                 if (result.Count < 1)
@@ -34,6 +35,7 @@ namespace ComputerStore
                     };
                     await categoriesRepository.Add(defaultCategory); 
                 }
+                */
             }
         }
 
@@ -73,7 +75,7 @@ namespace ComputerStore
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
         }
 
@@ -81,18 +83,15 @@ namespace ComputerStore
         {
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("PostgreConnectionString") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+            builder.Services.AddDbContext<DataAccess.ApplicationDbContext>(options => options.UseNpgsql(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<DataAccess.ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddScoped<IRepository<Item>, ItemsRepository>();
-            builder.Services.AddScoped<IRepository<Category>, CategoriesRepository>();
-
             builder.Services.AddRazorPages();
-
             builder.Services.AddControllersWithViews();
         }
     }

@@ -1,0 +1,51 @@
+﻿@model ItemFormModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Item</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Item.Id" />
+            <div class="form-group">
+                <label asp-for="Item.Name" class="control-label"></label>
+                <input asp-for="Item.Name" class="form-control" />
+                <span asp-validation-for="Item.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.Description" class="control-label"></label>
+                <input asp-for="Item.Description" class="form-control" />
+                <span asp-validation-for="Item.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.Price" class="control-label"></label>
+                <input asp-for="Item.Price" class="form-control" />
+                <span asp-validation-for="Item.Price" class="text-danger"></span>
+            </div>
+            <select class="form-select" aria-label="Default" asp-for="SelectedCategoryId">
+                <option selected>Open this select menu</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
