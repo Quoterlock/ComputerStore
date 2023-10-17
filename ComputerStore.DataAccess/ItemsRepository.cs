@@ -1,10 +1,8 @@
-﻿using ComputerStore.Data;
-using ComputerStore.Models.Domains;
-using ComputerStore.Models.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ComputerStore.Models
 {
+    /*
     public class ItemsRepository : IRepository<Item>
     {
         private ApplicationDbContext _context;
@@ -128,4 +126,5 @@ namespace ComputerStore.Models
             return items;
         }
     }
+    */
 }

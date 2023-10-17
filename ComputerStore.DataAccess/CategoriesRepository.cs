@@ -1,11 +1,9 @@
-﻿using ComputerStore.Data;
-using ComputerStore.Models.Domains;
-using ComputerStore.Models.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace ComputerStore.Models
 {
+    /*
     public class CategoriesRepository : IRepository<Category>
     {
         private ApplicationDbContext _context;
@@ -84,4 +82,5 @@ namespace ComputerStore.Models
             return new List<Category>();
         }
     }
+    */
 }

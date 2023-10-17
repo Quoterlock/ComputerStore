@@ -1,7 +1,6 @@
-﻿using ComputerStore.Models.Domains;
-using System.Net;
+﻿using System.Net;
 
-namespace ComputerStore.Models.Interfaces
+namespace ComputerStore.DataAccess.Interfaces
 {
     public interface IRepository<TEntity>
     {

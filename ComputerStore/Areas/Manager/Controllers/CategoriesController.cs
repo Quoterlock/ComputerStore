@@ -5,11 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ComputerStore.Data;
-using ComputerStore.Models.Domains;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
-using ComputerStore.Models.Interfaces;
 using ComputerStore.ViewModels;
 
 namespace ComputerStore.Areas.Manager.Controllers
@@ -17,34 +14,27 @@ namespace ComputerStore.Areas.Manager.Controllers
     //[Authorize(Roles = RolesContainer.MANAGER)]
     public class CategoriesController : Controller
     {
-        private IRepository<Category> _repository;
-
-        public CategoriesController(IRepository<Category> repository)
+        public CategoriesController()
         {
-            _repository = repository;
+
         }
 
         // GET: Categories (public for other visitors)
         public async Task<IActionResult> Index()
         {
-            return View(await _repository.GetAll());
+            
+            return View();
         }
-
-        // GET: Categories/List
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
-        public async Task<IActionResult> List()
-        {
-            return View(await _repository.GetAll());
-        }
-
 
         // GET: Categories/Details/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         public async Task<IActionResult> Details(string id)
         {
+            /*
             var category = await _repository.GetById(id);
             if (category == null) return NotFound(id);
-            return View(category);
+            */
+            return View();
         }
 
         // GET: Categories/Create
@@ -60,6 +50,7 @@ namespace ComputerStore.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryFormModel model)
         {
+            /*
             if (model != null && model.Name != null && model.ThumbnailFile != null)
             {
                 var category = new Category() { Name = model.Name };
@@ -73,13 +64,17 @@ namespace ComputerStore.Areas.Manager.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(model);
+            */
+            return View();
         }
 
         // GET: Categories/Edit/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         public async Task<IActionResult> Edit(string id)
         {
+            /*
             if (id == null) return NotFound();
 
             var category = await _repository.GetById(id);
@@ -87,6 +82,8 @@ namespace ComputerStore.Areas.Manager.Controllers
             if (category == null) return NotFound();
 
             return View(category);
+            */
+            return View();
         }
 
         // POST: Categories/Edit/5
@@ -95,6 +92,7 @@ namespace ComputerStore.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,ThumbnailImageUri")] Category category)
         {
+            /*
             if (id != category.Id) return NotFound();
             try
             {
@@ -106,12 +104,15 @@ namespace ComputerStore.Areas.Manager.Controllers
                 return View(category);
                 // message
             }
+            */
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Categories/Delete/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         public async Task<IActionResult> Delete(string id)
         {
+            /*
             if (id == null) return NotFound();
 
             var category = await _repository.GetById(id);
@@ -119,6 +120,8 @@ namespace ComputerStore.Areas.Manager.Controllers
             if (category == null) return NotFound();
 
             return View(category);
+            */
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Categories/Delete/5
@@ -127,6 +130,7 @@ namespace ComputerStore.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+            /*
             if (id != null)
             {
                 await _repository.Delete(id);
@@ -136,6 +140,8 @@ namespace ComputerStore.Areas.Manager.Controllers
             {
                 return NotFound(id);
             }
+            */
+            return RedirectToAction(nameof(Index));
         }
     }
 }
