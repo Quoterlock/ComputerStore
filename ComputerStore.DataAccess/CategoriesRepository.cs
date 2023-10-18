@@ -1,23 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ComputerStore.BusinessLogic.Domains;
+using ComputerStore.DataAccess;
+using ComputerStore.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace ComputerStore.Models
+namespace ComputerStore.DataAccess
 {
-    /*
-    public class CategoriesRepository : IRepository<Category>
+    public class CategoriesRepository : ICategoriesRepository
     {
         private ApplicationDbContext _context;
-        public CategoriesRepository(ApplicationDbContext context) 
-        { 
+        public CategoriesRepository(ApplicationDbContext context)
+        {
             _context = context;
         }
         public async Task Add(Category item)
         {
-            if(item.Name != null && item.Thumbnail != null)
-            {
+            if (item.Name != null && item.Thumbnail != null)
                 await _context.Categories.AddAsync(item);
-                await _context.SaveChangesAsync();
-            }
             else throw new Exception("Invalid category model");
         }
 
@@ -25,30 +24,31 @@ namespace ComputerStore.Models
         {
             if (id != null && id != string.Empty)
             {
-                var item = await _context.Categories.Where(c => c.Id == id).FirstOrDefaultAsync();
+                var item = await _context.Categories
+                    .Where(c => c.Id == id)
+                    .FirstOrDefaultAsync();
                 if (item != null)
-                {
                     _context.Categories.Remove(item);
-                    await _context.SaveChangesAsync();
-                }
             }
             else
-            {
                 throw new Exception("Invalid category model");
-            }
         }
 
         public async Task<List<Category>> Get(Func<Category, bool> predicate)
         {
-            List<Category> result = _context.Categories.Include(c=>c.Thumbnail).Where(predicate).ToList();
-            if(result == null) 
+            List<Category> result = _context.Categories
+                .Include(c => c.Thumbnail)
+                .Where(predicate).ToList();
+            if (result == null)
                 result = new List<Category>();
             return result;
         }
 
-        public async Task<List<Category>> GetAll()
+        public async Task<List<Category>> Get()
         {
-            List<Category> result = await _context.Categories.Include(c => c.Thumbnail).ToListAsync();
+            List<Category> result = await _context.Categories
+                .Include(c => c.Thumbnail)
+                .ToListAsync();
             if (result == null)
                 result = new List<Category>();
             return result;
@@ -56,31 +56,21 @@ namespace ComputerStore.Models
 
         public async Task<Category> GetById(string id)
         {
-            var item = await _context.Categories.Include(c => c.Thumbnail).Where(c => c.Id == id).FirstOrDefaultAsync();
-            return item;
-        }
+            var item = await _context.Categories
+                .Include(c => c.Thumbnail)
+                .Where(c => c.Id == id)
+                .FirstOrDefaultAsync();
+            if (item == null)
+                throw new Exception("Category not found: id:" + id);
 
-        public bool IsValid(Category item)
-        {
-            throw new NotImplementedException();
+            return item;
         }
 
         public async Task Update(Category item)
         {
-            if(item != null && item.Id != null)
-            {
+            if (item != null && item.Id != null)
                 _context.Categories.Update(item);
-                await _context.SaveChangesAsync();
-            }
-            throw new Exception("Invalid category item");
-        }
-
-        public async Task<List<Category>> FindAll(string value)
-        {
-            if(value != null && value != string.Empty)
-                return await Get(c => c.Name.Contains(value));
-            return new List<Category>();
+            else throw new Exception("Invalid category item");
         }
     }
-    */
 }

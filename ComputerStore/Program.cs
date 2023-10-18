@@ -1,8 +1,12 @@
+using ComputerStore.BusinessLogic.Interfaces;
+using ComputerStore.BusinessLogic.Services;
 using ComputerStore.DataAccess;
+using ComputerStore.DataAccess.Interfaces;
 using ComputerStore.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ComputerStore
 {
@@ -93,6 +97,18 @@ namespace ComputerStore
 
             builder.Services.AddRazorPages();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<IItemsRepository, ItemsRepository>();
+            builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+            builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
+            builder.Services.AddScoped<IUserCartRepository, UserCartRepository>();
+
+            builder.Services.AddScoped<IOrdersService, OrdersService>();
+            builder.Services.AddScoped<IItemsService, ItemsService>();
+            builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+            builder.Services.AddScoped<ICartService, CartService>();
         }
     }
 }
