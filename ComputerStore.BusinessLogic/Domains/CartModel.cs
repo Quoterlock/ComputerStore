@@ -3,12 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ComputerStore.BusinessLogic.Domains
 {
-    public class UserCart
+    public class CartModel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public string? Id { get; set; }
+        public string? Id { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
-        public List<Item> Items { get; set; } = new List<Item>();
+        public List<ItemModel> Items { get; set; } = new List<ItemModel>();
     }
 }

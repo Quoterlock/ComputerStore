@@ -12,7 +12,7 @@ namespace ComputerStore.BusinessLogic.Interfaces
     {
         Task AddItem(string userId, string itemId);
         Task RemoveItem(string userId, string itemId);
-        Dictionary<Item, int> GetItems(string userId);
+        Dictionary<ItemModel, int> GetItems(string userId);
         Task GetTotalCost(string userId);
         Task Clear(string userId);
     }

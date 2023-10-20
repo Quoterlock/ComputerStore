@@ -21,7 +21,7 @@ namespace ComputerStore.BusinessLogic.Services
             throw new NotImplementedException();
         }
 
-        public Dictionary<Item, int> GetItems(string userId)
+        public Dictionary<ItemModel, int> GetItems(string userId)
         {
             throw new NotImplementedException();
         }

@@ -104,6 +104,7 @@ namespace ComputerStore
             builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
             builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
             builder.Services.AddScoped<IUserCartRepository, UserCartRepository>();
+            builder.Services.AddScoped<IImagesRepository, ImagesRepository>();
 
             builder.Services.AddScoped<IOrdersService, OrdersService>();
             builder.Services.AddScoped<IItemsService, ItemsService>();

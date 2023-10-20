@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Customer\ViewModels\" />
     <Folder Include="Areas\Manager\ViewModels\" />
     <Folder Include="Areas\Manager\Views\Orders\" />
     <Folder Include="ViewComponents\" />

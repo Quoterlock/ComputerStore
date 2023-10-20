@@ -2,8 +2,7 @@
 
 namespace ComputerStore.DataAccess.Interfaces
 {
-    public interface IItemsRepository : IRepository<Item>
+    public interface IImagesRepository : IRepository<Image>
     {
-
     }
 }

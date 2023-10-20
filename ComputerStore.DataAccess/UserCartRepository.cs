@@ -1,5 +1,4 @@
-﻿
-using ComputerStore.BusinessLogic.Domains;
+﻿using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;

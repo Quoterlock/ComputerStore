@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComputerStore.BusinessLogic.Domains;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
 {
     public interface ICategoriesService
     {
+        Task<CategoryModel> Get(string id);
     }
 }

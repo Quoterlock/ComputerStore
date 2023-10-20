@@ -1,4 +1,4 @@
-﻿using ComputerStore.BusinessLogic.Domains;
+﻿using ComputerStore.DataAccess.Entities;
 
 namespace ComputerStore.DataAccess.Interfaces
 {

@@ -8,14 +8,9 @@ using System.Threading.Tasks;
 
 namespace ComputerStore.DataAccess
 {
-    public class OrdersRepository : IOrdersRepository
+    public class ImagesRepository : IImagesRepository
     {
-        private ApplicationDbContext _context;
-        public OrdersRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-        public Task Add(Order item)
+        public Task Add(Image item)
         {
             throw new NotImplementedException();
         }
@@ -25,22 +20,22 @@ namespace ComputerStore.DataAccess
             throw new NotImplementedException();
         }
 
-        public Task<List<Order>> Get(Func<Order, bool> predicate)
+        public Task<List<Image>> Get(Func<Image, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Order>> Get()
+        public Task<List<Image>> Get()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetById(string id)
+        public Task<Image> GetById(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(Order item)
+        public Task Update(Image item)
         {
             throw new NotImplementedException();
         }

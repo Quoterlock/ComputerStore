@@ -1,5 +1,4 @@
-﻿using ComputerStore.BusinessLogic.Domains;
-using ComputerStore.DataAccess;
+﻿using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

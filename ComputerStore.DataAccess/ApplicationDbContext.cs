@@ -1,4 +1,4 @@
-﻿using ComputerStore.BusinessLogic.Domains;
+﻿using ComputerStore.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

@@ -8,6 +8,10 @@ namespace ComputerStore.DataAccess.Interfaces
 {
     public interface IUnitOfWork
     {
+        IUserCartRepository UserCart { get; set; }
+        IItemsRepository Items { get; set; }
+        ICategoriesRepository Categories { get; set; }
+        IOrdersRepository Orders { get; set; }
         Task Commit();
         Task Rollback();
     }

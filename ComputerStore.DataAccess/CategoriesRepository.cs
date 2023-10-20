@@ -1,4 +1,4 @@
-﻿using ComputerStore.BusinessLogic.Domains;
+﻿using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess;
 using ComputerStore.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ namespace ComputerStore.DataAccess
         }
         public async Task Add(Category item)
         {
-            if (item.Name != null && item.Thumbnail != null)
+            if (item.Name != null && item.Image != null)
                 await _context.Categories.AddAsync(item);
             else throw new Exception("Invalid category model");
         }
@@ -37,7 +37,7 @@ namespace ComputerStore.DataAccess
         public async Task<List<Category>> Get(Func<Category, bool> predicate)
         {
             List<Category> result = _context.Categories
-                .Include(c => c.Thumbnail)
+                .Include(c => c.Image)
                 .Where(predicate).ToList();
             if (result == null)
                 result = new List<Category>();
@@ -47,7 +47,7 @@ namespace ComputerStore.DataAccess
         public async Task<List<Category>> Get()
         {
             List<Category> result = await _context.Categories
-                .Include(c => c.Thumbnail)
+                .Include(c => c.Image)
                 .ToListAsync();
             if (result == null)
                 result = new List<Category>();

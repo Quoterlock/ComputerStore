@@ -9,6 +9,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
 {
     public interface IOrdersService
     {
-        Task MakeOrder(Order order);
+        Task MakeOrder(OrderModel order);
     }
 }

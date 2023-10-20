@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ComputerStore.BusinessLogic.Domains
+namespace ComputerStore.DataAccess.Entities
 {
     public class Order
     {
