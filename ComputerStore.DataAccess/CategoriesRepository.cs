@@ -57,7 +57,7 @@ namespace ComputerStore.DataAccess
         public async Task<Category> GetById(string id)
         {
             var item = await _context.Categories
-                .Include(c => c.Thumbnail)
+                .Include(c => c.Image)
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
             if (item == null)

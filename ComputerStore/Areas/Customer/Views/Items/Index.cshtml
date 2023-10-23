@@ -1,4 +1,4 @@
-﻿@model List<ComputerStore.Models.Domains.Item>
+﻿@model ComputerStore.Areas.Customer.ViewModels.ItemsListViewModel
 
 <div class="container mt-4 col-md-7 col-sm-12 mx-auto">
     <div class="row">
@@ -11,14 +11,14 @@
                     <a asp-action="Index" asp-controller="Categories" class="styless-link">Categories</a>
                 </li>
                 <li class="breadcrumb-item active styless-link" aria-current="page">
-                    @ViewData["CategoryName"]
+                    @Model.Title
                 </li>
             </ol>
         </nav>
     </div>
     <div class="row g-1">
         <div class="col d-flex">
-            <h4 class="my-auto"> <b>@ViewData["CategoryName"]</b> <span class="styless-link">Items: @Model.Count</span></h4>
+            <h4 class="my-auto"> <b>@Model.Title</b> <span class="styless-link">Items: @Model.Count</span></h4>
         </div>
         <div class="col text-end">
             <div class="dropdown">
@@ -34,6 +34,6 @@
         </div>
     </div>
     <div class="row g-1 mt-2">
-        <partial name="_ItemsListPartial" model="Model" />
+        <partial name="_ItemsListPartial" model="@Model.Items" />
     </div>
 </div>

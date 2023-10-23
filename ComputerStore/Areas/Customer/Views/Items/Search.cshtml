@@ -1,4 +1,4 @@
-﻿@model List<ComputerStore.Models.Domains.Item>
+﻿@model ComputerStore.Areas.Customer.ViewModels.ItemsListViewModel
 
 <div class="container mt-4 col-md-7 col-sm-12 mx-auto">
     <div class="row">
@@ -11,7 +11,7 @@
                     <a asp-action="Index" class="styless-link">Items</a>
                 </li>
                 <li class="breadcrumb-item active styless-link" aria-current="page">
-                    Search
+                    @Model.Title
                 </li>
             </ol>
         </nav>
@@ -34,6 +34,6 @@
         </div>
     </div>
     <div class="row g-1 mt-2">
-        <partial name="_ItemsListPartial" model="Model" />
+        <partial name="_ItemsListPartial" model="@Model.Items"/>
     </div>
 </div>

@@ -10,10 +10,10 @@ namespace ComputerStore.DataAccess
     public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _context;
-        public IUserCartRepository UserCart { get; private set; }
-        public IItemsRepository Items { get; private set; }
-        public ICategoriesRepository Categories { get; private set; }
-        public IOrdersRepository Orders { get; private set; }
+        public IUserCartRepository UserCart { get; set; }
+        public IItemsRepository Items { get; set; }
+        public ICategoriesRepository Categories { get;  set; }
+        public IOrdersRepository Orders { get; set; }
         public UnitOfWork(
             ApplicationDbContext context, 
             IOrdersRepository orders,

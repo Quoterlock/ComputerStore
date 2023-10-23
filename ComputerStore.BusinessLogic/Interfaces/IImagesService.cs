@@ -1,4 +1,5 @@
 ﻿using ComputerStore.BusinessLogic.Domains;
+using ComputerStore.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace ComputerStore.BusinessLogic.Interfaces
 {
-    public interface IItemsService
+    public interface IImagesService
     {
-        Task<List<ItemModel>> GetAll();
-        Task<List<ItemModel>> GetFromCategory(string categoryId);
-        Task<List<ItemModel>> Search(string value);
+        ImageModel ConvertEntityToModel(Image entity);
     }
 }

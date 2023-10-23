@@ -22,7 +22,7 @@ namespace ComputerStore.Areas.Customer.Controllers
             ViewData["UserId"] = _userManager.GetUserId(User);
             ViewData["UserLogin"] = User.Identity.Name;
             */
-            return View();
+            return RedirectToAction("Index", "Categories");
         }
 
         public IActionResult Privacy()

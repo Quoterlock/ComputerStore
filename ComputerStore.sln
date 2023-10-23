@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStore", "ComputerSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStoreUnitTests", "ComputerStoreUnitTests\ComputerStoreUnitTests.csproj", "{F8CFDA1F-9BE6-483D-ABA8-9307CC23D41D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerStore.DataAccess", "ComputerStore.DataAccess\ComputerStore.DataAccess.csproj", "{DB4D395F-59A4-4A79-AE90-CD3C28E48349}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStore.DataAccess", "ComputerStore.DataAccess\ComputerStore.DataAccess.csproj", "{DB4D395F-59A4-4A79-AE90-CD3C28E48349}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerStore.BusinessLogic", "ComputerStore.BusinessLogic\ComputerStore.BusinessLogic.csproj", "{C65D89C5-E8B1-46F6-980F-0E127D923D64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStore.BusinessLogic", "ComputerStore.BusinessLogic\ComputerStore.BusinessLogic.csproj", "{C65D89C5-E8B1-46F6-980F-0E127D923D64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerStore.Utilities", "ComputerStore.Utilities\ComputerStore.Utilities.csproj", "{5BA8CADF-980E-4D0A-85FA-7666C36100CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStore.Utilities", "ComputerStore.Utilities\ComputerStore.Utilities.csproj", "{5BA8CADF-980E-4D0A-85FA-7666C36100CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

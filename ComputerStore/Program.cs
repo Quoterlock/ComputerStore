@@ -110,6 +110,8 @@ namespace ComputerStore
             builder.Services.AddScoped<IItemsService, ItemsService>();
             builder.Services.AddScoped<ICategoriesService, CategoriesService>();
             builder.Services.AddScoped<ICartService, CartService>();
+
+            builder.Services.AddScoped<IImagesService, ImagesService>();
         }
     }
 }

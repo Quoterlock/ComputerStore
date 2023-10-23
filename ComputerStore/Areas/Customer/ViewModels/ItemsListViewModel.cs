@@ -8,7 +8,7 @@ namespace ComputerStore.Areas.Customer.ViewModels
     {
         public List<ItemModel> Items { get; set; } = new List<ItemModel>();
         public int Count { get; set; }
-        public string Tag { get; set; } = "none";
+        public string Title { get; set; } = "none";
         public SortMode SortBy { get; set; } = SortMode.ItemId;
     }
 }

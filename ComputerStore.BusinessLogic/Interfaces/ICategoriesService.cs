@@ -10,5 +10,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
     public interface ICategoriesService
     {
         Task<CategoryModel> Get(string id);
+        Task<List<CategoryModel>> GetAll();
     }
 }

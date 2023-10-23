@@ -39,7 +39,7 @@ namespace ComputerStore.BusinessLogic.Services
             return items;
         }
 
-        public Task Search(string value)
+        public Task<List<ItemModel>> Search(string value)
         {
             throw new NotImplementedException();
             /*

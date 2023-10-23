@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using ComputerStore.ViewModels;
+using ComputerStore.BusinessLogic.Domains;
 
 namespace ComputerStore.Areas.Manager.Controllers
 {
@@ -90,7 +91,7 @@ namespace ComputerStore.Areas.Manager.Controllers
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,ThumbnailImageUri")] Category category)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,ThumbnailImageUri")] CategoryModel category)
         {
             /*
             if (id != category.Id) return NotFound();

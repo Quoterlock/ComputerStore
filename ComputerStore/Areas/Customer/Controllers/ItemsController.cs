@@ -1,6 +1,8 @@
 ﻿using ComputerStore.Areas.Customer.ViewModels;
+using ComputerStore.BusinessLogic.Domains;
 using ComputerStore.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Identity.Client;
 
 namespace ComputerStore.Areas.Customer.Controllers
@@ -17,19 +19,22 @@ namespace ComputerStore.Areas.Customer.Controllers
 
         public async Task<IActionResult> Index(string categoryId)
         {
+            string listTitle = "All";
+            List<ItemModel>? items;
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                items = await _itemsService.GetFromCategory(categoryId);
+                listTitle = (await _categoriesService.Get(categoryId)).Name ?? "All";
+            }
+            else 
+                items = await _itemsService.GetAll();
+
             var model = new ItemsListViewModel();
-            if(!string.IsNullOrEmpty(categoryId))
-            {
-                var category = await _categoriesService.Get(categoryId);
-                model.Items = await _itemsService.GetFromCategory(categoryId);
-                model.Count = model.Items.Count;
-                model.Tag = category.Name;
-            }
-            else
-            {
-                model.Items = await _itemsService.GetAll();
-            }
-            return View(); // return items list view model
+            model.Items = items ?? new List<ItemModel>();
+            model.Count = model.Items.Count;
+            model.Title = listTitle;
+
+            return View(model);    
         }
         public IActionResult Details(string itemId) 
         {
@@ -37,10 +42,23 @@ namespace ComputerStore.Areas.Customer.Controllers
             return View();
         }
 
-        public IActionResult Search(string value)
+        public async Task<IActionResult> Search(string value)
         {
-            // find by value and return
-            return View();
+            if (!string.IsNullOrEmpty(value))
+            {
+                ViewData["SearchValue"] = value;
+
+                var model = new ItemsListViewModel();
+
+                model.Items = (await _itemsService.Search(value)) ?? new List<ItemModel>();
+                model.Count = model.Items.Count;
+                model.Title = "Search";
+                model.SortBy = Utilities.SortMode.ItemId;
+
+                return View(model);
+
+            }
+            else return RedirectToAction(nameof(Index));
         }
     }
 }
