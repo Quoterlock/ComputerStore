@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ComputerStore.Controllers
 {
     [Authorize]
-    [Area("Customer")]
     public class CartController : Controller
     {
         public IActionResult Index()

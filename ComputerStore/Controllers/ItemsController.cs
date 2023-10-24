@@ -7,7 +7,6 @@ using Microsoft.Identity.Client;
 
 namespace ComputerStore.Controllers
 {
-    [Area("Customer")]
     public class ItemsController : Controller
     {
         private IItemsService _itemsService;
