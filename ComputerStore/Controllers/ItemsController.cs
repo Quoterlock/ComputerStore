@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Identity.Client;
 
-namespace ComputerStore.Areas.Customer.Controllers
+namespace ComputerStore.Controllers
 {
     [Area("Customer")]
     public class ItemsController : Controller
     {
         private IItemsService _itemsService;
         private ICategoriesService _categoriesService;
-        public ItemsController(IItemsService itemsService, ICategoriesService categoriesService) 
+        public ItemsController(IItemsService itemsService, ICategoriesService categoriesService)
         {
             _itemsService = itemsService;
             _categoriesService = categoriesService;
@@ -27,7 +27,7 @@ namespace ComputerStore.Areas.Customer.Controllers
                 items = await _itemsService.GetFromCategory(categoryId);
                 listTitle = (await _categoriesService.Get(categoryId)).Name ?? "All";
             }
-            else 
+            else
                 items = await _itemsService.GetAll();
 
             var model = new ItemsListViewModel();
@@ -35,9 +35,9 @@ namespace ComputerStore.Areas.Customer.Controllers
             model.Count = model.Items.Count;
             model.Title = listTitle;
 
-            return View(model);    
+            return View(model);
         }
-        public IActionResult Details(string itemId) 
+        public IActionResult Details(string itemId)
         {
             // get item and return full details
             return View();
@@ -51,7 +51,7 @@ namespace ComputerStore.Areas.Customer.Controllers
 
                 var model = new ItemsListViewModel();
 
-                model.Items = (await _itemsService.Search(value)) ?? new List<ItemModel>();
+                model.Items = await _itemsService.Search(value) ?? new List<ItemModel>();
                 model.Count = model.Items.Count;
                 model.Title = "Search";
                 model.SortBy = Utilities.SortMode.ItemId;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ComputerStore.Areas.Customer.Controllers
+namespace ComputerStore.Controllers
 {
     [Authorize]
     [Area("Customer")]
@@ -25,7 +25,7 @@ namespace ComputerStore.Areas.Customer.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpPost]
-        public IActionResult Remove(string itemId) 
+        public IActionResult Remove(string itemId)
         {
             // redirect to previous view
             return RedirectToAction(nameof(Index));

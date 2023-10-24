@@ -66,7 +66,7 @@ namespace ComputerStore
             }
             else
             {
-                app.UseExceptionHandler("/Customer/Home/Error");
+                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -86,7 +86,7 @@ namespace ComputerStore
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Hub}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
         }
 
         private static void ConfigureServices(WebApplicationBuilder builder)
@@ -100,14 +100,6 @@ namespace ComputerStore
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataAccess.ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-            builder.Services.Configure<RazorViewEngineOptions>(options =>
-            {
-                options.AreaViewLocationFormats.Clear();
-                options.AreaViewLocationFormats.Add("/Areas/{2}/Views/{1}/{0}.cshtml");
-                options.AreaViewLocationFormats.Add("/Areas/{2}/Views/Shared/{0}.cshtml");
-                options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
-            });
 
             builder.Services.AddRazorPages();
             builder.Services.AddControllersWithViews();
