@@ -12,8 +12,9 @@ using System.Runtime.CompilerServices;
 using System.Net;
 using ComputerStore.ViewModels;
 
-namespace ComputerStore.Areas.Manager.Controllers
+namespace ComputerStore.Areas.Staff.Controllers
 {
+    [Area("Staff")]
     //[Authorize(Roles = RolesContainer.MANAGER)]
     public class ItemsController : Controller
     {
@@ -48,7 +49,7 @@ namespace ComputerStore.Areas.Manager.Controllers
             return View();
         }
 
-        
+
         public async Task<IActionResult> Search(string value)
         {
             /*

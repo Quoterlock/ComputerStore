@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
 
-namespace ComputerStore.Areas.Manager.Controllers
+namespace ComputerStore.Areas.Staff.Controllers
 {
+    [Area("Staff")]
     //[Authorize(Roles = RolesContainer.ADMINISTRATOR)]
     public class RolesController : Controller
     {

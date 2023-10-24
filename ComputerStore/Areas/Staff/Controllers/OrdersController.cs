@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ComputerStore.Areas.Manager.Controllers
+namespace ComputerStore.Areas.Staff.Controllers
 {
+    [Area("Staff")]
     public class OrdersController : Controller
     {
         public OrdersController(UserManager<IdentityUser> userManager)
@@ -27,21 +28,21 @@ namespace ComputerStore.Areas.Manager.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(string id) 
+        public IActionResult Edit(string id)
         {
             // edit order
             return View();
         }
 
         [HttpPost]
-        public IActionResult Delete(string id) 
+        public IActionResult Delete(string id)
         {
             // delete order
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public IActionResult Edit() 
+        public IActionResult Edit()
         {
             // post changes to db
             return RedirectToAction(nameof(Index));

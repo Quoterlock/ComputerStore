@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ComputerStore.Areas.Manager.Controllers
+namespace ComputerStore.Areas.Staff.Controllers
 {
+    [Area("Staff")]
     public class HomeController : Controller
     {
         public IActionResult Index()

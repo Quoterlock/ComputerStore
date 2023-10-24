@@ -80,10 +80,12 @@ namespace ComputerStore
 
             app.UseAuthorization();
 
+            app.MapRazorPages();
+            /*
             app.MapControllerRoute(
-                name: "Customer",
+                name: "area_default",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
+            */
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

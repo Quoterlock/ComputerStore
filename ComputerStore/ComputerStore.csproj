@@ -22,9 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Manager\ViewModels\" />
-    <Folder Include="Areas\Manager\Views\Orders\" />
-    <Folder Include="Areas\Manager\Views\Shared\ViewComponents\" />
+    <Folder Include="Areas\Staff\ViewModels\" />
+    <Folder Include="Areas\Staff\Data\" />
+    <Folder Include="Areas\Staff\Models\" />
+    <Folder Include="Areas\Staff\Views\Orders\" />
+    <Folder Include="Areas\Staff\Views\Shared\ViewComponents\" />
     <Folder Include="ViewComponents\" />
     <Folder Include="Views\Shared\ViewComponents\" />
   </ItemGroup>
@@ -33,6 +35,61 @@
     <ProjectReference Include="..\ComputerStore.BusinessLogic\ComputerStore.BusinessLogic.csproj" />
     <ProjectReference Include="..\ComputerStore.DataAccess\ComputerStore.DataAccess.csproj" />
     <ProjectReference Include="..\ComputerStore.Utilities\ComputerStore.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Staff\Views\Categories\CreateOld.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Categories\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Home\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Items\Create.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Items\Edit.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Roles\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Shared\Error.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Shared\_ItemsListPartial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Shared\_Layout.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Shared\_LoginPartial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\Shared\_ValidationScriptsPartial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\_ViewImports.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Staff\Views\_ViewStart.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

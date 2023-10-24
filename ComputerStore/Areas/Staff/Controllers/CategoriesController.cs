@@ -10,9 +10,10 @@ using System.Data;
 using ComputerStore.ViewModels;
 using ComputerStore.BusinessLogic.Domains;
 
-namespace ComputerStore.Areas.Manager.Controllers
+namespace ComputerStore.Areas.Staff.Controllers
 {
     //[Authorize(Roles = RolesContainer.MANAGER)]
+    [Area("Staff")]
     public class CategoriesController : Controller
     {
         public CategoriesController()
@@ -23,7 +24,7 @@ namespace ComputerStore.Areas.Manager.Controllers
         // GET: Categories (public for other visitors)
         public async Task<IActionResult> Index()
         {
-            
+
             return View();
         }
 
