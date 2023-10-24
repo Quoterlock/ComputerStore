@@ -15,14 +15,13 @@ namespace ComputerStore.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Category", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Category", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +40,7 @@ namespace ComputerStore.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Image", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Image", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +57,7 @@ namespace ComputerStore.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Item", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Item", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -98,7 +97,7 @@ namespace ComputerStore.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Order", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Order", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,7 +141,7 @@ namespace ComputerStore.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.UserCart", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.UserCart", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()

@@ -1,6 +1,3 @@
-using ComputerStore.Models;
-using ComputerStore.Models.Domains;
-
 namespace ComputerStoreUnitTests
 {
     public class UnitTest1
