@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 namespace ComputerStore.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -23,7 +24,7 @@ namespace ComputerStore.Areas.Customer.Controllers
             ViewData["UserId"] = _userManager.GetUserId(User);
             ViewData["UserLogin"] = User.Identity.Name;
             */
-            return RedirectToAction("Index", "Categories");
+            return View();
         }
 
         public IActionResult Privacy()

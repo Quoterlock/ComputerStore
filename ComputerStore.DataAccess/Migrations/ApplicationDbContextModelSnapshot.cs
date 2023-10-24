@@ -8,13 +8,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ComputerStore.Migrations
+namespace ComputerStore.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
+#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
@@ -27,15 +28,15 @@ namespace ComputerStore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ImageId")
                         .HasColumnType("text");
 
-                    b.Property<string>("ThumbnailId")
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ThumbnailId");
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Categories");
                 });
@@ -356,30 +357,30 @@ namespace ComputerStore.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Category", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Category", b =>
                 {
-                    b.HasOne("ComputerStore.Models.Domains.Image", "Thumbnail")
-                        .WithMany()
-                        .HasForeignKey("ThumbnailId");
-
-                    b.Navigation("Thumbnail");
-                });
-
-            modelBuilder.Entity("ComputerStore.Models.Domains.Item", b =>
-                {
-                    b.HasOne("ComputerStore.Models.Domains.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId");
-
-                    b.HasOne("ComputerStore.Models.Domains.Image", "Image")
+                    b.HasOne("ComputerStore.DataAccess.Entities.Image", "Image")
                         .WithMany()
                         .HasForeignKey("ImageId");
 
-                    b.HasOne("ComputerStore.Models.Domains.Order", null)
+                    b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Item", b =>
+                {
+                    b.HasOne("ComputerStore.DataAccess.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("ComputerStore.DataAccess.Entities.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId");
+
+                    b.HasOne("ComputerStore.DataAccess.Entities.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("ComputerStore.Models.Domains.UserCart", null)
+                    b.HasOne("ComputerStore.DataAccess.Entities.UserCart", null)
                         .WithMany("Items")
                         .HasForeignKey("UserCartId");
 
@@ -439,12 +440,12 @@ namespace ComputerStore.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Order", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Order", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.UserCart", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.UserCart", b =>
                 {
                     b.Navigation("Items");
                 });

@@ -4,6 +4,7 @@ using ComputerStore.DataAccess;
 using ComputerStore.DataAccess.Interfaces;
 using ComputerStore.Utilities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,23 +78,36 @@ namespace ComputerStore
 
             app.UseAuthorization();
 
+            app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "Customer",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
-            app.MapRazorPages();
+                pattern: "{controller=Hub}/{action=Index}/{id?}");
         }
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("PostgreConnectionString") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<DataAccess.ApplicationDbContext>(options => options.UseNpgsql(connectionString, builder => builder.MigrationsAssembly("ComputerStore.DataAccess.Migrations")));
+            builder.Services.AddDbContext<DataAccess.ApplicationDbContext>(options => options.UseNpgsql(connectionString/*, builder => builder.MigrationsAssembly("ComputerStore.DataAccess.Migrations")*/));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataAccess.ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            builder.Services.Configure<RazorViewEngineOptions>(options =>
+            {
+                options.AreaViewLocationFormats.Clear();
+                options.AreaViewLocationFormats.Add("/Areas/{2}/Views/{1}/{0}.cshtml");
+                options.AreaViewLocationFormats.Add("/Areas/{2}/Views/Shared/{0}.cshtml");
+                options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+            });
 
             builder.Services.AddRazorPages();
             builder.Services.AddControllersWithViews();

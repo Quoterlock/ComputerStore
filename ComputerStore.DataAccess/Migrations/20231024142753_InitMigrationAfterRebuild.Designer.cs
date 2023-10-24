@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ComputerStore.Migrations
+namespace ComputerStore.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231012152556_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20231024142753_InitMigrationAfterRebuild")]
+    partial class InitMigrationAfterRebuild
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,26 +25,26 @@ namespace ComputerStore.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Category", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Category", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ImageId")
                         .HasColumnType("text");
 
-                    b.Property<string>("ThumbnailId")
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ThumbnailId");
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Image", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Image", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +61,7 @@ namespace ComputerStore.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Item", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Item", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,8 +79,14 @@ namespace ComputerStore.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<string>("OrderId")
+                        .HasColumnType("text");
+
                     b.Property<int>("Price")
                         .HasColumnType("integer");
+
+                    b.Property<string>("UserCartId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -88,7 +94,70 @@ namespace ComputerStore.Migrations
 
                     b.HasIndex("ImageId");
 
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserCartId");
+
                     b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Order", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostOfficeAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TotalCost")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.UserCart", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserCarts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -234,10 +303,12 @@ namespace ComputerStore.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("text");
@@ -274,10 +345,12 @@ namespace ComputerStore.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("text");
@@ -287,24 +360,32 @@ namespace ComputerStore.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Category", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Category", b =>
                 {
-                    b.HasOne("ComputerStore.Models.Domains.Image", "Thumbnail")
+                    b.HasOne("ComputerStore.DataAccess.Entities.Image", "Image")
                         .WithMany()
-                        .HasForeignKey("ThumbnailId");
+                        .HasForeignKey("ImageId");
 
-                    b.Navigation("Thumbnail");
+                    b.Navigation("Image");
                 });
 
-            modelBuilder.Entity("ComputerStore.Models.Domains.Item", b =>
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Item", b =>
                 {
-                    b.HasOne("ComputerStore.Models.Domains.Category", "Category")
+                    b.HasOne("ComputerStore.DataAccess.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("ComputerStore.Models.Domains.Image", "Image")
+                    b.HasOne("ComputerStore.DataAccess.Entities.Image", "Image")
                         .WithMany()
                         .HasForeignKey("ImageId");
+
+                    b.HasOne("ComputerStore.DataAccess.Entities.Order", null)
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("ComputerStore.DataAccess.Entities.UserCart", null)
+                        .WithMany("Items")
+                        .HasForeignKey("UserCartId");
 
                     b.Navigation("Category");
 
@@ -361,6 +442,17 @@ namespace ComputerStore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Order", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("ComputerStore.DataAccess.Entities.UserCart", b =>
+                {
+                    b.Navigation("Items");
+                });
+#pragma warning restore 612, 618
         }
     }
 }

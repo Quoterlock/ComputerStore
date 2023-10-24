@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerStore.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class CategoriesController : Controller
     {
         private ICategoriesService _categoriesService;
