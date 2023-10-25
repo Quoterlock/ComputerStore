@@ -7,8 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
-using ComputerStore.ViewModels;
+using ComputerStore.Areas.Staff.ViewModels;
 using ComputerStore.BusinessLogic.Domains;
+using ComputerStore.BusinessLogic.Interfaces;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Drawing;
+using System.Collections;
 
 namespace ComputerStore.Areas.Staff.Controllers
 {
@@ -16,27 +20,17 @@ namespace ComputerStore.Areas.Staff.Controllers
     [Area("Staff")]
     public class CategoriesController : Controller
     {
-        public CategoriesController()
+        private ICategoriesService _categoriesService;
+        public CategoriesController(ICategoriesService categoriesService)
         {
-
+            _categoriesService = categoriesService;
         }
 
         // GET: Categories (public for other visitors)
         public async Task<IActionResult> Index()
         {
-
-            return View();
-        }
-
-        // GET: Categories/Details/5
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
-        public async Task<IActionResult> Details(string id)
-        {
-            /*
-            var category = await _repository.GetById(id);
-            if (category == null) return NotFound(id);
-            */
-            return View();
+            var categories = await _categoriesService.GetAll();
+            return View(categories);
         }
 
         // GET: Categories/Create
@@ -52,61 +46,51 @@ namespace ComputerStore.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryFormModel model)
         {
-            /*
+           
             if (model != null && model.Name != null && model.ThumbnailFile != null)
             {
-                var category = new Category() { Name = model.Name };
+                var category = new CategoryModel() { Name = model.Name };
                 using (var stream = new MemoryStream())
                 {
                     await model.ThumbnailFile.CopyToAsync(stream);
-                    category.Thumbnail = new Image();
+                    category.Thumbnail = new ImageModel();
                     category.Thumbnail.Bytes = stream.ToArray();
                     category.Thumbnail.Alt = model.Name + "- Category thumbnail";
-                    await _repository.Add(category);
+                    await _categoriesService.Add(category);
                 }
                 return RedirectToAction(nameof(Index));
             }
 
             return View(model);
-            */
-            return View();
         }
 
         // GET: Categories/Edit/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         public async Task<IActionResult> Edit(string id)
         {
-            /*
+            
             if (id == null) return NotFound();
-
-            var category = await _repository.GetById(id);
-
+            var category = await _categoriesService.Get(id);
             if (category == null) return NotFound();
 
-            return View(category);
-            */
-            return View();
+            var model = new CategoryFormModel()
+            {
+                Id = category.Id,
+                Name = category.Name,
+            };
+            return View(model);
         }
 
         // POST: Categories/Edit/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,ThumbnailImageUri")] CategoryModel category)
+        public async Task<IActionResult> Edit(string id, CategoryFormModel model)
         {
-            /*
-            if (id != category.Id) return NotFound();
-            try
-            {
-                await _repository.Update(category);
-                return RedirectToAction(nameof(List));
-            }
-            catch (Exception ex)
-            {
-                return View(category);
-                // message
-            }
-            */
+            var category = await _categoriesService.Get(model.Id);
+            category.Name = model.Name;
+            await _categoriesService.Update(category);
+
             return RedirectToAction(nameof(Index));
         }
 

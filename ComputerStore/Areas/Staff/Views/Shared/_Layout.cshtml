@@ -18,41 +18,37 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-5 col-sm-12 mx-auto">
-                            <form class="d-flex" id="search-form" method="get" action="/Items/Search">
-                                <div class="input-group">
-                                    <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
-                                           name="value">
 
-                                    <button class="btn search-btn-style" type="submit">
-                                        <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;"/>
-                                    </button>
-                                </div>
-                            </form>
-
-                            <script>
-                                document.getElementById('search-form').addEventListener('submit', function () {
-                                    var searchValue = document.getElementById('search-input').value;
-                                    this.action = "/Items/Search?value=" + encodeURIComponent(searchValue);
-                                });
-                            </script>
-
-                        </div>
-                    </div>
-                </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <partial name="_LoginPartial"/>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            <h1>MANAGER AREA</h1>
-            @RenderBody()
-        </main>
+        <div class="row">
+            <div class="col-3">
+                <ul class="list-group side-menu">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="#">
+                            Orders
+                            <span class="badge bg-primary rounded-pill">12</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a asp-action="Index" asp-controller="Categories">Categories</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="#">Items</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>>
     </div>
 
     <footer class="border-top footer text-muted">

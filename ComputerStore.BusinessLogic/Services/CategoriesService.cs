@@ -45,6 +45,25 @@ namespace ComputerStore.BusinessLogic.Services
                 models.Add(ConvertEntityToModel(entity));
             return models;
         }
+        public async Task Add(CategoryModel model)
+        {
+            if (model != null)
+            {
+                var entity = ConvertModelToEntity(model);
+                await _unitOfWork.Categories.Add(entity);
+                await _unitOfWork.Commit();
+            }
+        }
+
+        public async Task Update(CategoryModel model)
+        {
+            if(model != null)
+            {
+                var entity = ConvertModelToEntity(model);
+                await _unitOfWork.Categories.Update(entity);
+                await _unitOfWork.Commit();
+            }
+        }
 
         internal CategoryModel ConvertEntityToModel(Category entity)
         {
@@ -54,6 +73,15 @@ namespace ComputerStore.BusinessLogic.Services
                 Name = entity.Name,
                 Thumbnail = _imageService.ConvertEntityToModel(entity.Image)
             };        
+        }
+        internal Category ConvertModelToEntity(CategoryModel model)
+        {
+            return new Category
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Image = _imageService.ConvertModelToEntity(model.Thumbnail)
+            };
         }
     }
 }

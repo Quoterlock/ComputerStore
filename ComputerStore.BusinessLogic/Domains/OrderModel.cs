@@ -5,7 +5,7 @@ namespace ComputerStore.BusinessLogic.Domains
 {
     public class OrderModel
     {
-        public string? Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string PostOfficeAddress { get; set; } = string.Empty;

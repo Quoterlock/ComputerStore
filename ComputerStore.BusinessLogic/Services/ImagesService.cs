@@ -20,5 +20,15 @@ namespace ComputerStore.BusinessLogic.Services
                 Id = entity.Id
             };
         }
+
+        public Image ConvertModelToEntity(ImageModel? model)
+        {
+            return new Image
+            {
+                Id = model.Id,
+                Alt = model.Alt,
+                Bytes = model.Bytes
+            };
+        }
     }
 }

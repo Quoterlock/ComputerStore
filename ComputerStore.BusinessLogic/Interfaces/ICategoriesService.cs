@@ -11,5 +11,7 @@ namespace ComputerStore.BusinessLogic.Interfaces
     {
         Task<CategoryModel> Get(string id);
         Task<List<CategoryModel>> GetAll();
+        Task Add(CategoryModel category);
+        Task Update(CategoryModel category);
     }
 }
