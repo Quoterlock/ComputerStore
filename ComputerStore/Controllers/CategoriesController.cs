@@ -12,7 +12,7 @@ namespace ComputerStore.Areas.Customer.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var categories = await _categoriesService.GetAll();
+            var categories = await _categoriesService.GetAllAsync();
             return View(categories);
         }
     }

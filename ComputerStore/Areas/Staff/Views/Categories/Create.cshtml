@@ -8,8 +8,8 @@
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data" method="post">
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <label asp-for="Category.Name" class="control-label"></label>
+                <input asp-for="Category.Name" class="form-control" />
             </div>
             <input type="file" accept=".png" asp-for="ThumbnailFile" />
             <div class="form-group">

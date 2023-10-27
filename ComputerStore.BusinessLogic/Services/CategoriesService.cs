@@ -15,57 +15,72 @@ namespace ComputerStore.BusinessLogic.Services
     {
         private IUnitOfWork _unitOfWork;
         private IImagesService _imageService;
+        
         public CategoriesService(IUnitOfWork unitOfWork, IImagesService imageService)
         {
             _unitOfWork = unitOfWork;
             _imageService = imageService;
         }
-        public async Task<CategoryModel> Get(string id)
+        
+        public async Task<CategoryModel> GetAsync(string id)
         {
             if (!string.IsNullOrEmpty(id))
             {
-                var entity = await _unitOfWork.Categories.GetById(id);
+                var entity = await _unitOfWork.Categories.GetAsync(id);
                 if (entity != null)
                     return ConvertEntityToModel(entity);
                 else throw new Exception("Category not found by id: " + id);
             }
-            else throw new Exception("Category id is null or empty");
+            else throw new Exception("Category id is null or empty string");
         }
 
-        public async Task<List<CategoryModel>> GetAll()
+        public async Task<List<CategoryModel>> GetAllAsync()
         {
-            var entities = await _unitOfWork.Categories.Get();
+            var entities = await _unitOfWork.Categories.GetAsync();
             return ConvertEntitiesToModels(entities);
         }
 
-        private List<CategoryModel> ConvertEntitiesToModels(List<Category> entities) 
-        {
-            var models = new List<CategoryModel>();
-            foreach (var entity in entities)
-                models.Add(ConvertEntityToModel(entity));
-            return models;
-        }
-        public async Task Add(CategoryModel model)
+        public async Task AddAsync(CategoryModel model)
         {
             if (model != null)
             {
                 var entity = ConvertModelToEntity(model);
-                await _unitOfWork.Categories.Add(entity);
+                await _unitOfWork.Categories.AddAsync(entity);
                 await _unitOfWork.Commit();
             }
+            else throw new Exception("Model in null!");
         }
 
-        public async Task Update(CategoryModel model)
+        public async Task UpdateAsync(CategoryModel model)
         {
             if(model != null)
             {
                 var entity = ConvertModelToEntity(model);
-                await _unitOfWork.Categories.Update(entity);
+                await _unitOfWork.Categories.UpdateAsync(entity);
                 await _unitOfWork.Commit();
             }
+            else throw new Exception("Model in null!");
         }
 
-        internal CategoryModel ConvertEntityToModel(Category entity)
+        public async Task RemoveAsync(string id)
+        {
+            await _unitOfWork.Categories.DeleteAsync(id);
+            await _unitOfWork.Commit();
+        }
+
+        private List<CategoryModel> ConvertEntitiesToModels(List<Category> entities)
+        {
+            var models = new List<CategoryModel>();
+            foreach (var entity in entities)
+            {
+                var model = ConvertEntityToModel(entity);
+                if(model != null)
+                    models.Add(model);
+            }
+            return models;
+        }
+
+        public CategoryModel ConvertEntityToModel(Category entity)
         {
             return new CategoryModel
             {
@@ -74,7 +89,8 @@ namespace ComputerStore.BusinessLogic.Services
                 Thumbnail = _imageService.ConvertEntityToModel(entity.Image)
             };        
         }
-        internal Category ConvertModelToEntity(CategoryModel model)
+        
+        public Category ConvertModelToEntity(CategoryModel model)
         {
             return new Category
             {
@@ -82,6 +98,11 @@ namespace ComputerStore.BusinessLogic.Services
                 Name = model.Name,
                 Image = _imageService.ConvertModelToEntity(model.Thumbnail)
             };
+        }
+
+        public async Task<bool> IsExistsAsync(string id)
+        {
+            return await _unitOfWork.Categories.IsExists(id);
         }
     }
 }

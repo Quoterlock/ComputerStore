@@ -15,32 +15,37 @@ namespace ComputerStore.DataAccess
         {
             _context = context;
         }
-        public Task Add(Order item)
+        public Task AddAsync(Order item)
         {
             throw new NotImplementedException();
         }
 
-        public Task Delete(string id)
+        public Task DeleteAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Order>> Get(Func<Order, bool> predicate)
+        public Task<List<Order>> GetAsync(Func<Order, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Order>> Get()
+        public Task<List<Order>> GetAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetById(string id)
+        public Task<Order> GetAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(Order item)
+        public Task<bool> IsExists(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Order item)
         {
             throw new NotImplementedException();
         }

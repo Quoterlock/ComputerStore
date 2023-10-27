@@ -13,7 +13,7 @@ namespace ComputerStore.DataAccess
             _context = context;
         }
 
-        public async Task<Item> GetById(string id)
+        public async Task<Item> GetAsync(string id)
         {
             Item result = null;
             if (id != null && id != string.Empty)
@@ -28,7 +28,7 @@ namespace ComputerStore.DataAccess
             return result;
         }
 
-        public async Task<List<Item>> Get(Func<Item, bool> predicate)
+        public async Task<List<Item>> GetAsync(Func<Item, bool> predicate)
         {
             var items = _context.Items
                 .Include(item => item.Category)
@@ -38,7 +38,7 @@ namespace ComputerStore.DataAccess
             return items;
         }
 
-        public async Task<List<Item>> Get()
+        public async Task<List<Item>> GetAsync()
         {
             var items = await _context.Items
                 .Include(item => item.Category)
@@ -48,7 +48,7 @@ namespace ComputerStore.DataAccess
             return items;
         }
 
-        public async Task Add(Item item)
+        public async Task AddAsync(Item item)
         {
             if (item != null && item.Name != null)
             {
@@ -64,14 +64,14 @@ namespace ComputerStore.DataAccess
             else throw new Exception("Item is not valid!!!");
         }
 
-        public async Task Update(Item item)
+        public async Task UpdateAsync(Item item)
         {
             if (item != null && IsValid(item))
                 _context.Update(item);
             else throw new Exception("Item entity is not valid");
         }
 
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             if (id != null && id != string.Empty)
             {
@@ -92,6 +92,11 @@ namespace ComputerStore.DataAccess
                 return true;
             else
                 return false;
+        }
+
+        public Task<bool> IsExists(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

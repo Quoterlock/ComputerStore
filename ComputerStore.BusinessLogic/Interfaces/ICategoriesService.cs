@@ -9,9 +9,11 @@ namespace ComputerStore.BusinessLogic.Interfaces
 {
     public interface ICategoriesService
     {
-        Task<CategoryModel> Get(string id);
-        Task<List<CategoryModel>> GetAll();
-        Task Add(CategoryModel category);
-        Task Update(CategoryModel category);
+        Task<CategoryModel> GetAsync(string id);
+        Task<List<CategoryModel>> GetAllAsync();
+        Task AddAsync(CategoryModel category);
+        Task UpdateAsync(CategoryModel category);
+        Task RemoveAsync(string id);
+        Task<bool> IsExistsAsync(string id);
     }
 }

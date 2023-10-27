@@ -1,5 +1,6 @@
 ﻿using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,32 +11,42 @@ namespace ComputerStore.DataAccess
 {
     public class ImagesRepository : IImagesRepository
     {
-        public Task Add(Image item)
+        private ApplicationDbContext _context;
+        public ImagesRepository(ApplicationDbContext applicationDbContext) 
+        {
+            _context = applicationDbContext;
+        }
+        public Task AddAsync(Image item)
         {
             throw new NotImplementedException();
         }
 
-        public Task Delete(string id)
+        public Task DeleteAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Image>> Get(Func<Image, bool> predicate)
+        public Task<List<Image>> GetAsync(Func<Image, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Image>> Get()
+        public Task<List<Image>> GetAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Image> GetById(string id)
+        public async Task<Image> GetAsync(string id)
+        {
+            return await _context.Images.SingleOrDefaultAsync(i=>i.Id == id);   
+        }
+
+        public Task<bool> IsExists(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(Image item)
+        public Task UpdateAsync(Image item)
         {
             throw new NotImplementedException();
         }

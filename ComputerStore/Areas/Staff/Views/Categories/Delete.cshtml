@@ -1,0 +1,7 @@
+﻿@model ComputerStore.BusinessLogic.Domains.CategoryModel
+<h1>Do you want to delete "@Model.Name" category?</h1>
+<form asp-action="DeleteConfirmed" asp-controller="Categories" asp-area="Staff" method="post">
+    <input asp-for="Id" type="hidden" value="@Model.Id"/>
+    <button class="btn btn-danger" type="submit" asp-action="DeleteConfirmed">Confirm</button>
+</form>
+<a class="btn btn-light" asp-action="Index">Cancel</a>

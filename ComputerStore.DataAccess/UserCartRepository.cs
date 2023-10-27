@@ -15,7 +15,7 @@ namespace ComputerStore.DataAccess
         {
             _context = context;
         }
-        public Task Add(UserCart item)
+        public Task AddAsync(UserCart item)
         {
             throw new NotImplementedException();
         }
@@ -25,7 +25,7 @@ namespace ComputerStore.DataAccess
             throw new NotImplementedException();
         }
 
-        public Task Delete(string id)
+        public Task DeleteAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -35,17 +35,17 @@ namespace ComputerStore.DataAccess
             throw new NotImplementedException();
         }
 
-        public Task<List<UserCart>> Get(Func<UserCart, bool> predicate)
+        public Task<List<UserCart>> GetAsync(Func<UserCart, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<UserCart>> Get()
+        public Task<List<UserCart>> GetAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserCart> GetById(string id)
+        public Task<UserCart> GetAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -55,12 +55,17 @@ namespace ComputerStore.DataAccess
             throw new NotImplementedException();
         }
 
+        public Task<bool> IsExists(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemoveItems(string userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(UserCart item)
+        public Task UpdateAsync(UserCart item)
         {
             throw new NotImplementedException();
         }

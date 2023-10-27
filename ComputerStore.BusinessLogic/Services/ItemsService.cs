@@ -20,7 +20,7 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task<List<ItemModel>> GetAll()
         {
-            var entities = await _unitOfWork.Items.Get();
+            var entities = await _unitOfWork.Items.GetAsync();
             var items = new List<ItemModel>();
             if(entities != null)
                 items = EntityesToModels(entities);
@@ -32,7 +32,7 @@ namespace ComputerStore.BusinessLogic.Services
             var items = new List<ItemModel>();   
             if(!string.IsNullOrEmpty(categoryId))
             {
-                var entities = await _unitOfWork.Items.Get(item => item.Category.Id == categoryId);
+                var entities = await _unitOfWork.Items.GetAsync(item => item.Category.Id == categoryId);
                 if (entities != null)
                     items = EntityesToModels(entities);
             }    

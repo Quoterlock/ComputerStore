@@ -6,13 +6,17 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <img src="data:image/png;base64, @Convert.ToBase64String(Model.Category.Thumbnail.Bytes)" width="32" height="32"/>
         <form asp-action="Edit" enctype="multipart/form-data" method="post">
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" value="@Model.Name" class="form-control" />
+                <input asp-for="Category.Id" type="hidden" value="@Model.Category.Id"/>
+                <input asp-for="Category.Thumbnail.Id" type="hidden" value="@Model.Category.Thumbnail.Id" />
+                <label asp-for="Category.Name" class="control-label"></label>
+                <input asp-for="Category.Name" value="@Model.Category.Name" class="form-control" />
+                <input type="file" accept=".png" asp-for="ThumbnailFile"/>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-primary" />
             </div>
         </form>
     </div>

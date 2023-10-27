@@ -13,6 +13,7 @@ using ComputerStore.BusinessLogic.Interfaces;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Drawing;
 using System.Collections;
+using ComputerStore.DataAccess.Entities;
 
 namespace ComputerStore.Areas.Staff.Controllers
 {
@@ -21,23 +22,28 @@ namespace ComputerStore.Areas.Staff.Controllers
     public class CategoriesController : Controller
     {
         private ICategoriesService _categoriesService;
-        public CategoriesController(ICategoriesService categoriesService)
+        private IImagesService _imagesService;
+        public CategoriesController(ICategoriesService categoriesService, IImagesService imagesService)
         {
             _categoriesService = categoriesService;
+            _imagesService = imagesService;
         }
 
         // GET: Categories (public for other visitors)
         public async Task<IActionResult> Index()
         {
-            var categories = await _categoriesService.GetAll();
+            var categories = await _categoriesService.GetAllAsync();
             return View(categories);
         }
 
         // GET: Categories/Create
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var model = new CategoryFormModel() { 
+                Category = new CategoryModel() };
+            return View(model);
         }
 
         // POST: Categories/Create
@@ -46,88 +52,107 @@ namespace ComputerStore.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryFormModel model)
         {
-           
-            if (model != null && model.Name != null && model.ThumbnailFile != null)
+            if (ModelIsValid(model))
             {
-                var category = new CategoryModel() { Name = model.Name };
-                using (var stream = new MemoryStream())
+                var category = model.Category;
+                if (!string.IsNullOrEmpty(category.Name) && model.ThumbnailFile != null)
                 {
-                    await model.ThumbnailFile.CopyToAsync(stream);
-                    category.Thumbnail = new ImageModel();
-                    category.Thumbnail.Bytes = stream.ToArray();
-                    category.Thumbnail.Alt = model.Name + "- Category thumbnail";
-                    await _categoriesService.Add(category);
+                    category.Thumbnail = new ImageModel
+                    {
+                        Bytes = ConvertFileToBytes(model.ThumbnailFile),
+                        Alt = category.Name + "-category-icon"
+                    };
+                    await _categoriesService.AddAsync(category);
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
             }
-
             return View(model);
         }
 
         // GET: Categories/Edit/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            
-            if (id == null) return NotFound();
-            var category = await _categoriesService.Get(id);
-            if (category == null) return NotFound();
-
-            var model = new CategoryFormModel()
+            var model = new CategoryFormModel();
+            try 
             {
-                Id = category.Id,
-                Name = category.Name,
-            };
+                var category = await _categoriesService.GetAsync(id);
+                model.Category = category;
+
+            } catch (Exception ex) { return NotFound(ex.Message); }
+
             return View(model);
         }
 
         // POST: Categories/Edit/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, CategoryFormModel model)
+        public async Task<IActionResult> Edit(CategoryFormModel model)
         {
-            var category = await _categoriesService.Get(model.Id);
-            category.Name = model.Name;
-            await _categoriesService.Update(category);
+            if (!ModelIsValid(model) && await _categoriesService.IsExistsAsync(model.Category.Id)) 
+                return NotFound(model.Category.Id);
+
+            try
+            {
+                var category = model.Category;
+                if (model.ThumbnailFile != null)
+                {
+                    category.Thumbnail = new ImageModel();
+                    category.Thumbnail.Bytes = ConvertFileToBytes(model.ThumbnailFile);
+                    category.Thumbnail.Alt = category.Name + "-category-icon";
+                }
+                await _categoriesService.UpdateAsync(category);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Error), nameof(CategoriesController), ex.Message);
+            }
 
             return RedirectToAction(nameof(Index));
+
         }
 
         // GET: Categories/Delete/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            /*
-            if (id == null) return NotFound();
-
-            var category = await _repository.GetById(id);
-
-            if (category == null) return NotFound();
-
-            return View(category);
-            */
-            return RedirectToAction(nameof(Index));
+            var model = await _categoriesService.GetAsync(id);
+            return View(model);
         }
 
         // POST: Categories/Delete/5
         //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(CategoryModel model)
         {
-            /*
-            if (id != null)
+            if(!string.IsNullOrEmpty(model.Id))
             {
-                await _repository.Delete(id);
-                return RedirectToAction(nameof(List));
+                var category = await _categoriesService.GetAsync(model.Id);
+                if (category != null)
+                    await _categoriesService.RemoveAsync(category.Id);
             }
-            else
-            {
-                return NotFound(id);
-            }
-            */
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Error(string message)
+        {
+            return View(message);
+        }
+
+        private byte[] ConvertFileToBytes(IFormFile file)
+        {
+            using (var ms = new MemoryStream())
+            {
+                file.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
+
+        private bool ModelIsValid(CategoryFormModel model)
+        {
+            return model != null && model.Category != null && !string.IsNullOrEmpty(model.Category.Name);
         }
     }
 }

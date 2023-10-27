@@ -3,6 +3,9 @@ using ComputerStore.DataAccess;
 using ComputerStore.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Npgsql.TypeMapping;
+using AutoMapper;
+using System.Runtime.Intrinsics.X86;
 
 namespace ComputerStore.DataAccess
 {
@@ -13,28 +16,36 @@ namespace ComputerStore.DataAccess
         {
             _context = context;
         }
-        public async Task Add(Category item)
+        public async Task AddAsync(Category item)
         {
-            if (item.Name != null && item.Image != null)
-                await _context.Categories.AddAsync(item);
-            else throw new Exception("Invalid category model");
+            await _context.Categories.AddAsync(item);
         }
 
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
-            if (id != null && id != string.Empty)
+            var item = await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == id);
+            if (item != null)
+                _context.Categories.Remove(item);
+            else throw new Exception("Invalid category item");
+        }
+        public async Task UpdateAsync(Category item)
+        {
+            if (item != null && item.Id != null)
             {
-                var item = await _context.Categories
-                    .Where(c => c.Id == id)
-                    .FirstOrDefaultAsync();
-                if (item != null)
-                    _context.Categories.Remove(item);
+                if (item.Image.Bytes.Length == 0)
+                {
+                    var tmp = await _context.Categories.FirstOrDefaultAsync(i => i.Id == item.Id);
+                    tmp.Name = item.Name;
+                    tmp.Id = item.Id;
+                    _context.Categories.Update(tmp);
+                }
+                else _context.Categories.Update(item);
             }
-            else
-                throw new Exception("Invalid category model");
+            else throw new Exception("Invalid category item");
         }
 
-        public async Task<List<Category>> Get(Func<Category, bool> predicate)
+        public async Task<List<Category>> GetAsync(Func<Category, bool> predicate)
         {
             List<Category> result = _context.Categories
                 .Include(c => c.Image)
@@ -44,7 +55,7 @@ namespace ComputerStore.DataAccess
             return result;
         }
 
-        public async Task<List<Category>> Get()
+        public async Task<List<Category>> GetAsync()
         {
             List<Category> result = await _context.Categories
                 .Include(c => c.Image)
@@ -54,7 +65,7 @@ namespace ComputerStore.DataAccess
             return result;
         }
 
-        public async Task<Category> GetById(string id)
+        public async Task<Category> GetAsync(string id)
         {
             var item = await _context.Categories
                 .Include(c => c.Image)
@@ -66,11 +77,12 @@ namespace ComputerStore.DataAccess
             return item;
         }
 
-        public async Task Update(Category item)
+        public async Task<bool> IsExists(string id)
         {
-            if (item != null && item.Id != null)
-                _context.Categories.Update(item);
-            else throw new Exception("Invalid category item");
+            bool isAny = false;
+            if (!string.IsNullOrEmpty(id))
+                isAny = !(await _context.Categories.AnyAsync(c => c.Id == id)).Equals(null);
+            return isAny;
         }
     }
 }
