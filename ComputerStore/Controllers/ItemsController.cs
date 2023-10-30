@@ -23,11 +23,11 @@ namespace ComputerStore.Controllers
             List<ItemModel>? items;
             if (!string.IsNullOrEmpty(categoryId))
             {
-                items = await _itemsService.GetFromCategory(categoryId);
+                items = await _itemsService.GetFromCategoryAsync(categoryId);
                 listTitle = (await _categoriesService.GetAsync(categoryId)).Name ?? "All";
             }
             else
-                items = await _itemsService.GetAll();
+                items = await _itemsService.GetAllAsync();
 
             var model = new ItemsListViewModel();
             model.Items = items ?? new List<ItemModel>();
@@ -50,7 +50,7 @@ namespace ComputerStore.Controllers
 
                 var model = new ItemsListViewModel();
 
-                model.Items = await _itemsService.Search(value) ?? new List<ItemModel>();
+                model.Items = await _itemsService.SearchAsync(value) ?? new List<ItemModel>();
                 model.Count = model.Items.Count;
                 model.Title = "Search";
                 model.SortBy = Utilities.SortMode.ItemId;

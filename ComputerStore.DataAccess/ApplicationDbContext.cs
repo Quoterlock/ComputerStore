@@ -14,7 +14,6 @@ namespace ComputerStore.DataAccess
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-
         }
     }
 }

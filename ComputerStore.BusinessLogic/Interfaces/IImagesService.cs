@@ -10,8 +10,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
 {
     public interface IImagesService
     {
-        ImageModel ConvertEntityToModel(Image entity);
-        Image ConvertModelToEntity(ImageModel? thumbnail);
         Task<ImageModel> GetById(string? id);
     }
 }

@@ -52,6 +52,13 @@ namespace ComputerStore.DataAccess
         {
             if (item != null && item.Name != null)
             {
+                /*
+                var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == item.Category.Id);
+                if (category != null)
+                    _context.Add(item);
+                else throw new Exception("Cannot find default category");
+                */
+                
                 if (item.Category == null)
                 {
                     var defaultCategory = await _context.Categories.Where(category => category.Name == "Other").FirstOrDefaultAsync();
@@ -60,6 +67,7 @@ namespace ComputerStore.DataAccess
                     else throw new Exception("Cannot find default category");
                 }
                 _context.Add(item);
+                
             }
             else throw new Exception("Item is not valid!!!");
         }

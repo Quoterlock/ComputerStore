@@ -24,7 +24,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 var entity = await _imagesRepository.GetAsync(id);
                 if (entity != null)
-                    return ConvertEntityToModel(entity);
+                    return Convertor.ConvertEntityToModel(entity);
                 else 
                     throw new Exception("Cannot find image with id: " + id);
             }
@@ -32,25 +32,6 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 throw new Exception(ex.Message);
             }
-        }
-        public ImageModel ConvertEntityToModel(Image entity)
-        {
-            return new ImageModel()
-            {
-                Alt = entity.Alt,
-                Bytes = entity.Bytes,
-                Id = entity.Id
-            };
-        }
-
-        public Image ConvertModelToEntity(ImageModel? model)
-        {
-            return new Image
-            {
-                Id = model.Id,
-                Alt = model.Alt,
-                Bytes = model.Bytes
-            };
         }
     }
 }

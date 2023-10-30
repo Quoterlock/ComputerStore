@@ -10,6 +10,6 @@ namespace ComputerStore.BusinessLogic.Domains
         public string? Description { get; set; } = string.Empty;
         public int Price { get; set; } = 0;
         public CategoryModel? Category { get; set; }
-        public ImageModel? Image { get; set; }
+        public ImageModel? Image { get; set; } = new ImageModel();
     }
 }

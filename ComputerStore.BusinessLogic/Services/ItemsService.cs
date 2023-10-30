@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ComputerStore.DataAccess.Interfaces;
 using ComputerStore.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ComputerStore.BusinessLogic.Services
 {
@@ -18,7 +19,18 @@ namespace ComputerStore.BusinessLogic.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<ItemModel>> GetAll()
+        public async Task AddAsync(ItemModel model)
+        {
+            if (model != null)
+            {
+                var entity = Convertor.ConvertModelToEntity(model);
+                await _unitOfWork.Items.AddAsync(entity);
+                await _unitOfWork.Commit();
+            }
+            else throw new Exception("Model is null!");
+        }
+
+        public async Task<List<ItemModel>> GetAllAsync()
         {
             var entities = await _unitOfWork.Items.GetAsync();
             var items = new List<ItemModel>();
@@ -27,7 +39,15 @@ namespace ComputerStore.BusinessLogic.Services
             return items;
         }
 
-        public async Task<List<ItemModel>> GetFromCategory(string categoryId)
+        public async Task<ItemModel> GetByIdAsync(string id)
+        {
+            var entity = await _unitOfWork.Items.GetAsync(id);
+            if(entity != null)
+                return Convertor.EntityToModel(entity);
+            throw new Exception("Cannot find the item id:" + id);
+        }
+
+        public async Task<List<ItemModel>> GetFromCategoryAsync(string categoryId)
         {
             var items = new List<ItemModel>();   
             if(!string.IsNullOrEmpty(categoryId))
@@ -39,7 +59,13 @@ namespace ComputerStore.BusinessLogic.Services
             return items;
         }
 
-        public Task<List<ItemModel>> Search(string value)
+        public async Task RemoveAsync(string id)
+        {
+            await _unitOfWork.Categories.DeleteAsync(id);
+            await _unitOfWork.Commit();
+        }
+
+        public Task<List<ItemModel>> SearchAsync(string value)
         {
             throw new NotImplementedException();
             /*
@@ -69,36 +95,26 @@ namespace ComputerStore.BusinessLogic.Services
              */
         }
 
+        public async Task UpdateAsync(ItemModel model)
+        {
+            if (model != null)
+            {
+                var entity = Convertor.ConvertModelToEntity(model);
+                await _unitOfWork.Items.UpdateAsync(entity);
+                await _unitOfWork.Commit();
+            }
+            else throw new Exception("Model is null!");
+        }
+
         private List<ItemModel> EntityesToModels(IEnumerable<Item> entities)
         {
             var items = new List<ItemModel>();
             foreach (var entity in entities)
             {
-                items.Add(EntityToDomain(entity));
+                items.Add(Convertor.EntityToModel(entity));
             }
             return items;
         }
 
-        private ItemModel EntityToDomain(Item entity)
-        {
-            return new ItemModel
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
-                Image = new ImageModel
-                {
-                    Alt = entity.Image.Alt,
-                    Id = entity.Image.Id,
-                    Bytes = entity.Image.Bytes
-                },
-                Price = entity.Price,
-                Category = new CategoryModel
-                {
-                    Id = entity.Category.Id,
-                    Name = entity.Category.Name,
-                }
-            };
-        }
     }
 }

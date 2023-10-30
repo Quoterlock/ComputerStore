@@ -1,0 +1,13 @@
+﻿@model string
+@{
+    var name = ViewData["Name"];
+}
+
+<h3>Are you shure you want to delete this item?</h3>
+<h1>@name</h1>
+<a class="btn btn-light" asp-action="Index">Cancel</a>
+<form asp-action="DeleteConfirmed" asp-area="Staff" asp-controller="Items" method="post">
+    <input type="hidden" asp-for="@Model" value="Model"/>
+    <button type="submit" action="DeleteConfirmed">Delete</button>
+</form>
+

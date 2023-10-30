@@ -11,6 +11,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Runtime.CompilerServices;
 using System.Net;
 using ComputerStore.ViewModels;
+using ComputerStore.BusinessLogic.Interfaces;
+using ComputerStore.BusinessLogic.Domains;
 
 namespace ComputerStore.Areas.Staff.Controllers
 {
@@ -18,117 +20,111 @@ namespace ComputerStore.Areas.Staff.Controllers
     //[Authorize(Roles = RolesContainer.MANAGER)]
     public class ItemsController : Controller
     {
-
-        public ItemsController()
+        private IItemsService _itemsService;
+        private ICategoriesService _categoriesService;
+        public ItemsController(IItemsService itemsService, ICategoriesService categoriesService)
         {
-
+            _itemsService = itemsService;
+            _categoriesService = categoriesService;
         }
 
         // GET: Items/?categoryId
         public async Task<IActionResult> Index(string categoryId)
         {
-            /*
-            List<Item> items;
-            if (categoryId != null)
-            {
-                items = await _repository.Get(item => item.Category.Id == categoryId);
-                if (items != null && items.Count > 0)
-                    ViewData["CategoryName"] = items[0].Category.Name;
-            }
-            else
-            {
-                items = await _repository.GetAll();
-                ViewData["CategoryName"] = "All";
-            }
-
-            if (items == null)
-                items = new List<Item>();
-
+            var items = await _itemsService.GetFromCategoryAsync(categoryId);
             return View(items);
-            */
-            return View();
         }
 
 
         public async Task<IActionResult> Search(string value)
         {
-            /*
-            var items = await _repository.FindAll(value);
-            ViewData["SearchValue"] = value;
-            return View(items);
-            */
-            return View();
+            if (string.IsNullOrEmpty(value))
+            {
+                var items = await _itemsService.SearchAsync(value);
+                ViewData["SearchValue"] = value;
+                return View(items);
+            }
+            return NotFound();
         }
 
         // GET: Items/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            /*
-            var item = await _repository.GetById(id);
-            if (item == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            else
+            try
+            {
+                var item = await _itemsService.GetByIdAsync(id);
                 return View(item);
-            */
-            return View();
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
         }
 
         // GET: Items/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(string categoryId)
         {
-            /*
-            List<Category> categoriesList = await _categoriesRepo.GetAll();
-            ItemFormModel model = new ItemFormModel
-            {
-                Categories = categoriesList
-            };
+            
+            var model = new ItemFormModel();
+            model.Item = new ItemModel();
+            model.Categories = await _categoriesService.GetAllAsync();
+            
+            if (!string.IsNullOrEmpty(categoryId) && model.Categories.FirstOrDefault(c =>c.Id == categoryId) != null)
+                model.SelectedCategoryId = categoryId;
+            
             return View(model);
-            */
-            return View();
         }
 
         // POST: Items/Create
         [HttpPost]
         public async Task<IActionResult> Create(ItemFormModel model)
         {
-            /*
+            
             var item = model.Item;
-            if (item != null && item.Name != null)
+            if (item != null && item.Name != null && !string.IsNullOrEmpty(model.SelectedCategoryId))
             {
-                item.Category = await _categoriesRepo.GetById(model.SelectedCategoryId);
-                using (var stream = new MemoryStream())
-                {
-                    await model.ImageFile.CopyToAsync(stream);
-                    item.Image = new Image();
-                    item.Image.Bytes = stream.ToArray();
-                    item.Image.Alt = model.Item.Name;
-                    await _repository.Add(item);
-                }
+                item.Category = await _categoriesService.GetAsync(model.SelectedCategoryId); /* new CategoryModel() { Id = model.SelectedCategoryId }; */
+                item.Image = new ImageModel();
+                item.Image.Bytes = await FileToBytes(model.ImageFile);
+                item.Image.Alt = model.Item.Name + "-thumbnail";
+                await _itemsService.AddAsync(item);
                 return RedirectToAction(nameof(Index));
             }
-            */
             return RedirectToAction(nameof(Create));
+        }
+
+        private async Task<byte[]> FileToBytes(IFormFile imageFile)
+        {
+            using (var stream = new MemoryStream())
+            {
+                await imageFile.CopyToAsync(stream);
+                return stream.ToArray();
+            }
         }
 
         // GET: Items/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            /*
-            if (id != null)
+            if (string.IsNullOrEmpty(id)) 
+                return NotFound();
+            
+            var item = await _itemsService.GetByIdAsync(id);
+            
+            if (item != null)
             {
-                var item = await _repository.GetById(id);
-                var categoriesList = await _categoriesRepo.GetAll();
+                var categories = await _categoriesService.GetAllAsync();
                 var model = new ItemFormModel
                 {
                     Item = item,
-                    Categories = categoriesList,
+                    Categories = categories,
                     SelectedCategoryId = item.Category.Id
                 };
-                if (item != null)
-                    return View(model);
+                return View(model);
             }
-            */
-            return NotFound();
+            else 
+                return NotFound();
         }
 
         // POST: Items/Edit/5
@@ -136,31 +132,28 @@ namespace ComputerStore.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ItemFormModel model)
         {
-            /*
             var item = model.Item;
-            if (item != null && item.Name != null)
+
+            if (item != null && string.IsNullOrEmpty(item.Id)) 
+                return NotFound();
+
+            if(!string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.Id))
             {
-                if (model.SelectedCategoryId != null)
-                    item.Category = await _categoriesRepo.GetById(model.SelectedCategoryId);
-                await _repository.Update(item);
-                return RedirectToAction(nameof(List));
+                if (!string.IsNullOrEmpty(model.SelectedCategoryId))
+                    item.Category = await _categoriesService.GetAsync(model.SelectedCategoryId);
+                
+                await _itemsService.UpdateAsync(item);
+
+                return RedirectToAction(nameof(Index));
             }
-            return View(item);
-            */
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Edit), item.Id);
         }
 
         // GET: Items/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            /*
-            if (id != null && id != string.Empty)
-            {
-                var item = await _repository.GetById(id);
-                if (item != null) return View(item);
-            }
-            */
-            return NotFound();
+            return View(id);
         }
 
         // POST: Items/Delete/5
@@ -168,13 +161,18 @@ namespace ComputerStore.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            /*
-            if (id != null && id != string.Empty)
+            if (!string.IsNullOrEmpty(id))
             {
-                await _repository.Delete(id);
-                return RedirectToAction(nameof(List));
+                try
+                {
+                    await _itemsService.RemoveAsync(id);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
             }
-            */
             return NotFound();
         }
     }

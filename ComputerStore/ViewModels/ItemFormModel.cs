@@ -1,12 +1,12 @@
-﻿namespace ComputerStore.ViewModels
+﻿using ComputerStore.BusinessLogic.Domains;
+
+namespace ComputerStore.ViewModels
 {
     public class ItemFormModel
     {
-        /*
-        public Item? Item { get; set; }
-        public List<Category>? Categories { get; set; }
+        public ItemModel? Item { get; set; }
+        public List<CategoryModel>? Categories { get; set; }
         public string? SelectedCategoryId { get; set; }
         public IFormFile? ImageFile { get; set; }
-        */
     }
 }

@@ -14,12 +14,10 @@ namespace ComputerStore.BusinessLogic.Services
     public class CategoriesService : ICategoriesService
     {
         private IUnitOfWork _unitOfWork;
-        private IImagesService _imageService;
         
-        public CategoriesService(IUnitOfWork unitOfWork, IImagesService imageService)
+        public CategoriesService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _imageService = imageService;
         }
         
         public async Task<CategoryModel> GetAsync(string id)
@@ -28,7 +26,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 var entity = await _unitOfWork.Categories.GetAsync(id);
                 if (entity != null)
-                    return ConvertEntityToModel(entity);
+                    return Convertor.ConvertEntityToModel(entity);
                 else throw new Exception("Category not found by id: " + id);
             }
             else throw new Exception("Category id is null or empty string");
@@ -44,7 +42,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             if (model != null)
             {
-                var entity = ConvertModelToEntity(model);
+                var entity = Convertor.ConvertModelToEntity(model);
                 await _unitOfWork.Categories.AddAsync(entity);
                 await _unitOfWork.Commit();
             }
@@ -55,7 +53,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             if(model != null)
             {
-                var entity = ConvertModelToEntity(model);
+                var entity = Convertor.ConvertModelToEntity(model);
                 await _unitOfWork.Categories.UpdateAsync(entity);
                 await _unitOfWork.Commit();
             }
@@ -73,31 +71,11 @@ namespace ComputerStore.BusinessLogic.Services
             var models = new List<CategoryModel>();
             foreach (var entity in entities)
             {
-                var model = ConvertEntityToModel(entity);
+                var model = Convertor.ConvertEntityToModel(entity);
                 if(model != null)
                     models.Add(model);
             }
             return models;
-        }
-
-        public CategoryModel ConvertEntityToModel(Category entity)
-        {
-            return new CategoryModel
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Thumbnail = _imageService.ConvertEntityToModel(entity.Image)
-            };        
-        }
-        
-        public Category ConvertModelToEntity(CategoryModel model)
-        {
-            return new Category
-            {
-                Id = model.Id,
-                Name = model.Name,
-                Image = _imageService.ConvertModelToEntity(model.Thumbnail)
-            };
         }
 
         public async Task<bool> IsExistsAsync(string id)
