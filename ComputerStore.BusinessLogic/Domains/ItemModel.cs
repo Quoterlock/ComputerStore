@@ -11,5 +11,16 @@ namespace ComputerStore.BusinessLogic.Domains
         public int Price { get; set; } = 0;
         public CategoryModel? Category { get; set; }
         public ImageModel? Image { get; set; } = new ImageModel();
+
+        public object this[string key]
+        {
+            get
+            {
+                if (key == "id") { return Id; }
+                if (key == "name") { return Name; }
+                if (key == "cost") { return Price; }
+                return null;
+            }
+        }
     }
 }

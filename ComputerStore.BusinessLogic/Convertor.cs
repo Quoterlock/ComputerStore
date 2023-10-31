@@ -46,7 +46,6 @@ namespace ComputerStore.BusinessLogic
             {
                 Id = model.Id,
                 Name = model.Name,
-                Image = model.Thumbnail != null? ConvertModelToEntity(model.Thumbnail) : null
             };
         }
 
@@ -59,18 +58,24 @@ namespace ComputerStore.BusinessLogic
                 Description = entity.Description,
                 Image = ConvertEntityToModel(entity.Image),
                 Price = entity.Price,
-                Category = ConvertEntityToModel(entity.Category)
+                Category = new CategoryModel
+                {
+                    Id = entity.Category.Id,
+                    Name = entity.Category.Name
+                },
             };
         }
 
         internal static Item ConvertModelToEntity(ItemModel model)
         {
-            var entity = new Item();
-            entity.Name = model.Name;
-            entity.Description = model.Description;
-            entity.Category = ConvertModelToEntity(model.Category);
-            entity.Image = ConvertModelToEntity(model.Image);
-            return entity;
+            return new Item()
+            {
+                Name = model.Name,
+                Price = model.Price,
+                Description = model.Description,
+                Image = ConvertModelToEntity(model.Image),
+                Category = new Category() { Id = model.Category.Id }
+            };
         }
     }
 }

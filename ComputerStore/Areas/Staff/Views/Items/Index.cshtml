@@ -25,18 +25,18 @@
                 <td>
                     <a class="btn btn-active" asp-area="Staff"
                        asp-controller="Items"
-                       asp-action="Details" asp-route-id="@Model[i].Id">Details</a>
+                       asp-action="Details" asp-route-itemId="@Model[i].Id">Details</a>
                 </td>
                 <td>
                     <a class="btn btn-active" asp-area="Staff"
                        asp-controller="Items"
-                       asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a>
+                       asp-action="Edit" asp-route-itemId="@Model[i].Id">Edit</a>
                 </td>
                 <td>
                     <a class="btn btn-active"
                        asp-controller="Items"
                        asp-action="Delete"
-                       asp-route-id="@Model[i].Id">Delete</a>
+                       asp-route-itemId="@Model[i].Id">Delete</a>
                 </td>
             </tr>
         }

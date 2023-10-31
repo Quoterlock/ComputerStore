@@ -15,17 +15,21 @@ namespace ComputerStore.DataAccess
 
         public async Task<Item> GetAsync(string id)
         {
-            Item result = null;
             if (id != null && id != string.Empty)
             {
-                result = await _context.Items
+                var result = await _context.Items
                     .Include(item => item.Category)
                     .Include(item => item.Image)
                     .Where(item => item.Id == id)
                     .FirstOrDefaultAsync();
+
+                if (result == null) 
+                    throw new Exception("Item not found");
+
+                return result;
             }
-            if (result == null) throw new Exception("Item not found");
-            return result;
+            else 
+                throw new Exception("Repo: Item id is null!");
         }
 
         public async Task<List<Item>> GetAsync(Func<Item, bool> predicate)
@@ -50,56 +54,58 @@ namespace ComputerStore.DataAccess
 
         public async Task AddAsync(Item item)
         {
-            if (item != null && item.Name != null)
+            if (IsValid(item))
             {
-                /*
-                var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == item.Category.Id);
-                if (category != null)
-                    _context.Add(item);
-                else throw new Exception("Cannot find default category");
-                */
-                
-                if (item.Category == null)
+                if (item.Category != null && !string.IsNullOrEmpty(item.Category.Id))
                 {
-                    var defaultCategory = await _context.Categories.Where(category => category.Name == "Other").FirstOrDefaultAsync();
-                    if (defaultCategory != null)
-                        item.Category = defaultCategory;
-                    else throw new Exception("Cannot find default category");
+                    var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == item.Category.Id);
+
+                    if (category != null) 
+                        item.Category = category;
+                    else 
+                        throw new Exception("Cannot find category id: " + item.Category.Id);
                 }
+                else 
+                    throw new Exception("Category is null!");
+                /*
+                if (item.Image != null && !string.IsNullOrEmpty(item.Image.Id))
+                {
+                    var image = await _context.Images.FirstOrDefaultAsync(i=>i.Id == item.Image.Id);
+                    if (image != null) 
+                        item.Image = image; 
+                    else 
+                        throw new Exception("Cannot find image id:" + item.Image.Id);
+                }
+                */
                 _context.Add(item);
-                
             }
             else throw new Exception("Item is not valid!!!");
         }
 
         public async Task UpdateAsync(Item item)
         {
-            if (item != null && IsValid(item))
+            if (IsValid(item) && !string.IsNullOrEmpty(item.Id))
                 _context.Update(item);
             else throw new Exception("Item entity is not valid");
         }
 
         public async Task DeleteAsync(string id)
         {
-            if (id != null && id != string.Empty)
+            if (!string.IsNullOrEmpty(id))
             {
                 var item = await _context.Items
                     .Where(item => item.Id == id)
                     .FirstOrDefaultAsync();
                 if (item != null)
-                {
                     _context.Items.Remove(item);
-                }
+                else throw new Exception("Item doesn't exist => id : " + id);
             }
-            else throw new Exception("Item doesn't exist => id : " + id);
+            else throw new Exception("Item id is null!");
         }
 
-        private bool IsValid(Item item)
+        private static bool IsValid(Item item)
         {
-            if (item.Id != null && item.Id != string.Empty && item.Name != null && item.Description != null)
-                return true;
-            else
-                return false;
+            return item != null && !string.IsNullOrEmpty(item.Name);
         }
 
         public Task<bool> IsExists(string id)

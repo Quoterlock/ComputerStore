@@ -1,8 +1,11 @@
 ﻿using ComputerStore.Areas.Customer.ViewModels;
 using ComputerStore.BusinessLogic.Domains;
 using ComputerStore.BusinessLogic.Interfaces;
+using ComputerStore.DataAccess.Entities;
+using ComputerStore.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Identity.Client;
 
 namespace ComputerStore.Controllers
@@ -17,32 +20,40 @@ namespace ComputerStore.Controllers
             _categoriesService = categoriesService;
         }
 
-        public async Task<IActionResult> Index(string categoryId)
+        public async Task<IActionResult> Index(string categoryId, string sortBy)
         {
             string listTitle = "All";
             List<ItemModel>? items;
+            var model = new ItemsListViewModel();
+
             if (!string.IsNullOrEmpty(categoryId))
             {
                 items = await _itemsService.GetFromCategoryAsync(categoryId);
-                listTitle = (await _categoriesService.GetAsync(categoryId)).Name ?? "All";
+                model.Category = (await _categoriesService.GetAsync(categoryId)).Name;
+                listTitle = model.Category ?? "All";
             }
             else
                 items = await _itemsService.GetAllAsync();
 
-            var model = new ItemsListViewModel();
+            var sortMode = GetSortEnum(sortBy);
+            if (sortMode!=SortMode.ItemId)
+                items = _itemsService.Sort(items, GetSortEnum(sortBy));
+
             model.Items = items ?? new List<ItemModel>();
             model.Count = model.Items.Count;
             model.Title = listTitle;
+            model.SortBy = sortMode;
 
             return View(model);
         }
+
         public IActionResult Details(string itemId)
         {
             // get item and return full details
             return View();
         }
 
-        public async Task<IActionResult> Search(string value)
+        public async Task<IActionResult> Search(string value, string sortBy)
         {
             if (!string.IsNullOrEmpty(value))
             {
@@ -53,12 +64,24 @@ namespace ComputerStore.Controllers
                 model.Items = await _itemsService.SearchAsync(value) ?? new List<ItemModel>();
                 model.Count = model.Items.Count;
                 model.Title = "Search";
-                model.SortBy = Utilities.SortMode.ItemId;
+
+                var sortMode = GetSortEnum(sortBy);
+                if (sortMode != SortMode.ItemId)
+                    model.Items = _itemsService.Sort(model.Items, GetSortEnum(sortBy));
+
+                model.SortBy = sortMode;
 
                 return View(model);
-
             }
             else return RedirectToAction(nameof(Index));
+        }
+
+        private SortMode GetSortEnum(string sortBy)
+        {
+            if (sortBy == null) return SortMode.ItemId;
+            if (sortBy.Equals("costUp")) return SortMode.CostUp;
+            if (sortBy.Equals("constDown")) return SortMode.CostDown;
+            else return SortMode.ItemId;
         }
     }
 }

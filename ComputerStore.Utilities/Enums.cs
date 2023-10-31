@@ -8,6 +8,6 @@ namespace ComputerStore.Utilities
 {
     public enum SortMode
     {
-        CostUp, CostDown, ItemId
+        CostUp, CostDown, ItemId, Name
     }
 }

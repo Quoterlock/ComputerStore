@@ -10,5 +10,6 @@ namespace ComputerStore.Areas.Customer.ViewModels
         public int Count { get; set; }
         public string Title { get; set; } = "none";
         public SortMode SortBy { get; set; } = SortMode.ItemId;
+        public string? Category { get; set; }
     }
 }

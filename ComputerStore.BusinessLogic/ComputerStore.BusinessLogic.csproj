@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ComputerStore.DataAccess\ComputerStore.DataAccess.csproj" />
+    <ProjectReference Include="..\ComputerStore.Utilities\ComputerStore.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

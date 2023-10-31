@@ -31,7 +31,12 @@ namespace ComputerStore.Areas.Staff.Controllers
         // GET: Items/?categoryId
         public async Task<IActionResult> Index(string categoryId)
         {
-            var items = await _itemsService.GetFromCategoryAsync(categoryId);
+            var items = new List<ItemModel>();
+            if (!string.IsNullOrEmpty(categoryId))
+                items = await _itemsService.GetFromCategoryAsync(categoryId);
+            else 
+                items = await _itemsService.GetAllAsync();
+
             return View(items);
         }
 
@@ -48,13 +53,13 @@ namespace ComputerStore.Areas.Staff.Controllers
         }
 
         // GET: Items/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string itemId)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(itemId))
                 return NotFound();
             try
             {
-                var item = await _itemsService.GetByIdAsync(id);
+                var item = await _itemsService.GetByIdAsync(itemId);
                 return View(item);
             }
             catch (Exception ex)
@@ -77,15 +82,13 @@ namespace ComputerStore.Areas.Staff.Controllers
             return View(model);
         }
 
-        // POST: Items/Create
         [HttpPost]
         public async Task<IActionResult> Create(ItemFormModel model)
         {
-            
             var item = model.Item;
             if (item != null && item.Name != null && !string.IsNullOrEmpty(model.SelectedCategoryId))
             {
-                item.Category = await _categoriesService.GetAsync(model.SelectedCategoryId); /* new CategoryModel() { Id = model.SelectedCategoryId }; */
+                item.Category = new CategoryModel() { Id = model.SelectedCategoryId };
                 item.Image = new ImageModel();
                 item.Image.Bytes = await FileToBytes(model.ImageFile);
                 item.Image.Alt = model.Item.Name + "-thumbnail";
@@ -95,22 +98,13 @@ namespace ComputerStore.Areas.Staff.Controllers
             return RedirectToAction(nameof(Create));
         }
 
-        private async Task<byte[]> FileToBytes(IFormFile imageFile)
+        [HttpGet]
+        public async Task<IActionResult> Edit(string itemId)
         {
-            using (var stream = new MemoryStream())
-            {
-                await imageFile.CopyToAsync(stream);
-                return stream.ToArray();
-            }
-        }
-
-        // GET: Items/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (string.IsNullOrEmpty(id)) 
+            if (string.IsNullOrEmpty(itemId)) 
                 return NotFound();
             
-            var item = await _itemsService.GetByIdAsync(id);
+            var item = await _itemsService.GetByIdAsync(itemId);
             
             if (item != null)
             {
@@ -127,7 +121,6 @@ namespace ComputerStore.Areas.Staff.Controllers
                 return NotFound();
         }
 
-        // POST: Items/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ItemFormModel model)
@@ -150,14 +143,18 @@ namespace ComputerStore.Areas.Staff.Controllers
             return RedirectToAction(nameof(Edit), item.Id);
         }
 
-        // GET: Items/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(string itemId)
         {
-            return View(id);
+            if (!string.IsNullOrEmpty(itemId))
+            {
+                var item = await _itemsService.GetByIdAsync(itemId);   
+                if(item != null) return View(item);
+            }
+            return NotFound();
         }
 
-        // POST: Items/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
@@ -174,6 +171,15 @@ namespace ComputerStore.Areas.Staff.Controllers
                 }
             }
             return NotFound();
+        }
+
+        private async Task<byte[]> FileToBytes(IFormFile imageFile)
+        {
+            using (var stream = new MemoryStream())
+            {
+                await imageFile.CopyToAsync(stream);
+                return stream.ToArray();
+            }
         }
     }
 }

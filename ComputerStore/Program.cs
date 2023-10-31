@@ -94,7 +94,10 @@ namespace ComputerStore
         {
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("PostgreConnectionString") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<DataAccess.ApplicationDbContext>(options => options.UseNpgsql(connectionString/*, builder => builder.MigrationsAssembly("ComputerStore.DataAccess.Migrations")*/));
+            builder.Services.AddDbContext<DataAccess.ApplicationDbContext>(options => options
+                .UseNpgsql(connectionString)
+                /*.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)*/);
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
