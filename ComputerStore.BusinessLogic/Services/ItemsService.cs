@@ -89,16 +89,28 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task<List<ItemModel>> SearchAsync(string value)
         {
+            value = value.ToLower();
+
             var entities = new List<Item>();
             var items = new List<ItemModel>();
+
             if(!string.IsNullOrEmpty(value))
             {
-                entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.Name.Contains(value)));
-                entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.Category.Name.Contains(value)));
-                entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.Description.Contains(value)));
+                entities.AddRange(
+                    await _unitOfWork.Items.GetAsync(
+                        i => i.Name.ToLower().Contains(value)));
+
+                entities.AddRange(
+                    await _unitOfWork.Items.GetAsync(
+                        i => i.Category.Name.ToLower().Contains(value)));
+
+                entities.AddRange(await _unitOfWork.Items.GetAsync(
+                        i => i.Description.ToLower().Contains(value)));
             }
+            
             foreach (var entity in entities)
                 items.Add(Convertor.EntityToModel(entity));
+            
             return items;
         }
 
@@ -136,6 +148,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             return QuickSort(items, "cost", 0);
         }
+
         private List<ItemModel> SortByName(List<ItemModel> items)
         {
             return QuickSort(items, "name", 1);
@@ -150,8 +163,6 @@ namespace ComputerStore.BusinessLogic.Services
             }
             return items;
         }
-
-
 
         private static int Partition(List<ItemModel> list, string key, int minIndex, int maxIndex, int type)
         {
@@ -177,9 +188,6 @@ namespace ComputerStore.BusinessLogic.Services
             QuickSort(list, key, pivotIndex + 1, maxIndex, type);
         }
 
-        /// <summary>
-        /// Sort the list with objects
-        /// </summary>
         /// <param name="list"> It's a list with objects</param>
         /// <param name="key">Key field on which the sort will work</param>
         /// <param name="type">if 1 reverse sort(Я-А) else ordinary sort(А-Я)</param>

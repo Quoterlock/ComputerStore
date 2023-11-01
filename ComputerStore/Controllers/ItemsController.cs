@@ -80,7 +80,7 @@ namespace ComputerStore.Controllers
         {
             if (sortBy == null) return SortMode.ItemId;
             if (sortBy.Equals("costUp")) return SortMode.CostUp;
-            if (sortBy.Equals("constDown")) return SortMode.CostDown;
+            if (sortBy.Equals("costDown")) return SortMode.CostDown;
             else return SortMode.ItemId;
         }
     }
