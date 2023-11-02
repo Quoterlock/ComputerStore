@@ -1,7 +1,9 @@
 ﻿using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,39 +17,75 @@ namespace ComputerStore.DataAccess
         {
             _context = context;
         }
-        public Task AddAsync(Order item)
+        public async Task AddAsync(Order item)
         {
-            throw new NotImplementedException();
+            if(item != null)
+            {
+                /*
+                var items = new List<Item>(item.Items);
+                foreach(var i in items)
+                {
+                    var entity = await _context.Items.FirstOrDefaultAsync(p => p.Id == i.Id);
+                    if(entity != null) item.Items.Add(entity);
+                }
+                */
+                await _context.AddAsync(item);
+            }
+            else throw new ArgumentNullException("order");
         }
 
-        public Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            if(!string.IsNullOrEmpty(id))
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+                if (order != null)
+                {
+                    _context.Orders.Remove(order);
+                    return;
+                }
+                else throw new Exception("Order doesn't exist id:" + id);
+            }
+            else throw new ArgumentNullException("order id");
         }
 
-        public Task<List<Order>> GetAsync(Func<Order, bool> predicate)
+        public async Task<List<Order>> GetAsync(Func<Order, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _context.Orders.Where(predicate).ToList()?? new List<Order>();
         }
 
-        public Task<List<Order>> GetAsync()
+        public async Task<List<Order>> GetAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Orders.ToListAsync()?? new List<Order>();
         }
 
-        public Task<Order> GetAsync(string id)
+        public async Task<Order?> GetAsync(string id)
         {
-            throw new NotImplementedException();
+            if(!string.IsNullOrEmpty(id))
+                return await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+            else 
+                throw new ArgumentNullException("order id");
         }
 
-        public Task<bool> IsExists(string id)
+        public async Task<bool> IsExists(string id)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(id))
+            {
+                return await _context.Orders.AnyAsync(o => o.Id == id);
+            } 
+            return false;
         }
 
-        public Task UpdateAsync(Order item)
+        public async Task UpdateAsync(Order item)
         {
-            throw new NotImplementedException();
+            if (item != null && !string.IsNullOrEmpty(item.Id))
+            {
+                if(await _context.Orders.AnyAsync(o=>o.Id == item.Id))
+                {
+                    _context.Orders.Update(item);
+                } else throw new ArgumentNullException("order.Id");
+            }
+            else throw new ArgumentNullException("order");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ComputerStore.BusinessLogic.Domains;
+using ComputerStore.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace ComputerStore.BusinessLogic.Interfaces
 {
     public interface IOrdersService
     {
-        Task MakeOrder(OrderModel order);
+        Task Add(OrderModel order);
+        Task Update(OrderModel order);
+        Task Delete(string orderId);
+        Task<OrderModel> GetById(string id);
+        Task<List<OrderModel>> GetAll();
+        Task SetStatus(string id, OrderStatus status);
     }
 }

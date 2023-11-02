@@ -1,5 +1,6 @@
 ﻿using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,24 +16,60 @@ namespace ComputerStore.DataAccess
         {
             _context = context;
         }
-        public Task AddAsync(UserCart item)
+        public async Task AddAsync(UserCart item)
         {
-            throw new NotImplementedException();
+            if (item != null)
+            {
+                await _context.AddAsync(item);
+            }
+            else throw new ArgumentNullException("User card");
         }
 
-        public Task AddItem(string userId, string itemId)
+        public async Task AddItem(string userId, string itemId)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrEmpty(userId)) throw new ArgumentNullException("userId");
+            if(string.IsNullOrEmpty(itemId)) throw new ArgumentNullException("itemId");
+
+            var cart = await GetUserCart(userId);
+            
+            if (cart == null)
+            {
+                await AddAsync(new UserCart() { UserId = userId });
+                cart = await GetUserCart(userId);
+            }
+            
+            var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == itemId);
+            if (item != null)
+            {
+                cart.Items.Add(item);
+                _context.Update(cart);
+            }
+            else throw new Exception("item not found id:" + itemId);
         }
 
-        public Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            if (id == null) throw new ArgumentNullException("user cart id");
+            var cart = await _context.UserCarts.FirstOrDefaultAsync(c => c.Id == id);
+            if (cart == null) throw new Exception("Cart not found id: " + id);
+            _context.UserCarts.Remove(cart);
         }
 
-        public Task DeleteItem(string userId, string itemId)
+        public async Task DeleteItem(string userId, string itemId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(userId)) throw new ArgumentNullException("user id");
+            if (string.IsNullOrEmpty(itemId)) throw new ArgumentNullException("item id");
+
+            var cart = await _context.UserCarts.FirstOrDefaultAsync(i => i.UserId == userId);
+            if (cart == null) throw new Exception("cart is empty");
+            
+            var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
+            if (item != null)
+            {
+                cart.Items.Remove(item);
+                _context.Update(cart);
+            }
+            else throw new Exception("can't find item in a cart");
         }
 
         public Task<List<UserCart>> GetAsync(Func<UserCart, bool> predicate)
@@ -45,14 +82,24 @@ namespace ComputerStore.DataAccess
             throw new NotImplementedException();
         }
 
-        public Task<UserCart> GetAsync(string id)
+        public async Task<UserCart> GetAsync(string id)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrEmpty(id)) throw new ArgumentNullException("cart id");
+
+            var cart = await _context.UserCarts
+                .FirstOrDefaultAsync(i => i.Id == id);
+            if (cart == null)
+                throw new Exception("User cart not found id: " + id);
+            else return cart;
         }
 
-        public Task<UserCart> GetUserCart(string userId)
+        public async Task<UserCart> GetUserCart(string userId)
         {
-            throw new NotImplementedException();
+            var cart = await _context.UserCarts
+                .FirstOrDefaultAsync(i => i.UserId == userId);
+            if (cart == null) 
+                throw new Exception("User cart not found userId: " + userId);
+            else return cart;
         }
 
         public Task<bool> IsExists(string id)
@@ -60,14 +107,19 @@ namespace ComputerStore.DataAccess
             throw new NotImplementedException();
         }
 
-        public Task RemoveItems(string userId)
+        public async Task RemoveItems(string userId)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrEmpty(userId)) throw new ArgumentNullException("userId");
+            var cart = await GetUserCart(userId);
+            cart.Items.Clear();
+            _context.Update(cart);
         }
 
-        public Task UpdateAsync(UserCart item)
+        public async Task UpdateAsync(UserCart item)
         {
-            throw new NotImplementedException();
+            if (item != null && await _context.UserCarts.AnyAsync(i => i.Id == item.Id))
+                _context.Update(item);
+            else throw new ArgumentNullException("item is null or doesn't exist");
         }
     }
 }

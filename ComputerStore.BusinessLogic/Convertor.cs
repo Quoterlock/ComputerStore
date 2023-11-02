@@ -1,5 +1,8 @@
 ﻿using ComputerStore.BusinessLogic.Domains;
+using ComputerStore.DataAccess;
 using ComputerStore.DataAccess.Entities;
+using ComputerStore.Utilities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,6 +79,64 @@ namespace ComputerStore.BusinessLogic
                 Image = ConvertModelToEntity(model.Image),
                 Category = new Category() { Id = model.Category.Id }
             };
+        }
+
+        internal static OrderModel ConvertEntityToModel(Order entity)
+        {
+            var model = new OrderModel()
+            {
+                Id = entity.Id,
+                CreationDate = entity.CreationDate,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                Email = entity.Email,
+                PhoneNumber = entity.PhoneNumber,
+                LastUpdateTime = entity.LastUpdateTime,
+                PostOfficeAddress = entity.PostOfficeAddress,
+                TotalCost = entity.TotalCost,
+                Items = new List<ItemModel>(),
+                Status = OrderStatusStringToEnum(entity.Status)
+            };
+
+            foreach(var item in entity.Items)
+            {
+                model.Items.Add(EntityToModel(item));
+            }
+            return new OrderModel();
+        }
+
+        internal static Order ConvertModelToEntity(OrderModel model)
+        {
+            var entity = new Order()
+            {
+                Id = model.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                LastUpdateTime = model.LastUpdateTime,
+                PostOfficeAddress = model.PostOfficeAddress,
+                TotalCost = model.TotalCost,
+                CreationDate = model.CreationDate,
+                Status = model.Status.ToString(),
+                Items = new List<Item>(),
+            };
+            foreach(var item in model.Items)
+            {
+                entity.Items.Add(new Item() { Id = item.Id });
+            }
+            return entity;
+        }
+
+        internal static OrderStatus OrderStatusStringToEnum(string status)
+        {
+            if (status.Equals(OrderStatuses.PENDING)) return OrderStatus.Pending;
+            if (status.Equals(OrderStatuses.SHIPPED)) return OrderStatus.Shipped;
+            if (status.Equals(OrderStatuses.REFUNDED)) return OrderStatus.Refunded;
+            if (status.Equals(OrderStatuses.APPRUVED)) return OrderStatus.Approved;
+            if(status.Equals(OrderStatuses.CANCELLED)) return OrderStatus.Cancelled;
+            if (status.Equals(OrderStatuses.IN_PROGRESS)) return OrderStatus.In_progress;
+            else return OrderStatus.Unknown;
         }
     }
 }

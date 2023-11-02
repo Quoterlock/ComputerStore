@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ComputerStore.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ComputerStore.BusinessLogic.Domains
@@ -13,7 +14,7 @@ namespace ComputerStore.BusinessLogic.Domains
         public string PhoneNumber { get; set; } = string.Empty;
         public int TotalCost { get; set; } = 0;
         public List<ItemModel> Items { get; set; } = new List<ItemModel>();
-        public string Status { get; set; } = string.Empty;
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public DateTime CreationDate { get; set; }
         public DateTime LastUpdateTime { get; set;}
     }
