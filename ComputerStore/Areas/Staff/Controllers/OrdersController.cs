@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ComputerStore.BusinessLogic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,37 +9,50 @@ namespace ComputerStore.Areas.Staff.Controllers
     [Area("Staff")]
     public class OrdersController : Controller
     {
-        public OrdersController(UserManager<IdentityUser> userManager)
+        private IOrdersService _ordersService;
+        public OrdersController(IOrdersService ordersService)
         {
-
+            _ordersService = ordersService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // get list of orders
-            return View();
+            var orders = await _ordersService.GetAll();
+            return View(orders);
         }
 
         [HttpGet]
-        public IActionResult Detail(string id)
+        public async Task<IActionResult> Detail(string id)
         {
-            // get detailed info about order
-            return View();
+            if (!string.IsNullOrEmpty(id))
+            {
+                var order = await _ordersService.GetById(id);
+                return View(order);
+            }
+            else return NotFound(id);
         }
 
         [HttpGet]
-        public IActionResult Edit(string id)
+        public async Task<IActionResult> Edit(string id)
         {
-            // edit order
-            return View();
+            if (!string.IsNullOrEmpty(id))
+            {
+                var order = await _ordersService.GetById(id);
+                return View(order);
+            }
+            else return NotFound(id);
         }
 
         [HttpPost]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            // delete order
-            return RedirectToAction(nameof(Index));
+            if (!string.IsNullOrEmpty(id))
+            {
+                await _ordersService.Delete(id);
+                return RedirectToAction(nameof(Index));
+            }
+            else return NotFound(id);
         }
 
         [HttpPost]

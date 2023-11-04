@@ -27,16 +27,12 @@ namespace ComputerStore.DataAccess
 
         public async Task AddItem(string userId, string itemId)
         {
-            if(string.IsNullOrEmpty(userId)) throw new ArgumentNullException("userId");
-            if(string.IsNullOrEmpty(itemId)) throw new ArgumentNullException("itemId");
+            if(string.IsNullOrEmpty(userId)) 
+                throw new ArgumentNullException("userId");
+            if(string.IsNullOrEmpty(itemId)) 
+                throw new ArgumentNullException("itemId");
 
             var cart = await GetUserCart(userId);
-            
-            if (cart == null)
-            {
-                await AddAsync(new UserCart() { UserId = userId });
-                cart = await GetUserCart(userId);
-            }
             
             var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == itemId);
             if (item != null)
@@ -44,7 +40,8 @@ namespace ComputerStore.DataAccess
                 cart.Items.Add(item);
                 _context.Update(cart);
             }
-            else throw new Exception("item not found id:" + itemId);
+            else 
+                throw new Exception("item not found id:" + itemId);
         }
 
         public async Task DeleteAsync(string id)
@@ -95,11 +92,32 @@ namespace ComputerStore.DataAccess
 
         public async Task<UserCart> GetUserCart(string userId)
         {
-            var cart = await _context.UserCarts
-                .FirstOrDefaultAsync(i => i.UserId == userId);
-            if (cart == null) 
-                throw new Exception("User cart not found userId: " + userId);
-            else return cart;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                if (await _context.UserCarts.AnyAsync(i=>i.UserId == userId))
+                {
+                    await AddAsync(new UserCart() { UserId = userId });
+                    await _context.SaveChangesAsync();
+                }
+                var cart = await _context.UserCarts
+                    .Include(i => i.Items)
+                    .FirstOrDefaultAsync(i => i.UserId == userId);
+
+                if (cart != null)
+                {
+                    var items = cart.Items;
+                    cart.Items = new List<Item>();
+                    foreach (var item in items)
+                        cart.Items.Add(await _context.Items
+                            .Include(i => i.Image).Include(i=>i.Category)
+                            .SingleOrDefaultAsync(i => i.Id == item.Id)
+                            ?? new Item());
+
+                    return cart;
+                }
+                else throw new Exception("user can't cannot be created");
+            }
+            else throw new ArgumentNullException("user ID");
         }
 
         public Task<bool> IsExists(string id)

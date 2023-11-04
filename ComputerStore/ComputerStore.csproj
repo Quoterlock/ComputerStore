@@ -24,7 +24,6 @@
   <ItemGroup>
     <Folder Include="Areas\Staff\Data\" />
     <Folder Include="Areas\Staff\Models\" />
-    <Folder Include="Areas\Staff\Views\Orders\" />
     <Folder Include="Areas\Staff\Views\Shared\ViewComponents\" />
     <Folder Include="ViewComponents\" />
     <Folder Include="Views\Shared\ViewComponents\" />
