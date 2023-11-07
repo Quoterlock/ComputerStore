@@ -14,10 +14,12 @@ namespace ComputerStore.BusinessLogic.Services
     public class OrdersService : IOrdersService
     {
         private IUnitOfWork _unitOfWork;
+
         public OrdersService(IUnitOfWork unitOfWork) 
         {
             _unitOfWork = unitOfWork;
         }
+
         public async Task Delete(string orderId)
         {
             if(!string.IsNullOrEmpty(orderId))
@@ -36,7 +38,10 @@ namespace ComputerStore.BusinessLogic.Services
         public async Task<List<OrderModel>> GetAll()
         {
             var entities = await _unitOfWork.Orders.GetAsync();
-            return ConvertEntitiesToModels(entities);
+            var orders = ConvertEntitiesToModels(entities);
+            for (int i = 0; i < orders.Count; i++)
+                orders[i].Items = await GetItems(orders[i].Items);
+            return orders;
         }
 
         public async Task<OrderModel> GetById(string id)
@@ -48,7 +53,9 @@ namespace ComputerStore.BusinessLogic.Services
                     var entity = await _unitOfWork.Orders.GetAsync(id);
                     if (entity != null)
                     {
-                        return Convertor.ConvertEntityToModel(entity);
+                        var order = Convertor.ConvertEntityToModel(entity);
+                        order.Items = await GetItems(order.Items);
+                        return order;
                     }
                     else throw new Exception("Order doesn't exist id: " + id);
                 } 
@@ -105,6 +112,16 @@ namespace ComputerStore.BusinessLogic.Services
                 models.Add(Convertor.ConvertEntityToModel(entity));
             }
             return models;
+        }
+
+        private async Task<List<ItemModel>> GetItems(List<ItemModel> items)
+        {
+            var newItems = new List<ItemModel>();
+            foreach (var item in items)
+            {
+                newItems.Add(Convertor.EntityToModel(await _unitOfWork.Items.GetAsync(item.Id)));
+            }
+            return newItems;
         }
     }
 }

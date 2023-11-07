@@ -31,6 +31,8 @@ namespace ComputerStore.Controllers
         public async Task<IActionResult> MakeOrder(OrderFormViewModel model)
         {
             var userId = GetUserId();
+
+          
             var order = new OrderModel()
             {
                 TotalCost = model.TotalCost,
@@ -40,21 +42,23 @@ namespace ComputerStore.Controllers
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Status = Utilities.OrderStatus.Pending,
-                CreationDate = DateTime.Now,
-                LastUpdateTime = DateTime.Now,
+                CreationDate = DateTime.Now.ToUniversalTime(),
+                LastUpdateTime = DateTime.Now.ToUniversalTime(),
                 Items = new List<ItemModel>()
             };
 
-            var itemsDictionary = await _cartService.GetItems(userId);
-            foreach(var item in itemsDictionary)
-                for(int i = 0; i < item.Value; i++)
+            var items = await _cartService.GetItems(userId);
+            foreach(var item in items)
+                for (int i = 0; i < item.Value; i++)
                     order.Items.Add(item.Key);
+
             if(order.Items.Count <= 0)
                 return RedirectToAction(nameof(Index));
 
             try
             {
                 await _ordersService.Add(order);
+                await _cartService.Clear(userId);
                 return RedirectToAction(nameof(Success));
             }
             catch(Exception ex)

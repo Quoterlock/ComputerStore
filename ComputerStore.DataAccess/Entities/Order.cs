@@ -14,7 +14,7 @@ namespace ComputerStore.DataAccess.Entities
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public int TotalCost { get; set; } = 0;
-        public List<Item> Items { get; set; } = new List<Item>();
+        public List<string> ItemsID { get; set; } = new List<string>();
         public string Status { get; set; } = string.Empty;
         public DateTime CreationDate { get; set; }
         public DateTime LastUpdateTime { get; set;}

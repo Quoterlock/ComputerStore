@@ -98,11 +98,11 @@ namespace ComputerStore.BusinessLogic
                 Status = OrderStatusStringToEnum(entity.Status)
             };
 
-            foreach(var item in entity.Items)
+            foreach(var ItemId in entity.ItemsID)
             {
-                model.Items.Add(EntityToModel(item));
+                model.Items.Add(new ItemModel { Id = ItemId });
             }
-            return new OrderModel();
+            return model;
         }
 
         internal static Order ConvertModelToEntity(OrderModel model)
@@ -119,11 +119,12 @@ namespace ComputerStore.BusinessLogic
                 TotalCost = model.TotalCost,
                 CreationDate = model.CreationDate,
                 Status = model.Status.ToString(),
-                Items = new List<Item>(),
+                ItemsID = new List<string>(),
             };
             foreach(var item in model.Items)
             {
-                entity.Items.Add(new Item() { Id = item.Id });
+                if(item.Id != null)
+                    entity.ItemsID.Add(item.Id);
             }
             return entity;
         }

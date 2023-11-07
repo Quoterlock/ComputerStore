@@ -38,7 +38,6 @@ namespace ComputerStore.DataAccess
             if (item != null)
             {
                 cart.Items.Add(item);
-                _context.Update(cart);
             }
             else 
                 throw new Exception("item not found id:" + itemId);

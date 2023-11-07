@@ -23,7 +23,8 @@
 </div>
 <div class="row">
     <h4>Make order</h4>
-    <form asp-action="MakeOrder" asp-controller="Cart" method="post">
+    <form asp-action="MakeOrder" asp-controller="Cart" method="post">     
+        <input asp-for="TotalCost" type="hidden" value="@Model.TotalCost"/>
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">First name</label>

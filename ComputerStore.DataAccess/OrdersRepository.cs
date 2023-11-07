@@ -21,14 +21,6 @@ namespace ComputerStore.DataAccess
         {
             if(item != null)
             {
-                /*
-                var items = new List<Item>(item.Items);
-                foreach(var i in items)
-                {
-                    var entity = await _context.Items.FirstOrDefaultAsync(p => p.Id == i.Id);
-                    if(entity != null) item.Items.Add(entity);
-                }
-                */
                 await _context.AddAsync(item);
             }
             else throw new ArgumentNullException("order");

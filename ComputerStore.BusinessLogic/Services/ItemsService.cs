@@ -118,7 +118,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             if (model != null)
             {
-                var entity = Convertor.ConvertModelToEntity(model);
+                Item entity = Convertor.ConvertModelToEntity(model);
                 await _unitOfWork.Items.UpdateAsync(entity);
                 await _unitOfWork.Commit();
             }
