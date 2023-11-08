@@ -15,5 +15,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
         Task<Dictionary<ItemModel, int>> GetItems(string userId);
         Task<int> GetTotalCost(string userId);
         Task Clear(string userId);
+        Task MakeOrder(OrderModel order, string userId);
     }
 }

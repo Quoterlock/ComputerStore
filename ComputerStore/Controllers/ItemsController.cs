@@ -29,7 +29,9 @@ namespace ComputerStore.Controllers
             if (!string.IsNullOrEmpty(categoryId))
             {
                 items = await _itemsService.GetFromCategoryAsync(categoryId);
-                model.Category = (await _categoriesService.GetAsync(categoryId)).Name;
+                var category = await _categoriesService.GetAsync(categoryId);
+                model.Category = category.Name; 
+                model.CategoryID = categoryId;
                 listTitle = model.Category ?? "All";
             }
             else

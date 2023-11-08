@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ComputerStore.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -11,9 +12,11 @@ namespace ComputerStore.Areas.Staff.Controllers
     public class RolesController : Controller
     {
         private RoleManager<IdentityRole> _roleManager;
-        public RolesController(RoleManager<IdentityRole> roleManager)
+        private UserManager<IdentityUser> _userManager;
+        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -32,10 +35,14 @@ namespace ComputerStore.Areas.Staff.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult Add(string role, string userId)
+        [HttpGet]
+        public async Task<ActionResult> Add(string role/*, string userId*/)
         {
-            // add role to user if it hasn't
+            /*
+            var user = await _userManager.GetUserAsync(User);
+            if(user != null)
+                await _userManager.AddToRoleAsync(user, RolesContainer.ADMINISTRATOR);
+            */
             return RedirectToAction(nameof(Index));
         }
 
@@ -45,5 +52,14 @@ namespace ComputerStore.Areas.Staff.Controllers
             // remove role from user is it has
             return RedirectToAction(nameof(Index));
         }
+
+        private string? GetUserId()
+        {
+            var id = User
+                .FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?
+                .Value;
+            return id;
+        }
     }
+
 }

@@ -130,12 +130,13 @@ namespace ComputerStore.BusinessLogic.Services
             if (sort == SortMode.CostDown)
             {
                 items = SortByCost(items);
-                items.Reverse();
                 return items;
             }
             if (sort == SortMode.CostUp)
             {
-                return SortByCost(items);
+                items = SortByCost(items);
+                items.Reverse();
+                return items;
             }
             if(sort == SortMode.Name)
             {

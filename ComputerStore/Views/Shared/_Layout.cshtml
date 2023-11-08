@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using ComputerStore.Utilities;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,6 +11,14 @@
     <link rel="stylesheet" href="~/css/custom_styles.css" asp-append-version="true" />
 </head>
 <body>
+
+    @{
+        bool UserIsStaff()
+        {
+            return User.IsInRole(RolesContainer.MANAGER) || User.IsInRole(RolesContainer.ADMINISTRATOR);
+        }
+    }
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -18,6 +27,10 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                @if (UserIsStaff())
+                {
+                    // when i fix it
+                }
                 <a class="nav-item" asp-area="Staff" asp-controller="Home" asp-action="Index">Staff</a>
                 <div class="container">
                     <div class="row">
@@ -55,9 +68,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - ComputerStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted" style="height:50px !important;">
+        <div class="container text-center">
+            &copy; 2023 - ComputerStore
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

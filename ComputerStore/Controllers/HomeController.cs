@@ -18,12 +18,7 @@ namespace ComputerStore.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            // get categories and show
-            /*
-            ViewData["UserId"] = _userManager.GetUserId(User);
-            ViewData["UserLogin"] = User.Identity.Name;
-            */
-            return View();
+            return Redirect("/Categories/Index");
         }
 
         public IActionResult Privacy()

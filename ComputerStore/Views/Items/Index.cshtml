@@ -34,9 +34,9 @@
                     sort by:
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink" title="sort by: @sortMode">
-                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.Category" asp-route-sortBy="itemId">sort by: item ID</a></li>
-                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.Category" asp-route-sortBy="costUp">sort by: cost up</a></li>
-                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.Category" asp-route-sortBy="costDown">sort by: cost down</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.CategoryID" asp-route-sortBy="itemId">sort by: item ID</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.CategoryID" asp-route-sortBy="costUp">sort by: cost up</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.CategoryID" asp-route-sortBy="costDown">sort by: cost down</a></li>
                 </ul>
             </div>
         </div>

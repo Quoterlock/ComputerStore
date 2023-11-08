@@ -12,9 +12,11 @@ namespace ComputerStore.BusinessLogic.Services
     public class CartService : ICartService
     {
         private IUnitOfWork _unitOfWork;
-        public CartService(IUnitOfWork unitOfWork)
+        private IOrdersService _ordersService;
+        public CartService(IUnitOfWork unitOfWork, IOrdersService ordersService)
         {
             _unitOfWork = unitOfWork;
+            _ordersService = ordersService;
         }
 
         public async Task AddItem(string userId, string itemId)
@@ -81,6 +83,31 @@ namespace ComputerStore.BusinessLogic.Services
 
             await _unitOfWork.UserCart.RemoveItems(userId);
             await _unitOfWork.Commit();
+        }
+
+        public async Task MakeOrder(OrderModel order, string userId)
+        {
+            if (!string.IsNullOrEmpty(userId) && order != null)
+            {
+                var items = await GetItems(userId);
+                foreach (var item in items)
+                    for (int i = 0; i < item.Value; i++)
+                        order.Items.Add(item.Key);
+
+                if (order.Items.Count <= 0)
+                    throw new Exception("Items count is null");
+
+                try
+                {
+                    await _ordersService.Add(order);
+                    await Clear(userId);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            else throw new ArgumentNullException("order or userId is null");
         }
     }
 }
