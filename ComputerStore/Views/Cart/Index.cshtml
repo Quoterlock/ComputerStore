@@ -21,7 +21,11 @@
                             <a class="btn btn-light btn-sm" href="#">-</a>
                             <span class="mx-1">@item.Value</span><a class="btn btn-light btn-sma" href="#">+</a>
                         </div>
-                        <div class="col text-end">@item.Key.Price<span>$</span><a class="btn btn-light btn-sm ms-1" href="#">&#10005;</a></div>
+                        <div class="col text-end">
+                            @item.Key.Price
+                            <span>$</span>
+                            <a class="btn btn-light btn-sm ms-1" asp-action="Remove" asp-route-itemId="@item.Key.Id">&#10005;</a>
+                        </div>
                     </div>
                 </div>
             }

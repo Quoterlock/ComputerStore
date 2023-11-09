@@ -56,7 +56,7 @@ namespace ComputerStore.DataAccess
             if (string.IsNullOrEmpty(userId)) throw new ArgumentNullException("user id");
             if (string.IsNullOrEmpty(itemId)) throw new ArgumentNullException("item id");
 
-            var cart = await _context.UserCarts.FirstOrDefaultAsync(i => i.UserId == userId);
+            var cart = await _context.UserCarts.Include(c=>c.Items).FirstOrDefaultAsync(i => i.UserId == userId);
             if (cart == null) throw new Exception("cart is empty");
             
             var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
@@ -93,7 +93,7 @@ namespace ComputerStore.DataAccess
         {
             if (!string.IsNullOrEmpty(userId))
             {
-                if (await _context.UserCarts.AnyAsync(i=>i.UserId == userId))
+                if (!await _context.UserCarts.AnyAsync(i=>i.UserId == userId))
                 {
                     await AddAsync(new UserCart() { UserId = userId });
                     await _context.SaveChangesAsync();

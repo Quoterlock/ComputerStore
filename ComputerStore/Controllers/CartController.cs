@@ -81,11 +81,20 @@ namespace ComputerStore.Controllers
             else 
                 return RedirectToAction(nameof(Index));
         }
-        [HttpPost]
-        public IActionResult Remove(string itemId)
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Remove(string itemId)
         {
-            // redirect to previous view
-            return RedirectToAction(nameof(Index));
+            if (!string.IsNullOrEmpty(itemId))
+            {
+                var userId = GetUserId();
+                if(userId != null)
+                    await _cartService.RemoveItem(userId, itemId);
+                return RedirectToAction(nameof(Index));
+            }
+            else 
+                return NotFound(itemId);         
         }
 
         [HttpGet]
