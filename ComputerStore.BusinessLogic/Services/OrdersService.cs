@@ -114,12 +114,19 @@ namespace ComputerStore.BusinessLogic.Services
             return models;
         }
 
-        private async Task<List<ItemModel>> GetItems(List<ItemModel> items)
+        private async Task<Dictionary<ItemModel, int>> GetItems(Dictionary<ItemModel, int> items)
         {
-            var newItems = new List<ItemModel>();
-            foreach (var item in items)
+            var newItems = new Dictionary<ItemModel, int>();
+            foreach (var itemKey in items)
             {
-                newItems.Add(Convertor.EntityToModel(await _unitOfWork.Items.GetAsync(item.Id)));
+                var item = Convertor.EntityToModel(await _unitOfWork.Items.GetAsync(itemKey.Key.Id));
+                if(item != null)
+                {
+                    if (newItems.ContainsKey(item))
+                        newItems[item]++;
+                    else
+                        newItems.Add(item, 1);
+                }
             }
             return newItems;
         }

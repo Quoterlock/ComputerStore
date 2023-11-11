@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -94,13 +95,19 @@ namespace ComputerStore.BusinessLogic
                 LastUpdateTime = entity.LastUpdateTime,
                 PostOfficeAddress = entity.PostOfficeAddress,
                 TotalCost = entity.TotalCost,
-                Items = new List<ItemModel>(),
+                Items = new Dictionary<ItemModel, int>(),
                 Status = OrderStatusStringToEnum(entity.Status)
             };
 
             foreach(var ItemId in entity.ItemsID)
             {
-                model.Items.Add(new ItemModel { Id = ItemId });
+                var key = model.Items.Keys.Where(k => k.Id == ItemId).FirstOrDefault();
+                if (key != null)
+                {
+                    model.Items[key]++;
+                }
+                else
+                    model.Items.Add(new ItemModel { Id = ItemId }, 1);
             }
             return model;
         }
@@ -122,10 +129,9 @@ namespace ComputerStore.BusinessLogic
                 ItemsID = new List<string>(),
             };
             foreach(var item in model.Items)
-            {
-                if(item.Id != null)
-                    entity.ItemsID.Add(item.Id);
-            }
+                for (int i = 0; i < item.Value; i++)
+                    if (item.Key.Id != null)
+                            entity.ItemsID.Add(item.Key.Id);
             return entity;
         }
 

@@ -1,0 +1,41 @@
+﻿@model ComputerStore.BusinessLogic.Domains.OrderModel
+
+<div class="container-flex col-lg-6 col-md-9 col-sm-12">
+    <div class="row">
+        <h4>Order ID: @Model.Id</h4>
+        <p>Customer name: @Model.FirstName @Model.LastName</p>
+        <h5>Contacts</h5>
+        <p>Email: @Model.Email <br>Phone number: @Model.PhoneNumber</p>
+        <h5>Destination</h5>
+        <p>Address: @Model.PostOfficeAddress</p>
+        <h5>Customer comment</h5>
+        <p>@Model.CustomerComment</p>
+    </div>
+    <div class="row">
+        <h5>Items:</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Item ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model.Items)
+                {
+                    <tr>
+                        <th scope="row">@item.Key.Id</th>
+                        <td>@item.Key.Name</td>
+                        <td>@item.Key.Price</td>
+                        <td>@item.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row text-end">
+        <h1>Total: @Model.TotalCost<span>$</span></h1>
+    </div>
+</div>

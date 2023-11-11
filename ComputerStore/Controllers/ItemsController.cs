@@ -49,10 +49,22 @@ namespace ComputerStore.Controllers
             return View(model);
         }
 
-        public IActionResult Details(string itemId)
+        public async Task<IActionResult> Details(string itemId)
         {
-            // get item and return full details
-            return View();
+            if(!string.IsNullOrEmpty(itemId))
+            {
+                try
+                {
+                    var item = await _itemsService.GetByIdAsync(itemId);
+                    return View(item);
+                }
+                catch(Exception ex)
+                {
+                    return NotFound();
+                }
+            }
+            
+            return NotFound();
         }
 
         public async Task<IActionResult> Search(string value, string sortBy)

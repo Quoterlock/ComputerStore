@@ -23,14 +23,14 @@ namespace ComputerStore.Areas.Staff.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Detail(string id)
+        public async Task<IActionResult> Details(string orderId)
         {
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(orderId))
             {
-                var order = await _ordersService.GetById(id);
+                var order = await _ordersService.GetById(orderId);
                 return View(order);
             }
-            else return NotFound(id);
+            else return NotFound(orderId);
         }
 
         [HttpGet]

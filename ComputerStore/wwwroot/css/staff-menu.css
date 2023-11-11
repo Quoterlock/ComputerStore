@@ -1,0 +1,26 @@
+﻿.side-menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 300px;
+    padding: 10px;
+    margin: 60px 10px 10px 10px;
+    background-color: white;
+    border: 1px solid rgb(178, 178, 178);
+    border-radius: 15px;
+}
+
+.side-menu-item {
+    background-color: white;
+    border: 1px solid rgb(178, 178, 178);
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.side-menu-item:hover {
+    transition: 0.2s;
+    background-color: #9DB2FF;
+    border-color: #BFC1FF;
+    font-weight: bold;
+}

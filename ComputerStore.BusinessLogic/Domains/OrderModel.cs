@@ -13,9 +13,10 @@ namespace ComputerStore.BusinessLogic.Domains
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public int TotalCost { get; set; } = 0;
-        public List<ItemModel> Items { get; set; } = new List<ItemModel>();
+        public Dictionary<ItemModel, int> Items { get; set; } = new Dictionary<ItemModel, int>();
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public DateTime CreationDate { get; set; }
         public DateTime LastUpdateTime { get; set;}
+        public string CustomerComment { get; set; } = string.Empty;
     }
 }

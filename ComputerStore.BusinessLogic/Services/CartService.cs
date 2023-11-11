@@ -89,10 +89,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             if (!string.IsNullOrEmpty(userId) && order != null)
             {
-                var items = await GetItems(userId);
-                foreach (var item in items)
-                    for (int i = 0; i < item.Value; i++)
-                        order.Items.Add(item.Key);
+                order.Items = await GetItems(userId);
 
                 if (order.Items.Count <= 0)
                     throw new Exception("Items count is null");
