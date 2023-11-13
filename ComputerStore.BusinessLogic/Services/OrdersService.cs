@@ -77,12 +77,15 @@ namespace ComputerStore.BusinessLogic.Services
             else throw new ArgumentNullException("order model");
         }
 
-        public async Task SetStatus(string id, OrderStatus status)
+        public async Task SetStatus(string id, string status)
         {
             if(!string.IsNullOrEmpty(id))
             {
+                if (Convertor.OrderStatusStringToEnum(status) == OrderStatus.Unknown)
+                    throw new Exception("Unknown status");
                 var order = await _unitOfWork.Orders.GetAsync(id);
                 order.Status = status.ToString();
+                order.LastUpdateTime = DateTime.Now.ToUniversalTime();
                 await _unitOfWork.Commit();
             }
         }
@@ -129,6 +132,15 @@ namespace ComputerStore.BusinessLogic.Services
                 }
             }
             return newItems;
+        }
+
+        public Task RemoveItem(string itemId, string orderId)
+        {
+            throw new NotImplementedException();
+        }
+        public Task AddItem(string itemId, string orderId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

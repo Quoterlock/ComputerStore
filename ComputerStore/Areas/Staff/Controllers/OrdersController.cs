@@ -34,14 +34,14 @@ namespace ComputerStore.Areas.Staff.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string orderId)
         {
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(orderId))
             {
-                var order = await _ordersService.GetById(id);
+                var order = await _ordersService.GetById(orderId);
                 return View(order);
             }
-            else return NotFound(id);
+            else return NotFound(orderId);
         }
 
         [HttpPost]
@@ -58,8 +58,52 @@ namespace ComputerStore.Areas.Staff.Controllers
         [HttpPost]
         public IActionResult Edit()
         {
-            // post changes to db
+            // (!!!!!!)
+            // change only info-properties (like name, address)
+            // nor items list.
+            // (!!!!!!) 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetStatus(string orderId, string newOrderStatus)
+        {
+            if (string.IsNullOrEmpty(orderId))
+                return NotFound();
+            if (!string.IsNullOrEmpty(newOrderStatus))
+            {
+                try
+                {
+                    await _ordersService.SetStatus(orderId, newOrderStatus);
+                } 
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            return RedirectToAction(nameof(Details), new { orderId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RemoveItem(string itemId, string orderId)
+        {
+            if(!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
+            {
+                await _ordersService.RemoveItem(itemId, orderId);
+                return RedirectToAction(nameof(Edit), new { orderId });
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddItem(string itemId, string orderId)
+        {
+            if (!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
+            {
+                await _ordersService.AddItem(itemId, orderId);
+                return RedirectToAction(nameof(Edit), new { orderId });
+            }
+            return NotFound();
         }
 
     }

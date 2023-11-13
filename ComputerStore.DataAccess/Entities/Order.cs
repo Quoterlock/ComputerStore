@@ -18,5 +18,6 @@ namespace ComputerStore.DataAccess.Entities
         public string Status { get; set; } = string.Empty;
         public DateTime CreationDate { get; set; }
         public DateTime LastUpdateTime { get; set;}
+        public string CustomerComment { get; set; } = string.Empty;
     }
 }

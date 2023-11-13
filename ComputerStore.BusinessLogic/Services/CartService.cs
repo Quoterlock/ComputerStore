@@ -90,9 +90,11 @@ namespace ComputerStore.BusinessLogic.Services
             if (!string.IsNullOrEmpty(userId) && order != null)
             {
                 order.Items = await GetItems(userId);
-
                 if (order.Items.Count <= 0)
                     throw new Exception("Items count is null");
+
+                order.CreationDate = DateTime.Now.ToUniversalTime();
+                order.LastUpdateTime = DateTime.Now.ToUniversalTime();
 
                 try
                 {

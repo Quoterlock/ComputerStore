@@ -15,6 +15,8 @@ namespace ComputerStore.BusinessLogic.Interfaces
         Task Delete(string orderId);
         Task<OrderModel> GetById(string id);
         Task<List<OrderModel>> GetAll();
-        Task SetStatus(string id, OrderStatus status);
+        Task SetStatus(string id, string status);
+        Task RemoveItem(string itemId, string orderId);
+        Task AddItem(string itemId, string orderId);
     }
 }

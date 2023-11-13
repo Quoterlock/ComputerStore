@@ -96,7 +96,8 @@ namespace ComputerStore.BusinessLogic
                 PostOfficeAddress = entity.PostOfficeAddress,
                 TotalCost = entity.TotalCost,
                 Items = new Dictionary<ItemModel, int>(),
-                Status = OrderStatusStringToEnum(entity.Status)
+                Status = OrderStatusStringToEnum(entity.Status),
+                CustomerComment = entity.CustomerComment
             };
 
             foreach(var ItemId in entity.ItemsID)
@@ -127,6 +128,7 @@ namespace ComputerStore.BusinessLogic
                 CreationDate = model.CreationDate,
                 Status = model.Status.ToString(),
                 ItemsID = new List<string>(),
+                CustomerComment = model.CustomerComment
             };
             foreach(var item in model.Items)
                 for (int i = 0; i < item.Value; i++)

@@ -1,41 +1,67 @@
 ﻿@model ComputerStore.BusinessLogic.Domains.OrderModel
 
-<div class="container-flex col-lg-6 col-md-9 col-sm-12">
-    <div class="row">
-        <h4>Order ID: @Model.Id</h4>
-        <p>Customer name: @Model.FirstName @Model.LastName</p>
-        <h5>Contacts</h5>
-        <p>Email: @Model.Email <br>Phone number: @Model.PhoneNumber</p>
-        <h5>Destination</h5>
-        <p>Address: @Model.PostOfficeAddress</p>
-        <h5>Customer comment</h5>
-        <p>@Model.CustomerComment</p>
+<div class="container-flex col-lg-10 col-md-10 col-sm-12">
+    <div class="row d-flex text-center my-4">
+        <h4>
+            Order ID: @Model.Id
+            <span>
+                <a asp-action="Edit" asp-route-orderId="@Model.Id">
+                    <img height="24" width="24" src="/icons/edit-icon.png">
+                </a>
+            </span>
+        </h4>
     </div>
     <div class="row">
-        <h5>Items:</h5>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Item ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Cost</th>
-                    <th scope="col">Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(var item in Model.Items)
-                {
+        <div class="col-lg-4 col-md-12">
+            <h5>Customer:</h5>
+            <p>Full name: @Model.FirstName @Model.LastName</p>
+            <h5>Contacts:</h5>
+            <p>Email: @Model.Email <br>Phone number: @Model.PhoneNumber</p>
+            <h5>Destination:</h5>
+            <p>Address: @Model.PostOfficeAddress</p>
+            <h5>Customer comment:</h5>
+            <p>@Model.CustomerComment</p>
+            <h5 class="mb-3">Total: @Model.TotalCost<span>$</span></h5>
+            <h5>Order status:</h5>
+            <form asp-action="SetStatus" method="post">
+                <input type="hidden" value="@Model.Id" name="orderId">
+                <label class="mb-2">Current: @Model.Status.ToString()</label>
+                <div class="input-group">
+                    <select class="form-select" name="newOrderStatus">
+                        <option value="" selected>Select...</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="In_progress">In_progress</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-8 col-md-12">
+            <h5>Items:</h5>
+            <table class="table">
+                <thead>
                     <tr>
-                        <th scope="row">@item.Key.Id</th>
-                        <td>@item.Key.Name</td>
-                        <td>@item.Key.Price</td>
-                        <td>@item.Value</td>
+                        <th scope="col">Item ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Cost</th>
+                        <th scope="col">Count</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="row text-end">
-        <h1>Total: @Model.TotalCost<span>$</span></h1>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <th scope="row">@item.Key.Id</th>
+                            <td>@item.Key.Name</td>
+                            <td>@item.Key.Price</td>
+                            <td>@item.Value</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

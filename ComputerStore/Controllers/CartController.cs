@@ -41,8 +41,6 @@ namespace ComputerStore.Controllers
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Status = Utilities.OrderStatus.Pending,
-                CreationDate = DateTime.Now.ToUniversalTime(),
-                LastUpdateTime = DateTime.Now.ToUniversalTime(),
             };
 
             try
