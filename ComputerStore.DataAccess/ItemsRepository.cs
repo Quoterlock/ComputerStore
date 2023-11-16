@@ -108,9 +108,9 @@ namespace ComputerStore.DataAccess
             return item != null && !string.IsNullOrEmpty(item.Name);
         }
 
-        public Task<bool> IsExists(string id)
+        public async Task<bool> IsExists(string id)
         {
-            throw new NotImplementedException();
+            return await _context.Items.AnyAsync(item => item.Id == id);
         }
     }
 }

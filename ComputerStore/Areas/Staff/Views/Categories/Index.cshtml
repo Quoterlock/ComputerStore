@@ -17,9 +17,12 @@
                 <th scope="row">@i</th>
                 <td>@Model[i].Name</td>
                 <td>
-                    <img height="24" width="24" 
-                        alt="@Model[i].Thumbnail.Alt" 
-                        src="data:image/png;base64, @Convert.ToBase64String(Model[i].Thumbnail.Bytes)"/>
+                    @if (Model[i].Thumbnail.Bytes != null)
+                    {
+                        <img height="24" width="24"
+                             alt="@Model[i].Thumbnail.Alt"
+                             src="data:image/png;base64, @Convert.ToBase64String(Model[i].Thumbnail.Bytes)" />
+                    }
                 </td>
                 <td><a class="btn btn-active" asp-area="Staff" 
                     asp-controller="Categories" 

@@ -1,4 +1,6 @@
-﻿using ComputerStore.BusinessLogic.Interfaces;
+﻿using ComputerStore.BusinessLogic.Domains;
+using ComputerStore.BusinessLogic.Interfaces;
+using ComputerStore.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace ComputerStore.Areas.Staff.Controllers
 {
     [Area("Staff")]
+    [Authorize(Roles = RolesContainer.MANAGER + "," + RolesContainer.ADMINISTRATOR)]
     public class OrdersController : Controller
     {
         private IOrdersService _ordersService;
@@ -56,13 +59,19 @@ namespace ComputerStore.Areas.Staff.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(OrderModel model)
         {
-            // (!!!!!!)
-            // change only info-properties (like name, address)
-            // nor items list.
-            // (!!!!!!) 
-            return RedirectToAction(nameof(Index));
+
+            if (IsValid(model))
+            {
+                await _ordersService.Update(model);
+            }
+            return RedirectToAction(nameof(Details), "Orders", new { orderId = model.Id });
+        }
+
+        private bool IsValid(OrderModel model)
+        {
+            return true;
         }
 
         [HttpPost]

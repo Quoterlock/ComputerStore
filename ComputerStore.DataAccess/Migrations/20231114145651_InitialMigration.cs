@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -7,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ComputerStore.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigrationAfterRebuild : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,9 +76,11 @@ namespace ComputerStore.DataAccess.Migrations
                     Email = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     TotalCost = table.Column<int>(type: "integer", nullable: false),
+                    ItemsID = table.Column<List<string>>(type: "text[]", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastUpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    LastUpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CustomerComment = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +92,8 @@ namespace ComputerStore.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ItemsIDs = table.Column<List<string>>(type: "text[]", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -229,9 +233,7 @@ namespace ComputerStore.DataAccess.Migrations
                     Description = table.Column<string>(type: "text", nullable: true),
                     Price = table.Column<int>(type: "integer", nullable: false),
                     CategoryId = table.Column<string>(type: "text", nullable: true),
-                    ImageId = table.Column<string>(type: "text", nullable: true),
-                    OrderId = table.Column<string>(type: "text", nullable: true),
-                    UserCartId = table.Column<string>(type: "text", nullable: true)
+                    ImageId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -245,16 +247,6 @@ namespace ComputerStore.DataAccess.Migrations
                         name: "FK_Items_Images_ImageId",
                         column: x => x.ImageId,
                         principalTable: "Images",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Items_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Items_UserCarts_UserCartId",
-                        column: x => x.UserCartId,
-                        principalTable: "UserCarts",
                         principalColumn: "Id");
                 });
 
@@ -309,16 +301,6 @@ namespace ComputerStore.DataAccess.Migrations
                 name: "IX_Items_ImageId",
                 table: "Items",
                 column: "ImageId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_OrderId",
-                table: "Items",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_UserCartId",
-                table: "Items",
-                column: "UserCartId");
         }
 
         /// <inheritdoc />
@@ -343,6 +325,12 @@ namespace ComputerStore.DataAccess.Migrations
                 name: "Items");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "UserCarts");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -350,12 +338,6 @@ namespace ComputerStore.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "UserCarts");
 
             migrationBuilder.DropTable(
                 name: "Images");

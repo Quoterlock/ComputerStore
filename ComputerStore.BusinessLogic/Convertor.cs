@@ -40,7 +40,7 @@ namespace ComputerStore.BusinessLogic
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                Thumbnail = ConvertEntityToModel(entity.Image)
+                Thumbnail = ConvertEntityToModel(entity.Image??new Image())
             };
         }
 
@@ -50,6 +50,9 @@ namespace ComputerStore.BusinessLogic
             {
                 Id = model.Id,
                 Name = model.Name,
+                Image = new Image() { 
+                    Bytes = model.Thumbnail.Bytes, 
+                    Alt =  model.Thumbnail.Alt },
             };
         }
 

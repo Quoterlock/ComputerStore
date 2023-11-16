@@ -9,6 +9,6 @@ namespace ComputerStore.DataAccess.Entities
         [Key]
         public string? Id { get; set; }
         public string UserId { get; set; } = string.Empty;
-        public List<Item> Items { get; set; } = new List<Item>();
+        public List<string> ItemsIDs { get; set; } = new List<string>();
     }
 }

@@ -79,5 +79,23 @@ namespace ComputerStore.DataAccess
             }
             else throw new ArgumentNullException("order");
         }
+
+        public async Task UpdateInfoAsync(Order order)
+        {
+            if(order != null && !string.IsNullOrEmpty(order.Id))
+            {
+                var entity = await _context.Orders.FirstOrDefaultAsync(o=>o.Id == order.Id);
+                if(entity != null)
+                {
+                    entity.FirstName = order.FirstName ?? string.Empty;
+                    entity.LastName = order.LastName ?? string.Empty;
+                    entity.Email = order.Email ?? string.Empty;
+                    entity.PostOfficeAddress = order.PostOfficeAddress ?? string.Empty;
+                    entity.LastUpdateTime = DateTime.Now.ToUniversalTime();
+                    entity.CustomerComment = order.CustomerComment ?? string.Empty;
+                    entity.PhoneNumber = order.PhoneNumber ?? string.Empty;
+                }
+            }
+        }
     }
 }

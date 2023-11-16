@@ -12,7 +12,7 @@ namespace ComputerStore.DataAccess.Interfaces
         IItemsRepository Items { get; set; }
         ICategoriesRepository Categories { get; set; }
         IOrdersRepository Orders { get; set; }
-        Task Commit();
+        Task CommitAsync();
         Task Rollback();
     }
 }

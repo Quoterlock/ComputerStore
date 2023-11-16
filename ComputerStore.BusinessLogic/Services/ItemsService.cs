@@ -28,7 +28,7 @@ namespace ComputerStore.BusinessLogic.Services
                 {
                     var entity = Convertor.ConvertModelToEntity(model);
                     await _unitOfWork.Items.AddAsync(entity);
-                    await _unitOfWork.Commit();
+                    await _unitOfWork.CommitAsync();
                 }
                 catch (Exception ex)
                 {
@@ -79,7 +79,7 @@ namespace ComputerStore.BusinessLogic.Services
             try
             {
                 await _unitOfWork.Items.DeleteAsync(id);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
             catch(Exception ex)
             {
@@ -120,7 +120,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 Item entity = Convertor.ConvertModelToEntity(model);
                 await _unitOfWork.Items.UpdateAsync(entity);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
             else throw new Exception("Model is null!");
         }

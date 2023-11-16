@@ -13,11 +13,12 @@ using System.Net;
 using ComputerStore.ViewModels;
 using ComputerStore.BusinessLogic.Interfaces;
 using ComputerStore.BusinessLogic.Domains;
+using ComputerStore.Utilities;
 
 namespace ComputerStore.Areas.Staff.Controllers
 {
     [Area("Staff")]
-    //[Authorize(Roles = RolesContainer.MANAGER)]
+    [Authorize(Roles = RolesContainer.MANAGER + "," + RolesContainer.ADMINISTRATOR)]
     public class ItemsController : Controller
     {
         private IItemsService _itemsService;

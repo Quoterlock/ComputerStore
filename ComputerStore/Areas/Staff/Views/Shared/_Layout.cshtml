@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using ComputerStore.Utilities;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -48,12 +49,15 @@
                             Categories
                         </div>
                     </a>
-                    <a asp-area="Staff" asp-action="Index" asp-controller="Roles">
-                        <div class="side-menu-item mb2">
-                            <img class="icon" height="24" width="24" src="~/icons/roles-icon.png">
-                            Roles
-                        </div>
-                    </a>
+                    @if(User.IsInRole(RolesContainer.ADMINISTRATOR))
+                    {
+                        <a asp-area="Staff" asp-action="Index" asp-controller="Roles">
+                            <div class="side-menu-item mb2">
+                                <img class="icon" height="24" width="24" src="~/icons/roles-icon.png">
+                                Roles
+                            </div>
+                        </a>
+                    }
                 </div>
             </div>
             <div class="col">

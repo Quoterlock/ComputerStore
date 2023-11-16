@@ -28,7 +28,7 @@ namespace ComputerStore.DataAccess
             Orders = orders;
         }
 
-        public async Task Commit()
+        public async Task CommitAsync()
         {
             await _context.SaveChangesAsync();
         }

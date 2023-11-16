@@ -11,14 +11,6 @@
     <link rel="stylesheet" href="~/css/custom_styles.css" asp-append-version="true" />
 </head>
 <body>
-
-    @{
-        bool UserIsStaff()
-        {
-            return User.IsInRole(RolesContainer.MANAGER) || User.IsInRole(RolesContainer.ADMINISTRATOR);
-        }
-    }
-
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -27,11 +19,11 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @if (UserIsStaff())
+
+                @if (User.IsInRole(RolesContainer.ADMINISTRATOR) || User.IsInRole(RolesContainer.MANAGER))
                 {
-                    // when i fix it
+                    <a class="nav-item" asp-area="Staff" asp-controller="Home" asp-action="Index">Staff</a>
                 }
-                <a class="nav-item" asp-area="Staff" asp-controller="Home" asp-action="Index">Staff</a>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-5 col-sm-12 mx-auto">

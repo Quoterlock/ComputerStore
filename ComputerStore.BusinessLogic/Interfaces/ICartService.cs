@@ -16,5 +16,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
         Task<int> GetTotalCost(string userId);
         Task Clear(string userId);
         Task MakeOrder(OrderModel order, string userId);
+        Task RemoveAllById(string userId, string itemId);
     }
 }

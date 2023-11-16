@@ -44,7 +44,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 var entity = Convertor.ConvertModelToEntity(model);
                 await _unitOfWork.Categories.AddAsync(entity);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
             else throw new Exception("Model in null!");
         }
@@ -55,7 +55,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 var entity = Convertor.ConvertModelToEntity(model);
                 await _unitOfWork.Categories.UpdateAsync(entity);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
             else throw new Exception("Model in null!");
         }
@@ -63,7 +63,7 @@ namespace ComputerStore.BusinessLogic.Services
         public async Task RemoveAsync(string id)
         {
             await _unitOfWork.Categories.DeleteAsync(id);
-            await _unitOfWork.Commit();
+            await _unitOfWork.CommitAsync();
         }
 
         private List<CategoryModel> ConvertEntitiesToModels(List<Category> entities)

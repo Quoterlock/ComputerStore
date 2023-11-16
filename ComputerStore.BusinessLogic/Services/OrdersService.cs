@@ -27,7 +27,7 @@ namespace ComputerStore.BusinessLogic.Services
                 try
                 {
                     await _unitOfWork.Orders.DeleteAsync(orderId);
-                    await _unitOfWork.Commit();
+                    await _unitOfWork.CommitAsync();
                 } catch(Exception ex)
                 {
                     throw new Exception(ex.Message);
@@ -54,6 +54,8 @@ namespace ComputerStore.BusinessLogic.Services
                     if (entity != null)
                     {
                         var order = Convertor.ConvertEntityToModel(entity);
+                        
+                        
                         order.Items = await GetItems(order.Items);
                         return order;
                     }
@@ -72,7 +74,7 @@ namespace ComputerStore.BusinessLogic.Services
             if (order != null)
             {
                 await _unitOfWork.Orders.AddAsync(Convertor.ConvertModelToEntity(order));
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
             else throw new ArgumentNullException("order model");
         }
@@ -86,18 +88,18 @@ namespace ComputerStore.BusinessLogic.Services
                 var order = await _unitOfWork.Orders.GetAsync(id);
                 order.Status = status.ToString();
                 order.LastUpdateTime = DateTime.Now.ToUniversalTime();
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
         }
 
         public async Task Update(OrderModel order)
         {
-            if (order != null)
+            if (order != null && !string.IsNullOrEmpty(order.Id))
             {
                 try
                 {
-                    await _unitOfWork.Orders.UpdateAsync(Convertor.ConvertModelToEntity(order));
-                    await _unitOfWork.Commit();
+                    await _unitOfWork.Orders.UpdateInfoAsync(Convertor.ConvertModelToEntity(order));
+                    await _unitOfWork.CommitAsync();
                 }
                 catch (Exception ex)
                 {
@@ -125,22 +127,32 @@ namespace ComputerStore.BusinessLogic.Services
                 var item = Convertor.EntityToModel(await _unitOfWork.Items.GetAsync(itemKey.Key.Id));
                 if(item != null)
                 {
-                    if (newItems.ContainsKey(item))
-                        newItems[item]++;
-                    else
-                        newItems.Add(item, 1);
+                    newItems.Add(item, itemKey.Value);
                 }
             }
             return newItems;
         }
 
-        public Task RemoveItem(string itemId, string orderId)
+        public async Task RemoveItem(string itemId, string orderId)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
+            {
+                var order = await _unitOfWork.Orders.GetAsync(orderId);
+                order.ItemsID.Remove(itemId);
+                await _unitOfWork.CommitAsync();
+            }
+            else throw new ArgumentNullException("itemID or orderID");
         }
-        public Task AddItem(string itemId, string orderId)
+
+        public async Task AddItem(string itemId, string orderId)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
+            {
+                var order = await _unitOfWork.Orders.GetAsync(orderId);
+                order.ItemsID.Add(itemId);
+                await _unitOfWork.CommitAsync();
+            }
+            else throw new ArgumentNullException("itemID or orderID");
         }
     }
 }

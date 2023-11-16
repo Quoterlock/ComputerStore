@@ -1,14 +1,17 @@
-﻿using ComputerStore.Utilities;
+﻿using ComputerStore.Areas.Staff.ViewModels;
+using ComputerStore.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Net;
+using System.Net.WebSockets;
 
 namespace ComputerStore.Areas.Staff.Controllers
 {
     [Area("Staff")]
-    //[Authorize(Roles = RolesContainer.ADMINISTRATOR)]
+    [Authorize(Roles = RolesContainer.ADMINISTRATOR)]
     public class RolesController : Controller
     {
         private RoleManager<IdentityRole> _roleManager;
@@ -20,37 +23,64 @@ namespace ComputerStore.Areas.Staff.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            // get all roles in separate lists
-            /*
-            var rolesList = _roleManager.Roles.ToList();
-            List<string> rolesNames = new List<string>();
-            foreach (var role in rolesList)
+            var admins = await _userManager.GetUsersInRoleAsync(RolesContainer.ADMINISTRATOR);
+            var managers = await _userManager.GetUsersInRoleAsync(RolesContainer.MANAGER);
+            return View(new RolesListViewModel
             {
-                rolesNames.Add(role.Name.ToString());
-            }
-            return View(rolesNames);
-            */
-            return View();
+                Admins = admins.ToList(),
+                Managers = managers.ToList(),
+            });
         }
 
         [HttpGet]
-        public async Task<ActionResult> Add(string role/*, string userId*/)
+        public async Task<ActionResult> AddUser(string role)
         {
-            /*
-            var user = await _userManager.GetUserAsync(User);
-            if(user != null)
-                await _userManager.AddToRoleAsync(user, RolesContainer.ADMINISTRATOR);
-            */
-            return RedirectToAction(nameof(Index));
+            if (role != null)
+                return View(nameof(AddUser), role);
+            else 
+                return NotFound("role");
         }
 
         [HttpPost]
-        public ActionResult Remove(string role, string userId)
+        public async Task<ActionResult> AddUser(string role, string userName)
         {
-            // remove role from user is it has
-            return RedirectToAction(nameof(Index));
+            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(role))
+            {
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+                if (user != null)
+                {
+                    if (role.Equals(RolesContainer.ADMINISTRATOR) || role.Equals(RolesContainer.MANAGER))
+                    {
+                        await _userManager.AddToRoleAsync(user, role);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else return NotFound(role);
+                }
+                else return NotFound(user);
+            }
+            else return RedirectToAction(nameof(AddUser), new { role });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> RemoveUser(string role, string userId)
+        {
+            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(role))
+            {
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+                if (user != null)
+                {
+                    if (role.Equals(RolesContainer.ADMINISTRATOR) || role.Equals(RolesContainer.MANAGER))
+                    {
+                        await _userManager.RemoveFromRoleAsync(user, role);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else return NotFound(role);
+                }
+                else return NotFound(userId);
+            }
+            else return RedirectToAction(nameof(AddUser), new { role });
         }
 
         private string? GetUserId()

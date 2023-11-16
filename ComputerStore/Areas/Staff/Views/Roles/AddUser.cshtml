@@ -1,0 +1,7 @@
+﻿@model string;
+<h1 class="mb-3">Add @Model</h1>
+<form asp-action="AddUser" method="post" class="text-end">
+    <input type="hidden" name="role" value="@Model"/>
+    <input type="text" name="userName" class="form-control" placeholder="user@name">
+    <button type="submit" class="btn btn-danger mt-3">Add role to this user</button>
+</form>

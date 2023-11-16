@@ -14,11 +14,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Drawing;
 using System.Collections;
 using ComputerStore.DataAccess.Entities;
+using ComputerStore.Utilities;
 
 namespace ComputerStore.Areas.Staff.Controllers
 {
-    //[Authorize(Roles = RolesContainer.MANAGER)]
     [Area("Staff")]
+    [Authorize(Roles = RolesContainer.MANAGER + "," + RolesContainer.ADMINISTRATOR)]
     public class CategoriesController : Controller
     {
         private ICategoriesService _categoriesService;

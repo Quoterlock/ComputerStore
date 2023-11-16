@@ -17,6 +17,7 @@ namespace ComputerStore.Controllers
             _ordersService = ordersService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
@@ -41,6 +42,7 @@ namespace ComputerStore.Controllers
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Status = Utilities.OrderStatus.Pending,
+                CustomerComment = model.Comment
             };
 
             try
@@ -93,6 +95,20 @@ namespace ComputerStore.Controllers
             }
             else 
                 return NotFound(itemId);         
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RemoveAll(string itemId)
+        {
+            if (!string.IsNullOrEmpty(itemId))
+            {
+                var userId = GetUserId();
+                if (userId != null)
+                    await _cartService.RemoveAllById(userId, itemId);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+                return NotFound(itemId);
         }
 
         [HttpGet]

@@ -80,16 +80,11 @@ namespace ComputerStore.DataAccess.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserCartId")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("ImageId");
-
-                    b.HasIndex("UserCartId");
 
                     b.ToTable("Items");
                 });
@@ -151,6 +146,10 @@ namespace ComputerStore.DataAccess.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text");
+
+                    b.Property<List<string>>("ItemsIDs")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -380,10 +379,6 @@ namespace ComputerStore.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("ImageId");
 
-                    b.HasOne("ComputerStore.DataAccess.Entities.UserCart", null)
-                        .WithMany("Items")
-                        .HasForeignKey("UserCartId");
-
                     b.Navigation("Category");
 
                     b.Navigation("Image");
@@ -438,11 +433,6 @@ namespace ComputerStore.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ComputerStore.DataAccess.Entities.UserCart", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
