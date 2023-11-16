@@ -1,94 +1,107 @@
 ﻿@using ComputerStore.Utilities;
 @model ComputerStore.Areas.Staff.ViewModels.RolesListViewModel
 
-<div class="container-fluid">
-    <div class="row">
-        <h3 class="mb-3">Managers:</h3>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <form action="Search" method="get">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." name="searchValue">
-                    <button class="btn btn-primary">S</button>
-                </div>
-            </form>
+<div class="struct-block">
+    <div class="container-fluid">
+        <div class="row">
+            <h3 class="mb-3">Managers:</h3>
         </div>
-        <div class="col text-end">
-            <a asp-action="AddUser" asp-controller="Roles" asp-route-role="@RolesContainer.MANAGER" class="btn btn-primary">Add manager</a>
+        <div class="row">
+            <div class="col">
+                <a asp-action="AddUser" asp-controller="Roles" asp-route-role="@RolesContainer.MANAGER" class="btn active-btn">Add manager</a>
+            </div>
+            <div class="col-4">
+                <form class="d-flex" id="search-form" method="get" action="">
+                    <div class="input-group">
+                        <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
+                               name="value">
+                        <button class="btn search-btn-style" type="submit">
+                            <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;" />
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">UserName</th>
-                    <th scope="col">Role</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model.Managers)
-                {
+        <div class="row">
+            <table class="table">
+                <thead>
                     <tr>
-                        <th>@user.Id</th>
-                        <td>@user.UserName</td>
-                        <td>@RolesContainer.MANAGER</td>
-                        <td class="text-end">
-                            <a asp-action="RemoveUser" 
-                            asp-route-userId="@user.Id" 
-                            asp-route-role="@RolesContainer.MANAGER" 
-                            class="btn btn-danger">Remove</a>
-                        </td>
+                        <th scope="col">ID</th>
+                        <th scope="col">UserName</th>
+                        <th scope="col">Role</th>
+                        <th scope="col"></th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="row">
-        <h3 class="mb-3">Administrators:</h3>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <form action="Search" method="get">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." name="searchValue">
-                    <button class="btn btn-primary">S</button>
-                </div>
-            </form>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Managers)
+                    {
+                        <tr>
+                            <th>@user.Id</th>
+                            <td>@user.UserName</td>
+                            <td>@RolesContainer.MANAGER</td>
+                            <td class="text-end">
+                                <a asp-action="RemoveUser"
+                                   asp-route-userId="@user.Id"
+                                   asp-route-role="@RolesContainer.MANAGER">
+                                    <img src="~/icons/delete-icon-red.png" height="24" width="24" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-        <div class="col text-end">
-            <a asp-action="AddUser" asp-controller="Roles" asp-route-role="@RolesContainer.ADMINISTRATOR" class="btn btn-primary">Add admin</a>
-        </div>
     </div>
-    <div class="row">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">UserName</th>
-                    <th scope="col">Role</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model.Admins)
-                {
+</div>
+<div class="struct-block mt-2">
+    <div class="container-fluid">
+        <div class="row">
+            <h3 class="mb-3">Administrators:</h3>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a asp-action="AddUser" asp-controller="Roles" asp-route-role="@RolesContainer.ADMINISTRATOR" class="btn active-btn">Add admin</a>
+            </div>
+            <div class="col-4">
+                <form class="d-flex" id="search-form" method="get" action="">
+                    <div class="input-group">
+                        <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
+                               name="value">
+                        <button class="btn search-btn-style" type="submit">
+                            <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;" />
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <table class="table">
+                <thead>
                     <tr>
-                        <th>@user.Id</th>
-                        <td>@user.UserName</td>
-                        <td>@RolesContainer.ADMINISTRATOR</td>
-                        <td class="text-end">
-                            <a asp-action="RemoveUser"
-                               asp-route-userId="@user.Id"
-                               asp-route-role="@RolesContainer.ADMINISTRATOR"
-                               class="btn btn-danger">Remove</a>
-                        </td>
+                        <th scope="col">ID</th>
+                        <th scope="col">UserName</th>
+                        <th scope="col">Role</th>
+                        <th scope="col"></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Admins)
+                    {
+                        <tr>
+                            <th>@user.Id</th>
+                            <td>@user.UserName</td>
+                            <td>@RolesContainer.ADMINISTRATOR</td>
+                            <td class="text-end">
+                                <a asp-action="RemoveUser"
+                                   asp-route-userId="@user.Id"
+                                   asp-route-role="@RolesContainer.ADMINISTRATOR">
+                               <img src="~/icons/delete-icon-red.png" height="24" width="24"/></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

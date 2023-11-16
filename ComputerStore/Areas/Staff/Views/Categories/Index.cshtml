@@ -1,37 +1,60 @@
 ﻿@model List<ComputerStore.BusinessLogic.Domains.CategoryModel>
-<a asp-action="Create" asp-controller="Categories">Create</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Category Name</th>
-            <th scope="col">Image</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for(int i = 0; i < Model.Count; i++)
-        {
+
+<div class="struct-block">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <a asp-action="Create" asp-controller="Categories" class="btn active-btn">Add new</a>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col-md-4 col-sm-10">
+                <form class="d-flex" id="search-form" method="get" action="">
+                    <div class="input-group">
+                        <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
+                               name="value">
+                        <button class="btn search-btn-style" type="submit">
+                            <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;" />
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
             <tr>
-                <th scope="row">@i</th>
-                <td>@Model[i].Name</td>
-                <td>
-                    @if (Model[i].Thumbnail.Bytes != null)
-                    {
-                        <img height="24" width="24"
-                             alt="@Model[i].Thumbnail.Alt"
-                             src="data:image/png;base64, @Convert.ToBase64String(Model[i].Thumbnail.Bytes)" />
-                    }
-                </td>
-                <td><a class="btn btn-active" asp-area="Staff" 
-                    asp-controller="Categories" 
-                    asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a></td>
-                <td><a class="btn btn-active" 
-                    asp-controller="Categories" 
-                    asp-action="Delete" 
-                    asp-route-id="@Model[i].Id">Delete</a></td>
+                <th scope="col">#</th>
+                <th scope="col">Category Name</th>
+                <th scope="col">Image</th>
+                <th scope="col" class="text-end">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>@Model[i].Name</td>
+                    <td>
+                        @if (Model[i].Thumbnail.Bytes != null)
+                        {
+                            <img height="24" width="24"
+                                 alt="@Model[i].Thumbnail.Alt"
+                                 src="data:image/png;base64, @Convert.ToBase64String(Model[i].Thumbnail.Bytes)" />
+                        }
+                    </td>
+                    <td class="text-end">
+                        <a class="btn active-btn" asp-area="Staff"
+                           asp-controller="Categories"
+                           asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a>
+                        <a class="btn danger-btn"
+                           asp-controller="Categories"
+                           asp-action="Delete"
+                           asp-route-id="@Model[i].Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

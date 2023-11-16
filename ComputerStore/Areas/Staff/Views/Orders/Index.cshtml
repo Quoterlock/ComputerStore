@@ -1,29 +1,33 @@
 ﻿@model List<ComputerStore.BusinessLogic.Domains.OrderModel>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Customer</th>
-            <th scope="col">ID</th>
-            <th scope="col">Last Edit</th>
-            <th scope="col">Status</th>
-            <th scope="col"> </th>
-        </tr>
-    </thead>
-    <tbody>
-        @for(int i = 0; i < Model.Count; i++)
-        {
+<div class="struct-block">
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <th scope="row">@i</th>
-                <td>@Model[i].FirstName @Model[i].LastName</td>
-                <td>@Model[i].Id</td>
-                <td>@Model[i].LastUpdateTime.ToString("MM/dd/yyyy HH:mm")</td>
-                <td>@Model[i].Status.ToString()</td>
-                <td><a asp-action="Details" asp-route-orderId="@Model[i].Id">
-                    <img height="24" width="24" src="/icons/open-icon.png">
-                </a></td>
+                <th scope="col">#</th>
+                <th scope="col">Customer</th>
+                <th scope="col">ID</th>
+                <th scope="col">Last Edit</th>
+                <th scope="col">Status</th>
+                <th scope="col"> </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>@Model[i].FirstName @Model[i].LastName</td>
+                    <td>@Model[i].Id</td>
+                    <td>@Model[i].LastUpdateTime.ToString("MM/dd/yyyy HH:mm")</td>
+                    <td>@Model[i].Status.ToString()</td>
+                    <td>
+                        <a asp-action="Details" asp-route-orderId="@Model[i].Id">
+                            <img height="24" width="24" src="/icons/open-icon.png">
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
