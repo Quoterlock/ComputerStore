@@ -115,5 +115,14 @@ namespace ComputerStore.Areas.Staff.Controllers
             return NotFound();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(string value)
+        {
+            if(!string.IsNullOrEmpty(value))
+            {
+                return View(nameof(Index), await _ordersService.SearchAsync(value));
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

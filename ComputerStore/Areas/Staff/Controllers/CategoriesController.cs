@@ -142,6 +142,18 @@ namespace ComputerStore.Areas.Staff.Controllers
             return View(message);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(string value)
+        {
+            if(!string.IsNullOrEmpty(value))
+            {
+                ViewData["SearchValue"] = value;
+                var model = await _categoriesService.Search(value);
+                return View(nameof(Index), model);
+            }
+            return RedirectToAction();
+        }
+
         private byte[] ConvertFileToBytes(IFormFile file)
         {
             using (var ms = new MemoryStream())

@@ -154,5 +154,16 @@ namespace ComputerStore.BusinessLogic.Services
             }
             else throw new ArgumentNullException("itemID or orderID");
         }
+
+        public async Task<List<OrderModel>> SearchAsync(string value)
+        {
+            value = value.ToLower();
+            var orders = new List<Order>();
+            orders.AddRange(await _unitOfWork.Orders.GetAsync(o => o.Id.ToString().ToLower().Contains(value)));
+            orders.AddRange(await _unitOfWork.Orders.GetAsync(o => o.Status.ToString().ToLower().Contains(value)));
+            orders.AddRange(await _unitOfWork.Orders.GetAsync(o => o.LastName.ToLower().Contains(value)));
+            orders.AddRange(await _unitOfWork.Orders.GetAsync(o => o.FirstName.ToLower().Contains(value)));
+            return ConvertEntitiesToModels(orders);
+        }
     }
 }

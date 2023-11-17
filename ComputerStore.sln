@@ -5,8 +5,6 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStore", "ComputerStore\ComputerStore.csproj", "{795691EC-8A93-41C5-A6F2-C5558AD9B6D5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStoreUnitTests", "ComputerStoreUnitTests\ComputerStoreUnitTests.csproj", "{F8CFDA1F-9BE6-483D-ABA8-9307CC23D41D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStore.DataAccess", "ComputerStore.DataAccess\ComputerStore.DataAccess.csproj", "{DB4D395F-59A4-4A79-AE90-CD3C28E48349}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerStore.BusinessLogic", "ComputerStore.BusinessLogic\ComputerStore.BusinessLogic.csproj", "{C65D89C5-E8B1-46F6-980F-0E127D923D64}"
@@ -23,10 +21,6 @@ Global
 		{795691EC-8A93-41C5-A6F2-C5558AD9B6D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{795691EC-8A93-41C5-A6F2-C5558AD9B6D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{795691EC-8A93-41C5-A6F2-C5558AD9B6D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8CFDA1F-9BE6-483D-ABA8-9307CC23D41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8CFDA1F-9BE6-483D-ABA8-9307CC23D41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8CFDA1F-9BE6-483D-ABA8-9307CC23D41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8CFDA1F-9BE6-483D-ABA8-9307CC23D41D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB4D395F-59A4-4A79-AE90-CD3C28E48349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB4D395F-59A4-4A79-AE90-CD3C28E48349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4D395F-59A4-4A79-AE90-CD3C28E48349}.Release|Any CPU.ActiveCfg = Release|Any CPU

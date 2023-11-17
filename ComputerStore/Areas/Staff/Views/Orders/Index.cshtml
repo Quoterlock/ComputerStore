@@ -1,5 +1,27 @@
 ﻿@model List<ComputerStore.BusinessLogic.Domains.OrderModel>
+@{
+    string searchValue = string.Empty;
+    if (ViewData["SearchValue"] != null)
+    {
+        searchValue = ViewData["SearchValue"].ToString() ?? string.Empty;
+    }
+}
 <div class="struct-block">
+    <div class="col-md-4 col-sm-10">
+        <form class="d-flex" id="search-form" method="get" asp-action="Search">
+            <div class="input-group">
+                <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
+                       name="value">
+                <button class="btn search-btn-style" type="submit">
+                    <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;" />
+                </button>
+            </div>
+        </form>
+    </div>
+    @if (!string.IsNullOrEmpty(searchValue))
+    {
+        <h5 class="my-2">Search results for: @searchValue</h5>
+    }
     <table class="table table-striped">
         <thead>
             <tr>

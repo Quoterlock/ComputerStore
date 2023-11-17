@@ -18,5 +18,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
         Task SetStatus(string id, string status);
         Task RemoveItem(string itemId, string orderId);
         Task AddItem(string itemId, string orderId);
+        Task<List<OrderModel>> SearchAsync(string value);
     }
 }

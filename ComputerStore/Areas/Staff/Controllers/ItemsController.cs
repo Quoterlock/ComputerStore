@@ -41,18 +41,6 @@ namespace ComputerStore.Areas.Staff.Controllers
             return View(items);
         }
 
-
-        public async Task<IActionResult> Search(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                var items = await _itemsService.SearchAsync(value);
-                ViewData["SearchValue"] = value;
-                return View(items);
-            }
-            return NotFound();
-        }
-
         // GET: Items/Details/5
         public async Task<IActionResult> Details(string itemId)
         {
@@ -181,6 +169,17 @@ namespace ComputerStore.Areas.Staff.Controllers
                 await imageFile.CopyToAsync(stream);
                 return stream.ToArray();
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                ViewData["SearchValue"] = value;
+                return View(nameof(Index), await _itemsService.SearchAsync(value));
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

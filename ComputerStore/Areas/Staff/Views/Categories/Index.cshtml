@@ -1,4 +1,11 @@
 ﻿@model List<ComputerStore.BusinessLogic.Domains.CategoryModel>
+@{
+    string searchValue = string.Empty;
+    if (ViewData["SearchValue"] != null)
+    {
+        searchValue = ViewData["SearchValue"].ToString()??string.Empty;
+    }
+}
 
 <div class="struct-block">
     <div class="container">
@@ -9,7 +16,7 @@
             <div class="col">
             </div>
             <div class="col-md-4 col-sm-10">
-                <form class="d-flex" id="search-form" method="get" action="">
+                <form class="d-flex" id="search-form" method="get" asp-action="Search">
                     <div class="input-group">
                         <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
                                name="value">
@@ -21,6 +28,10 @@
             </div>
         </div>
     </div>
+    @if(!string.IsNullOrEmpty(searchValue))
+    {
+        <h5 class="my-2">Search results for: @searchValue</h5>
+    }
     <table class="table">
         <thead>
             <tr>

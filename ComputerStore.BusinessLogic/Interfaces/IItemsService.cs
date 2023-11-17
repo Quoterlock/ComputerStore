@@ -13,10 +13,10 @@ namespace ComputerStore.BusinessLogic.Interfaces
         Task<List<ItemModel>> GetAllAsync();
         Task<ItemModel> GetByIdAsync(string id);
         Task<List<ItemModel>> GetFromCategoryAsync(string categoryId);
-        Task<List<ItemModel>> SearchAsync(string value);
         Task RemoveAsync(string id);
         Task UpdateAsync(ItemModel item);
         Task AddAsync(ItemModel item);
         List<ItemModel> Sort(List<ItemModel> items, Utilities.SortMode sort);
+        Task<List<ItemModel>> SearchAsync(string value);
     }
 }

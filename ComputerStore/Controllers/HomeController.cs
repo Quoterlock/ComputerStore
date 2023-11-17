@@ -7,12 +7,10 @@ namespace ComputerStore.Areas.Customer.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
+        public HomeController(UserManager<IdentityUser> userManager)
         {
-            _logger = logger;
             _userManager = userManager;
         }
 

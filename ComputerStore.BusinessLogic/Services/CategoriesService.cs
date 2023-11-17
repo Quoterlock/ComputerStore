@@ -82,5 +82,13 @@ namespace ComputerStore.BusinessLogic.Services
         {
             return await _unitOfWork.Categories.IsExists(id);
         }
+
+        public async Task<List<CategoryModel>> Search(string value)
+        {
+            value = value.ToLower();
+            var entities = new List<Category>();
+            entities.AddRange(await _unitOfWork.Categories.GetAsync(c => c.Name.ToLower().Contains(value)));
+            return ConvertEntitiesToModels(entities);
+        }
     }
 }
