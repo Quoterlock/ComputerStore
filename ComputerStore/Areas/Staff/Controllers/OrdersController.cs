@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Runtime.InteropServices;
 
 namespace ComputerStore.Areas.Staff.Controllers
 {
@@ -116,11 +117,35 @@ namespace ComputerStore.Areas.Staff.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Search(string value)
+        public async Task<IActionResult> Search(string value, string status)
         {
-            if(!string.IsNullOrEmpty(value))
+            var items = new List<OrderModel>();
+            ViewData["StatusFilter"] = status;
+            ViewData["SearchValue"] = value;
+            if (!string.IsNullOrEmpty(status) && string.IsNullOrEmpty(value))
             {
-                return View(nameof(Index), await _ordersService.SearchAsync(value));
+                items = await _ordersService.GetAll();
+                if (status != OrderStatuses.NONE)
+                    items = items.Where(i => i.Status.ToString().Equals(status)).ToList();
+                return View(nameof(Index), items);
+            }
+            else if(!string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(status))
+            {
+                items = await _ordersService.SearchAsync(value);
+                if (status != OrderStatuses.NONE)
+                    items = items.Where(i => i.Status.ToString().Equals(status)).ToList();
+                return View(nameof(Index), items);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByStatus(string status)
+        {
+            if (!string.IsNullOrEmpty(status) && !status.Equals(OrderStatuses.NONE))
+            {
+                ViewData["StatusFilter"] = status;
+                return View(nameof(Index), await _ordersService.GetByStatus(status));
             }
             return RedirectToAction(nameof(Index));
         }

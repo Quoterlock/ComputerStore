@@ -8,5 +8,6 @@
         public const string SHIPPED = "Shipped";
         public const string CANCELLED = "Cancelled";
         public const string REFUNDED = "Refunded";
+        public const string NONE = "None";
     }
 }

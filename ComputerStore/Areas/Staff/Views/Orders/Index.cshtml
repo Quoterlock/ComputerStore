@@ -1,22 +1,48 @@
-﻿@model List<ComputerStore.BusinessLogic.Domains.OrderModel>
+﻿@using ComputerStore.Utilities;
+@model List<ComputerStore.BusinessLogic.Domains.OrderModel>
 @{
     string searchValue = string.Empty;
     if (ViewData["SearchValue"] != null)
     {
         searchValue = ViewData["SearchValue"].ToString() ?? string.Empty;
     }
+
+    string statusFilter = OrderStatuses.NONE;
+    if (ViewData["StatusFilter"] != null)
+    {
+        statusFilter = ViewData["StatusFilter"].ToString() ?? string.Empty;
+    }
 }
 <div class="struct-block">
-    <div class="col-md-4 col-sm-10 mb-3">
-        <form class="d-flex" id="search-form" method="get" asp-action="Search">
-            <div class="input-group">
-                <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
-                       name="value">
-                <button class="btn search-btn-style" type="submit">
-                    <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;" />
-                </button>
-            </div>
-        </form>
+    <div class="row">
+        <div class="col-md-4 col-sm-10 mb-3">
+            <form class="d-flex" id="search-form" method="get" asp-action="Search">
+                <input type="hidden" value="@statusFilter" name="status"/>
+                <div class="input-group">
+                    <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
+                           name="value">
+                    <button class="btn search-btn-style" type="submit">
+                        <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;" />
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 col-sm-10 mb-3 ms-auto">
+            <form class="d-flex" method="get" asp-action="GetByStatus">
+                <div class="input-group">
+                    <select name="status" title="Select filter..." class="form-control">
+                        <option value="@OrderStatuses.NONE">All</option>
+                        <option value="@OrderStatuses.PENDING">@OrderStatuses.PENDING</option>
+                        <option value="@OrderStatuses.CANCELLED">@OrderStatuses.CANCELLED</option>
+                        <option value="@OrderStatuses.SHIPPED">@OrderStatuses.SHIPPED</option>
+                        <option value="@OrderStatuses.APPRUVED">@OrderStatuses.APPRUVED</option>
+                        <option value="@OrderStatuses.IN_PROGRESS">@OrderStatuses.IN_PROGRESS</option>
+                        <option value="@OrderStatuses.REFUNDED">@OrderStatuses.REFUNDED</option>
+                    </select>
+                    <button class="btn search-btn-style" type="submit">Apply</button>
+                </div>
+            </form>
+        </div>
     </div>
     @if (!string.IsNullOrEmpty(searchValue))
     {

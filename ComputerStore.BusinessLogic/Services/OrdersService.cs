@@ -165,5 +165,11 @@ namespace ComputerStore.BusinessLogic.Services
             orders.AddRange(await _unitOfWork.Orders.GetAsync(o => o.FirstName.ToLower().Contains(value)));
             return ConvertEntitiesToModels(orders);
         }
+
+        public async Task<List<OrderModel>> GetByStatus(string status)
+        {
+            var entities = await _unitOfWork.Orders.GetAsync(o => o.Status.Equals(status));
+            return ConvertEntitiesToModels(entities);
+        }
     }
 }
