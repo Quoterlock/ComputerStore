@@ -4,14 +4,14 @@
     <h1 class="text-center">Edit Category</h1>
     <hr/>
     <div class="row">
-        <img class="mb-3" src="data:image/png;base64, @Convert.ToBase64String(Model.Category.Thumbnail.Bytes)" width="32" height="32" />
+        <img class="mb-3" src="data:image/png;base64, @Convert.ToBase64String(Model.Category.Thumbnail.Bytes)" style="width:200px;" height="200"/>
         <form asp-action="Edit" enctype="multipart/form-data" method="post">
             <input asp-for="Category.Id" type="hidden" value="@Model.Category.Id" />
             <input asp-for="Category.Thumbnail.Id" type="hidden" value="@Model.Category.Thumbnail.Id"/>
             <div class="form-group mb-3">
                 <label asp-for="Category.Name" class="control-label"></label>
                 <input asp-for="Category.Name" value="@Model.Category.Name" class="form-control" />
-                <input type="file" accept=".png" asp-for="ThumbnailFile" />
+                <input class="form-control" type="file" accept=".png" asp-for="ThumbnailFile" />
             </div>
             <div class="form-group text-end">
                 <a class="btn light-btn" asp-action="Index">Back</a>

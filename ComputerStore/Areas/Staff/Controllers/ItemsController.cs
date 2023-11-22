@@ -21,18 +21,18 @@ namespace ComputerStore.Areas.Staff.Controllers
     [Authorize(Roles = RolesContainer.MANAGER + "," + RolesContainer.ADMINISTRATOR)]
     public class ItemsController : Controller
     {
-        private IItemsService _itemsService;
-        private ICategoriesService _categoriesService;
+        private readonly IItemsService _itemsService;
+        private readonly ICategoriesService _categoriesService;
         public ItemsController(IItemsService itemsService, ICategoriesService categoriesService)
         {
             _itemsService = itemsService;
             _categoriesService = categoriesService;
         }
 
-        // GET: Items/?categoryId
+        [HttpGet]
         public async Task<IActionResult> Index(string categoryId)
         {
-            var items = new List<ItemModel>();
+            List<ItemModel> items;
             if (!string.IsNullOrEmpty(categoryId))
                 items = await _itemsService.GetFromCategoryAsync(categoryId);
             else 
@@ -41,10 +41,10 @@ namespace ComputerStore.Areas.Staff.Controllers
             return View(items);
         }
 
-        // GET: Items/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string itemId)
         {
-            if (string.IsNullOrEmpty(itemId))
+            if (string.IsNullOrEmpty(itemId)) 
                 return NotFound();
             try
             {
@@ -53,21 +53,18 @@ namespace ComputerStore.Areas.Staff.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return ErrorMessage(ex);
             }
         }
 
-        // GET: Items/Create
+        [HttpGet]
         public async Task<IActionResult> Create(string categoryId)
         {
-            
             var model = new ItemFormModel();
             model.Item = new ItemModel();
             model.Categories = await _categoriesService.GetAllAsync();
-            
             if (!string.IsNullOrEmpty(categoryId) && model.Categories.FirstOrDefault(c =>c.Id == categoryId) != null)
                 model.SelectedCategoryId = categoryId;
-            
             return View(model);
         }
 
@@ -78,9 +75,14 @@ namespace ComputerStore.Areas.Staff.Controllers
             if (item != null && item.Name != null && !string.IsNullOrEmpty(model.SelectedCategoryId))
             {
                 item.Category = new CategoryModel() { Id = model.SelectedCategoryId };
-                item.Image = new ImageModel();
-                item.Image.Bytes = await FileToBytes(model.ImageFile);
-                item.Image.Alt = model.Item.Name + "-thumbnail";
+                if(model.ImageFile != null)
+                {
+                    item.Image = new ImageModel();
+                    item.Image.Bytes = await FileToBytes(model.ImageFile);
+                    item.Image.Alt = item.Name + "-thumbnail";
+                } 
+                else return View(item);
+
                 await _itemsService.AddAsync(item);
                 return RedirectToAction(nameof(Index));
             }
@@ -90,46 +92,42 @@ namespace ComputerStore.Areas.Staff.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string itemId)
         {
-            if (string.IsNullOrEmpty(itemId)) 
-                return NotFound();
-            
-            var item = await _itemsService.GetByIdAsync(itemId);
-            
-            if (item != null)
+            if (!string.IsNullOrEmpty(itemId))
             {
-                var categories = await _categoriesService.GetAllAsync();
-                var model = new ItemFormModel
+                var item = await _itemsService.GetByIdAsync(itemId);
+                if (item != null)
                 {
-                    Item = item,
-                    Categories = categories,
-                    SelectedCategoryId = item.Category.Id
-                };
-                return View(model);
+                    var categories = await _categoriesService.GetAllAsync();
+                    var model = new ItemFormModel
+                    {
+                        Item = item,
+                        Categories = categories,
+                        SelectedCategoryId = item.Category != null ?
+                            item.Category.Id : string.Empty
+                    };
+                    return View(model);
+                }
             }
-            else 
-                return NotFound();
+            return NotFound();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ItemFormModel model)
         {
             var item = model.Item;
 
-            if (item != null && string.IsNullOrEmpty(item.Id)) 
-                return NotFound();
-
-            if(!string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.Id))
+            if (item != null && !string.IsNullOrEmpty(item.Id))
             {
-                if (!string.IsNullOrEmpty(model.SelectedCategoryId))
-                    item.Category = await _categoriesService.GetAsync(model.SelectedCategoryId);
-                
-                await _itemsService.UpdateAsync(item);
-
-                return RedirectToAction(nameof(Index));
+                if (!string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.Id))
+                {
+                    if (!string.IsNullOrEmpty(model.SelectedCategoryId))
+                        item.Category = await _categoriesService.GetAsync(model.SelectedCategoryId);
+                    await _itemsService.UpdateAsync(item);
+                    return RedirectToAction(nameof(Index));
+                }
+                return RedirectToAction(nameof(Edit), "Items", new { itemId = item.Id });
             }
-
-            return RedirectToAction(nameof(Edit), item.Id);
+            else return NotFound();
         }
 
         [HttpGet]
@@ -138,13 +136,13 @@ namespace ComputerStore.Areas.Staff.Controllers
             if (!string.IsNullOrEmpty(itemId))
             {
                 var item = await _itemsService.GetByIdAsync(itemId);   
-                if(item != null) return View(item);
+                if(item != null) 
+                    return View(item);
             }
             return NotFound();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             if (!string.IsNullOrEmpty(id))
@@ -156,19 +154,10 @@ namespace ComputerStore.Areas.Staff.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return NotFound(ex.Message);
+                    return ErrorMessage(ex);
                 }
             }
             return NotFound();
-        }
-
-        private async Task<byte[]> FileToBytes(IFormFile imageFile)
-        {
-            using (var stream = new MemoryStream())
-            {
-                await imageFile.CopyToAsync(stream);
-                return stream.ToArray();
-            }
         }
 
         [HttpGet]
@@ -180,6 +169,18 @@ namespace ComputerStore.Areas.Staff.Controllers
                 return View(nameof(Index), await _itemsService.SearchAsync(value));
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        private static async Task<byte[]> FileToBytes(IFormFile imageFile)
+        {
+            var stream = new MemoryStream();
+            await imageFile.CopyToAsync(stream);
+            return stream.ToArray();
+        }
+
+        private IActionResult ErrorMessage(Exception ex)
+        {
+            return View("Error", ex.Message);
         }
     }
 }

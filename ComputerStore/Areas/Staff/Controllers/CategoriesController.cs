@@ -22,41 +22,34 @@ namespace ComputerStore.Areas.Staff.Controllers
     [Authorize(Roles = RolesContainer.MANAGER + "," + RolesContainer.ADMINISTRATOR)]
     public class CategoriesController : Controller
     {
-        private ICategoriesService _categoriesService;
-        private IImagesService _imagesService;
+        private readonly ICategoriesService _categoriesService;
+        private readonly IImagesService _imagesService;
         public CategoriesController(ICategoriesService categoriesService, IImagesService imagesService)
         {
             _categoriesService = categoriesService;
             _imagesService = imagesService;
         }
 
-        // GET: Categories (public for other visitors)
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var categories = await _categoriesService.GetAllAsync();
             return View(categories);
         }
 
-        // GET: Categories/Create
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpGet]
         public IActionResult Create()
         {
-            var model = new CategoryFormModel() { 
-                Category = new CategoryModel() };
-            return View(model);
+            return View(new CategoryFormModel());
         }
 
-        // POST: Categories/Create
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryFormModel model)
         {
             if (ModelIsValid(model))
             {
                 var category = model.Category;
-                if (!string.IsNullOrEmpty(category.Name) && model.ThumbnailFile != null)
+                if (category != null && model.ThumbnailFile != null)
                 {
                     category.Thumbnail = new ImageModel
                     {
@@ -70,76 +63,70 @@ namespace ComputerStore.Areas.Staff.Controllers
             return View(model);
         }
 
-        // GET: Categories/Edit/5
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var model = new CategoryFormModel();
             try 
             {
                 var category = await _categoriesService.GetAsync(id);
-                model.Category = category;
+                var model = new CategoryFormModel(){
+                    Category = category
+                };
+                return View(model);
 
-            } catch (Exception ex) { return NotFound(ex.Message); }
-
-            return View(model);
+            } catch (Exception ex) 
+            { 
+                return ErrorMessage(ex);
+            }
         }
 
-        // POST: Categories/Edit/5
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpPost]
         public async Task<IActionResult> Edit(CategoryFormModel model)
         {
-            if (!ModelIsValid(model) && await _categoriesService.IsExistsAsync(model.Category.Id)) 
-                return NotFound(model.Category.Id);
-
-            try
+            if(ModelIsValid(model))
             {
-                var category = model.Category;
-                if (model.ThumbnailFile != null)
+                if (model.Category != null && await _categoriesService.IsExistsAsync(model.Category.Id??string.Empty))
                 {
-                    category.Thumbnail = new ImageModel();
-                    category.Thumbnail.Bytes = ConvertFileToBytes(model.ThumbnailFile);
-                    category.Thumbnail.Alt = category.Name + "-category-icon";
+                    try
+                    {
+                        var category = model.Category;
+                        if (model.ThumbnailFile != null)
+                        {
+                            category.Thumbnail = new ImageModel()
+                            {
+                                Bytes = ConvertFileToBytes(model.ThumbnailFile),
+                                Alt = category.Name + "-category-icon"
+                            };
+                            await _categoriesService.UpdateAsync(category);
+                            return RedirectToAction(nameof(Index));
+                        }
+                        return View(nameof(Edit), model);
+                    }
+                    catch (Exception ex)
+                    {
+                        return ErrorMessage(ex);
+                    }
                 }
-                await _categoriesService.UpdateAsync(category);
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction(nameof(Error), nameof(CategoriesController), ex.Message);
-            }
-
-            return RedirectToAction(nameof(Index));
-
+            } 
+            return NotFound();
         }
 
-        // GET: Categories/Delete/5
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            var model = await _categoriesService.GetAsync(id);
-            return View(model);
+            return View(await _categoriesService.GetAsync(id));
         }
 
-        // POST: Categories/Delete/5
-        //[Authorize(Roles = RolesContainer.MANAGER + ", " + RolesContainer.ADMINISTRATOR)]
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(CategoryModel model)
         {
             if(!string.IsNullOrEmpty(model.Id))
             {
                 var category = await _categoriesService.GetAsync(model.Id);
-                if (category != null)
+                if (category != null && !string.IsNullOrEmpty(category.Id))
                     await _categoriesService.RemoveAsync(category.Id);
             }
             return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult Error(string message)
-        {
-            return View(message);
         }
 
         [HttpGet]
@@ -148,13 +135,12 @@ namespace ComputerStore.Areas.Staff.Controllers
             if(!string.IsNullOrEmpty(value))
             {
                 ViewData["SearchValue"] = value;
-                var model = await _categoriesService.Search(value);
-                return View(nameof(Index), model);
+                return View(nameof(Index), await _categoriesService.Search(value));
             }
             return RedirectToAction();
         }
 
-        private byte[] ConvertFileToBytes(IFormFile file)
+        private static byte[] ConvertFileToBytes(IFormFile file)
         {
             using (var ms = new MemoryStream())
             {
@@ -163,9 +149,14 @@ namespace ComputerStore.Areas.Staff.Controllers
             }
         }
 
-        private bool ModelIsValid(CategoryFormModel model)
+        private static bool ModelIsValid(CategoryFormModel model)
         {
             return model != null && model.Category != null && !string.IsNullOrEmpty(model.Category.Name);
+        }
+
+        private IActionResult ErrorMessage(Exception ex)
+        {
+            return View("Error", ex.Message);
         }
     }
 }
