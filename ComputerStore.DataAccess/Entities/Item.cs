@@ -14,7 +14,6 @@ namespace ComputerStore.DataAccess.Entities
 
         [ForeignKey("CategoryId")]
         public Category? Category { get; set; }
-        [ForeignKey("ImageId")]
-        public Image? Image { get; set; }
+        public byte[]? ImageBytes { get; set; }
     }
 }

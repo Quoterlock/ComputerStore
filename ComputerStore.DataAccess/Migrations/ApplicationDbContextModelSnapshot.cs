@@ -29,34 +29,16 @@ namespace ComputerStore.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImageId");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Image", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Alt")
-                        .HasColumnType("text");
-
-                    b.Property<byte[]>("Bytes")
+                    b.Property<byte[]>("ImageBytes")
                         .HasColumnType("bytea");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("ComputerStore.DataAccess.Entities.Item", b =>
@@ -71,8 +53,8 @@ namespace ComputerStore.DataAccess.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageId")
-                        .HasColumnType("text");
+                    b.Property<byte[]>("ImageBytes")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -83,8 +65,6 @@ namespace ComputerStore.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("ImageId");
 
                     b.ToTable("Items");
                 });
@@ -360,28 +340,13 @@ namespace ComputerStore.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ComputerStore.DataAccess.Entities.Category", b =>
-                {
-                    b.HasOne("ComputerStore.DataAccess.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
-                    b.Navigation("Image");
-                });
-
             modelBuilder.Entity("ComputerStore.DataAccess.Entities.Item", b =>
                 {
                     b.HasOne("ComputerStore.DataAccess.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("ComputerStore.DataAccess.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
                     b.Navigation("Category");
-
-                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

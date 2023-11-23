@@ -53,16 +53,16 @@ namespace ComputerStore.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Images",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Alt = table.Column<string>(type: "text", nullable: true),
-                    Bytes = table.Column<byte[]>(type: "bytea", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    ImageBytes = table.Column<byte[]>(type: "bytea", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,24 +207,6 @@ namespace ComputerStore.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    ImageId = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -233,7 +215,7 @@ namespace ComputerStore.DataAccess.Migrations
                     Description = table.Column<string>(type: "text", nullable: true),
                     Price = table.Column<int>(type: "integer", nullable: false),
                     CategoryId = table.Column<string>(type: "text", nullable: true),
-                    ImageId = table.Column<string>(type: "text", nullable: true)
+                    ImageBytes = table.Column<byte[]>(type: "bytea", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -242,11 +224,6 @@ namespace ComputerStore.DataAccess.Migrations
                         name: "FK_Items_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Items_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
                         principalColumn: "Id");
                 });
 
@@ -288,19 +265,9 @@ namespace ComputerStore.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_ImageId",
-                table: "Categories",
-                column: "ImageId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Items_CategoryId",
                 table: "Items",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_ImageId",
-                table: "Items",
-                column: "ImageId");
         }
 
         /// <inheritdoc />
@@ -338,9 +305,6 @@ namespace ComputerStore.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "Images");
         }
     }
 }

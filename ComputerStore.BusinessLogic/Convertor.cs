@@ -14,33 +14,17 @@ namespace ComputerStore.BusinessLogic
 {
     internal static class Convertor
     {
-        internal static Image ConvertModelToEntity(ImageModel? model)
-        {
-            return new Image
-            {
-                Id = model.Id,
-                Alt = model.Alt,
-                Bytes = model.Bytes
-            };
-        }
-
-        internal static ImageModel ConvertEntityToModel(Image entity)
-        {
-            return new ImageModel()
-            {
-                Alt = entity.Alt,
-                Bytes = entity.Bytes,
-                Id = entity.Id
-            };
-        }
-
         public static CategoryModel ConvertEntityToModel(Category entity)
         {
             return new CategoryModel
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                Thumbnail = ConvertEntityToModel(entity.Image??new Image())
+                Thumbnail = new ImageModel 
+                { 
+                    Bytes = entity.ImageBytes,
+                    Alt = entity.Name
+                }
             };
         }
 
@@ -50,9 +34,7 @@ namespace ComputerStore.BusinessLogic
             {
                 Id = model.Id,
                 Name = model.Name,
-                Image = new Image() { 
-                    Bytes = model.Thumbnail.Bytes, 
-                    Alt =  model.Thumbnail.Alt },
+                ImageBytes = model.Thumbnail.Bytes
             };
         }
 
@@ -63,7 +45,11 @@ namespace ComputerStore.BusinessLogic
                 Id = entity.Id,
                 Name = entity.Name,
                 Description = entity.Description,
-                Image = ConvertEntityToModel(entity.Image),
+                Image = new ImageModel 
+                { 
+                    Bytes = entity.ImageBytes,
+                    Alt = entity.Name 
+                },
                 Price = entity.Price,
                 Category = new CategoryModel
                 {
@@ -80,7 +66,7 @@ namespace ComputerStore.BusinessLogic
                 Name = model.Name,
                 Price = model.Price,
                 Description = model.Description,
-                Image = ConvertModelToEntity(model.Image),
+                ImageBytes = model.Image.Bytes,
                 Category = new Category() { Id = model.Category.Id }
             };
         }

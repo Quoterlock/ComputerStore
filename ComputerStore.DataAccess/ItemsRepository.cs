@@ -19,7 +19,6 @@ namespace ComputerStore.DataAccess
             {
                 var result = await _context.Items
                     .Include(item => item.Category)
-                    .Include(item => item.Image)
                     .Where(item => item.Id == id)
                     .FirstOrDefaultAsync();
 
@@ -36,7 +35,6 @@ namespace ComputerStore.DataAccess
         {
             var items = _context.Items
                 .Include(item => item.Category)
-                .Include(item => item.Image)
                 .Where(predicate).ToList();
             if (items == null) items = new List<Item>();
             return items;
@@ -46,7 +44,6 @@ namespace ComputerStore.DataAccess
         {
             var items = await _context.Items
                 .Include(item => item.Category)
-                .Include(item => item.Image)
                 .ToListAsync();
             if (items == null) items = new List<Item>();
             return items;
@@ -67,16 +64,6 @@ namespace ComputerStore.DataAccess
                 }
                 else 
                     throw new Exception("Category is null!");
-                /*
-                if (item.Image != null && !string.IsNullOrEmpty(item.Image.Id))
-                {
-                    var image = await _context.Images.FirstOrDefaultAsync(i=>i.Id == item.Image.Id);
-                    if (image != null) 
-                        item.Image = image; 
-                    else 
-                        throw new Exception("Cannot find image id:" + item.Image.Id);
-                }
-                */
                 _context.Add(item);
             }
             else throw new Exception("Item is not valid!!!");

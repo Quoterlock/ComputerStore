@@ -23,11 +23,9 @@ namespace ComputerStore.Areas.Staff.Controllers
     public class CategoriesController : Controller
     {
         private readonly ICategoriesService _categoriesService;
-        private readonly IImagesService _imagesService;
-        public CategoriesController(ICategoriesService categoriesService, IImagesService imagesService)
+        public CategoriesController(ICategoriesService categoriesService)
         {
             _categoriesService = categoriesService;
-            _imagesService = imagesService;
         }
 
         [HttpGet]

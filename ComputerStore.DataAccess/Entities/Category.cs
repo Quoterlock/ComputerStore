@@ -8,8 +8,7 @@ namespace ComputerStore.DataAccess.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public string? Id { get; set; }
-        public string? Name { get; set; } = string.Empty;
-        [ForeignKey("ImageId")]
-        public Image? Image { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public byte[]? ImageBytes { get; set; }
     }
 }

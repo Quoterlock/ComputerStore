@@ -31,50 +31,32 @@ namespace ComputerStore.DataAccess
         }
         public async Task UpdateAsync(Category item)
         {
-            if (item != null && item.Id != null)
+            if(item != null && item.Id != null)
             {
-                if (item.Image.Bytes.Length == 0)
-                {
-                    var tmp = await _context.Categories.FirstOrDefaultAsync(i => i.Id == item.Id);
-                    tmp.Name = item.Name;
-                    tmp.Id = item.Id;
-                    _context.Categories.Update(tmp);
-                }
-                else _context.Categories.Update(item);
+                _context.Update(item);
             }
             else throw new Exception("Invalid category item");
         }
 
         public async Task<List<Category>> GetAsync(Func<Category, bool> predicate)
         {
-            List<Category> result = _context.Categories
-                .Include(c => c.Image)
-                .Where(predicate).ToList();
-            if (result == null)
-                result = new List<Category>();
+            List<Category> result = _context.Categories.Where(predicate).ToList();
+            result ??= new List<Category>();
             return result;
         }
 
         public async Task<List<Category>> GetAsync()
         {
-            List<Category> result = await _context.Categories
-                .Include(c => c.Image)
-                .ToListAsync();
-            if (result == null)
-                result = new List<Category>();
-            return result;
+            List<Category> result = await _context.Categories.ToListAsync();
+            return result ?? new List<Category>();
         }
 
         public async Task<Category> GetAsync(string id)
         {
             var item = await _context.Categories
-                .Include(c => c.Image)
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
-            if (item == null)
-                throw new Exception("Category not found: id:" + id);
-
-            return item;
+            return item ?? throw new Exception("Category not found: id:" + id);
         }
 
         public async Task<bool> IsExists(string id)
