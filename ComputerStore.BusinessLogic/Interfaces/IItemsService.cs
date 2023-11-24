@@ -16,7 +16,7 @@ namespace ComputerStore.BusinessLogic.Interfaces
         Task RemoveAsync(string id);
         Task UpdateAsync(ItemModel item);
         Task AddAsync(ItemModel item);
-        List<ItemModel> Sort(List<ItemModel> items, Utilities.SortMode sort);
+        List<ItemModel> Sort(List<ItemModel> items, string sort);
         Task<List<ItemModel>> SearchAsync(string value);
     }
 }

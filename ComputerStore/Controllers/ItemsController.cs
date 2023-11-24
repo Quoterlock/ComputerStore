@@ -14,6 +14,7 @@ namespace ComputerStore.Controllers
     {
         private readonly IItemsService _itemsService;
         private readonly ICategoriesService _categoriesService;
+
         public ItemsController(IItemsService itemsService, ICategoriesService categoriesService)
         {
             _itemsService = itemsService;
@@ -32,16 +33,10 @@ namespace ComputerStore.Controllers
                 category = await _categoriesService.GetAsync(categoryId);
             }
             else
-            {
                 items = await _itemsService.GetAllAsync();
-            }
 
-            var sortMode = GetSortEnum(sortBy);
-            if (sortMode != SortMode.ItemId)
-            {
-                items = _itemsService.Sort(items, GetSortEnum(sortBy));
-            }
-                
+            model.Items = _itemsService.Sort(items, sortBy);
+            model.SortBy = sortBy ?? SortMode.ItemId.ToString();
 
             if (category != null)
             {
@@ -49,12 +44,7 @@ namespace ComputerStore.Controllers
                 model.CategoryID = categoryId;
             }
             else
-            {
                 model.Title = "All";
-            }
-
-            model.Items = items ?? new List<ItemModel>();
-            model.SortBy = sortMode;
 
             return View(model);
         }
@@ -82,15 +72,10 @@ namespace ComputerStore.Controllers
                 ViewData["SearchValue"] = value;
 
                 var model = new ItemsListViewModel();
-
                 model.Items = await _itemsService.SearchAsync(value) ?? new List<ItemModel>();
                 model.Title = "Search";
-
-                var sortMode = GetSortEnum(sortBy);
-                model.SortBy = sortMode;
-
-                if (sortMode != SortMode.ItemId)
-                    model.Items = _itemsService.Sort(model.Items, GetSortEnum(sortBy));
+                model.SortBy = sortBy;
+                model.Items = _itemsService.Sort(model.Items, sortBy);
 
                 return View(model);
             }
@@ -98,13 +83,6 @@ namespace ComputerStore.Controllers
                 return RedirectToAction(nameof(Index));
         }
 
-        private static SortMode GetSortEnum(string sortBy)
-        {
-            if (sortBy == null) return SortMode.ItemId;
-            if (sortBy.Equals("costUp")) return SortMode.CostUp;
-            if (sortBy.Equals("costDown")) return SortMode.CostDown;
-            else return SortMode.ItemId;
-        }
         private IActionResult ErrorMessage(Exception ex)
         {
             return View("Error", ex.Message);

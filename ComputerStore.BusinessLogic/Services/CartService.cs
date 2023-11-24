@@ -1,5 +1,7 @@
-﻿using ComputerStore.BusinessLogic.Domains;
+﻿using ComputerStore.BusinessLogic.Adapters;
+using ComputerStore.BusinessLogic.Domains;
 using ComputerStore.BusinessLogic.Interfaces;
+using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System;
@@ -12,12 +14,17 @@ namespace ComputerStore.BusinessLogic.Services
 {
     public class CartService : ICartService
     {
-        private IUnitOfWork _unitOfWork;
-        private IOrdersService _ordersService;
-        public CartService(IUnitOfWork unitOfWork, IOrdersService ordersService)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IOrdersService _ordersService;
+        private readonly IEntityToModelAdapter<Item, ItemModel> _itemAdapter;
+
+        public CartService(IUnitOfWork unitOfWork, 
+            IOrdersService ordersService,
+            IEntityToModelAdapter<Item, ItemModel> itemAdapter)
         {
             _unitOfWork = unitOfWork;
             _ordersService = ordersService;
+            _itemAdapter = itemAdapter;
         }
 
         public async Task AddItem(string userId, string itemId)
@@ -41,22 +48,27 @@ namespace ComputerStore.BusinessLogic.Services
         public async Task<Dictionary<ItemModel, int>> GetItems(string userId)
         {
             if(string.IsNullOrEmpty(userId)) 
-                throw new ArgumentNullException("userId");
-            
-            var cart = await _unitOfWork.UserCart.GetUserCart(userId); 
-            var items = new Dictionary<ItemModel, int>();
-            
-            foreach (var itemID in cart.ItemsIDs)
+                throw new ArgumentNullException("user Id");
+            try
             {
-                var entity = await _unitOfWork.Items.GetAsync(itemID);
-                var itemModel = Convertor.EntityToModel(entity);
-                if (items.Keys.Any(k => k.Id == itemModel.Id))
-                    items[items.Keys.FirstOrDefault(k => k.Id == itemModel.Id)]++;
-                else
-                    items.Add(itemModel, 1);
+                var cart = await _unitOfWork.UserCart.GetUserCart(userId);
+                var items = new Dictionary<ItemModel, int>();
+
+                foreach (var itemID in cart.ItemsIDs)
+                {
+                    var entity = await _unitOfWork.Items.GetAsync(itemID);
+                    var itemModel = _itemAdapter.ToModel(entity);
+                    if (items.Keys.Any(k => k.Id == itemModel.Id))
+                        items[items.Keys.FirstOrDefault(k => k.Id == itemModel.Id)]++;
+                    else
+                        items.Add(itemModel, 1);
+                }
+                return items;
+
+            } catch (Exception ex) 
+            {
+                throw new Exception(ex.Message);
             }
-            
-            return items;
         }
 
         public async Task<int> GetTotalCost(string userId)

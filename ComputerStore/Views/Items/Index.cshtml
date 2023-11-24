@@ -1,11 +1,4 @@
 ﻿@model ComputerStore.Areas.Customer.ViewModels.ItemsListViewModel
-@{
-    string sortMode = "";
-    if (Model.SortBy == ComputerStore.Utilities.SortMode.CostUp) sortMode = "cost up";
-    else if (Model.SortBy == ComputerStore.Utilities.SortMode.CostDown) sortMode = "cost down";
-    else sortMode = "item ID";
-}
-
 
 <div class="container mt-4 col-md-7 col-sm-12 mx-auto">
     <div class="row">
@@ -33,7 +26,7 @@
                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     sort by:
                 </a>
-                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink" title="sort by: @sortMode">
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink" title="sort by: @Model.SortBy">
                     <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.CategoryID" asp-route-sortBy="itemId">sort by: item ID</a></li>
                     <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.CategoryID" asp-route-sortBy="costUp">sort by: cost up</a></li>
                     <li><a class="dropdown-item" asp-action="Index" asp-controller="Items" asp-route-categoryId="@Model.CategoryID" asp-route-sortBy="costDown">sort by: cost down</a></li>

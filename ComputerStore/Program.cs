@@ -1,6 +1,9 @@
+using ComputerStore.BusinessLogic.Adapters;
+using ComputerStore.BusinessLogic.Domains;
 using ComputerStore.BusinessLogic.Interfaces;
 using ComputerStore.BusinessLogic.Services;
 using ComputerStore.DataAccess;
+using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
 using ComputerStore.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -121,6 +124,10 @@ namespace ComputerStore
             builder.Services.AddScoped<IItemsService, ItemsService>();
             builder.Services.AddScoped<ICategoriesService, CategoriesService>();
             builder.Services.AddScoped<ICartService, CartService>();
+
+            builder.Services.AddScoped<IEntityToModelAdapter<Item, ItemModel>, ItemAdapter>();
+            builder.Services.AddScoped<IEntityToModelAdapter<Category, CategoryModel>, CategoryAdapter>();
+            builder.Services.AddScoped<IEntityToModelAdapter<Order, OrderModel>, OrderAdapter>();
         }
     }
 }

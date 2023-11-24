@@ -1,4 +1,5 @@
-﻿using ComputerStore.BusinessLogic.Domains;
+﻿using ComputerStore.BusinessLogic.Adapters;
+using ComputerStore.BusinessLogic.Domains;
 using ComputerStore.BusinessLogic.Interfaces;
 using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
@@ -14,10 +15,13 @@ namespace ComputerStore.BusinessLogic.Services
     public class CategoriesService : ICategoriesService
     {
         private readonly IUnitOfWork _unitOfWork;
-        
-        public CategoriesService(IUnitOfWork unitOfWork)
+        private readonly IEntityToModelAdapter<Category, CategoryModel> _categoryAdapter;
+
+        public CategoriesService(IUnitOfWork unitOfWork, 
+            IEntityToModelAdapter<Category, CategoryModel> categoryAdapter)
         {
             _unitOfWork = unitOfWork;
+            _categoryAdapter = categoryAdapter;
         }
         
         public async Task<CategoryModel> GetAsync(string id)
@@ -26,7 +30,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 var entity = await _unitOfWork.Categories.GetAsync(id);
                 if (entity != null)
-                    return Convertor.ConvertEntityToModel(entity);
+                    return _categoryAdapter.ToModel(entity);
                 else throw new Exception("Category not found by id: " + id);
             }
             else throw new Exception("Category id is null or empty string");
@@ -42,7 +46,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             if (model != null)
             {
-                var entity = Convertor.ConvertModelToEntity(model);
+                var entity = _categoryAdapter.ToEntity(model);
                 await _unitOfWork.Categories.AddAsync(entity);
                 await _unitOfWork.CommitAsync();
             }
@@ -91,12 +95,12 @@ namespace ComputerStore.BusinessLogic.Services
             return ConvertEntitiesToModels(entities);
         }
 
-        private static List<CategoryModel> ConvertEntitiesToModels(List<Category> entities)
+        private List<CategoryModel> ConvertEntitiesToModels(List<Category> entities)
         {
             var models = new List<CategoryModel>();
             foreach (var entity in entities)
             {
-                var model = Convertor.ConvertEntityToModel(entity);
+                var model = _categoryAdapter.ToModel(entity);
                 if(model != null)
                     models.Add(model);
             }

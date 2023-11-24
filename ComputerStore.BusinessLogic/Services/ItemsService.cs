@@ -9,15 +9,22 @@ using ComputerStore.DataAccess.Interfaces;
 using ComputerStore.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ComputerStore.Utilities;
+using ComputerStore.BusinessLogic.Adapters;
 
 namespace ComputerStore.BusinessLogic.Services
 {
     public class ItemsService : IItemsService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ItemsService(IUnitOfWork unitOfWork)
+        private readonly IEntityToModelAdapter<Item, ItemModel> _itemAdapter;
+        private readonly IEntityToModelAdapter<Category, CategoryModel> _categoryAdapter;
+        public ItemsService(IUnitOfWork unitOfWork, 
+            IEntityToModelAdapter<Item, ItemModel> itemAdapter, 
+            IEntityToModelAdapter<Category, CategoryModel> categoryAdapter)
         {
             _unitOfWork = unitOfWork;
+            _itemAdapter = itemAdapter;
+            _categoryAdapter = categoryAdapter;
         }
 
         public async Task AddAsync(ItemModel model)
@@ -26,7 +33,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 try
                 {
-                    var entity = Convertor.ConvertModelToEntity(model);
+                    var entity = _itemAdapter.ToEntity(model);
                     await _unitOfWork.Items.AddAsync(entity);
                     await _unitOfWork.CommitAsync();
                 }
@@ -42,8 +49,10 @@ namespace ComputerStore.BusinessLogic.Services
         {
             var entities = await _unitOfWork.Items.GetAsync();
             var items = new List<ItemModel>();
+
             if(entities != null)
                 items = await ConvertEntitiesToModels(entities);
+
             return items;
         }
 
@@ -54,11 +63,11 @@ namespace ComputerStore.BusinessLogic.Services
                 var entity = await _unitOfWork.Items.GetAsync(id);
                 if (entity != null)
                 {
-                    var model = Convertor.EntityToModel(entity);
+                    var model = _itemAdapter.ToModel(entity);
                     var categoryEntity = await _unitOfWork.Categories.GetAsync(entity.CategoryID);
                     if (categoryEntity != null)
                     {
-                        model.Category = Convertor.ConvertEntityToModel(categoryEntity);
+                        model.Category = _categoryAdapter.ToModel(categoryEntity);
                         return model;
                     } 
                     else throw new Exception("Cannot find item category with id:" + entity.CategoryID);
@@ -126,38 +135,71 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task<List<ItemModel>> SearchAsync(string value)
         {
-            value = value.ToLower();
             var entities = new List<Item>();
+            if (!string.IsNullOrEmpty(value))
+            {
+                value = value.ToLower();
 
-            var categories = await _unitOfWork.Categories.GetAsync(c => c.Name.ToLower().Contains(value));
+                var categories = await _unitOfWork.Categories.GetAsync(c => c.Name.ToLower().Contains(value));
 
-            entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.Name.ToLower().Contains(value)));
-            entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.Description.ToLower().Contains(value)));
-            foreach(var category in categories)
-                entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.CategoryID.Equals(category.Id)));
+                entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.Name.ToLower().Contains(value)));
+                entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.Description.ToLower().Contains(value)));
+                foreach (var category in categories)
+                    entities.AddRange(await _unitOfWork.Items.GetAsync(i => i.CategoryID.Equals(category.Id)));
 
-            entities = RemoveDuplications(entities);
+                entities = RemoveDuplications(entities);
+                return await ConvertEntitiesToModels(entities);
+            }
+            else
+            {
+                entities = await _unitOfWork.Items.GetAsync();
+            }
             return await ConvertEntitiesToModels(entities);
         }
 
-        public List<ItemModel> Sort(List<ItemModel> items, SortMode sort)
+        public List<ItemModel> Sort(List<ItemModel> items, string sortMode)
         {
+            var sort = GetSortEnum(sortMode);
+
             if (sort == SortMode.CostDown)
             {
                 items = SortByCost(items);
                 return items;
             }
-            if (sort == SortMode.CostUp)
+            else if (sort == SortMode.CostUp)
             {
                 items = SortByCost(items);
                 items.Reverse();
                 return items;
             }
-            if(sort == SortMode.Name)
+            else if (sort == SortMode.Name)
             {
                 return SortByName(items);
             }
+            else
+            {
+                return items;
+            }
+        }
+        
+        private async Task<List<ItemModel>> ConvertEntitiesToModels(IEnumerable<Item> entities)
+        {
+            var items = new List<ItemModel>();
+            foreach (var entity in entities)
+            {
+                var item = _itemAdapter.ToModel(entity);
+                item.Category = _categoryAdapter.ToModel(await _unitOfWork.Categories.GetAsync(entity.CategoryID));
+                items.Add(item);
+            }
             return items;
+        }
+
+        private static SortMode GetSortEnum(string sortBy)
+        {
+            if (sortBy == null) return SortMode.ItemId;
+            if (sortBy.Equals("costUp")) return SortMode.CostUp;
+            if (sortBy.Equals("costDown")) return SortMode.CostDown;
+            else return SortMode.ItemId;
         }
 
         private static List<ItemModel> SortByCost(List<ItemModel> items)
@@ -168,18 +210,6 @@ namespace ComputerStore.BusinessLogic.Services
         private static List<ItemModel> SortByName(List<ItemModel> items)
         {
             return QuickSort(items, "name", 1);
-        }
-
-        private async Task<List<ItemModel>> ConvertEntitiesToModels(IEnumerable<Item> entities)
-        {
-            var items = new List<ItemModel>();
-            foreach (var entity in entities)
-            {
-                var item = Convertor.EntityToModel(entity);
-                item.Category = Convertor.ConvertEntityToModel(await _unitOfWork.Categories.GetAsync(entity.CategoryID));
-                items.Add(item);
-            }
-            return items;
         }
 
         private static int Partition(List<ItemModel> list, string key, int minIndex, int maxIndex, int type)

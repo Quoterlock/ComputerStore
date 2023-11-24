@@ -8,6 +8,7 @@ namespace ComputerStore.DataAccess
     public class ItemsRepository : IItemsRepository
     {
         private ApplicationDbContext _context;
+
         public ItemsRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -20,11 +21,7 @@ namespace ComputerStore.DataAccess
                 var result = await _context.Items
                     .Where(item => item.Id == id)
                     .FirstOrDefaultAsync();
-
-                if (result == null) 
-                    throw new Exception("Item not found");
-
-                return result;
+                return result ?? throw new Exception("Item not found");
             }
             else 
                 throw new Exception("Repo: Item id is null!");
@@ -32,18 +29,14 @@ namespace ComputerStore.DataAccess
 
         public async Task<List<Item>> GetAsync(Func<Item, bool> predicate)
         {
-            var items = _context.Items
-                .Where(predicate).ToList();
-            if (items == null) items = new List<Item>();
-            return items;
+            var items = _context.Items.Where(predicate).ToList();
+            return items ?? new List<Item>();
         }
 
         public async Task<List<Item>> GetAsync()
         {
-            var items = await _context.Items
-                .ToListAsync();
-            if (items == null) items = new List<Item>();
-            return items;
+            var items = await _context.Items.ToListAsync();
+            return items ?? new List<Item>();
         }
 
         public async Task AddAsync(Item item)
@@ -55,14 +48,16 @@ namespace ComputerStore.DataAccess
                 else 
                     throw new Exception("Category is not found with id: " + item.CategoryID);
             }
-            else throw new Exception("Item is not valid!");
+            else 
+                throw new Exception("Item is not valid!");
         }
 
         public async Task UpdateAsync(Item item)
         {
             if (IsValid(item) && !string.IsNullOrEmpty(item.Id))
                 _context.Update(item);
-            else throw new Exception("Item entity is not valid");
+            else
+                throw new Exception("Item entity is not valid");
         }
 
         public async Task DeleteAsync(string id)
@@ -72,21 +67,26 @@ namespace ComputerStore.DataAccess
                 var item = await _context.Items
                     .Where(item => item.Id == id)
                     .FirstOrDefaultAsync();
+
                 if (item != null)
                     _context.Items.Remove(item);
-                else throw new Exception("Item doesn't exist => id : " + id);
+                else 
+                    throw new Exception("Item doesn't exist => id : " + id);
             }
-            else throw new Exception("Item id is null!");
-        }
-
-        private static bool IsValid(Item item)
-        {
-            return item != null && !string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.CategoryID);
+            else 
+                throw new Exception("Item id is null!");
         }
 
         public async Task<bool> IsExists(string id)
         {
             return await _context.Items.AnyAsync(item => item.Id == id);
+        }
+
+        private static bool IsValid(Item item)
+        {
+            return item != null
+                && !string.IsNullOrEmpty(item.Name)
+                && !string.IsNullOrEmpty(item.CategoryID);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ComputerStore.BusinessLogic.Domains;
+﻿using ComputerStore.BusinessLogic.Adapters;
+using ComputerStore.BusinessLogic.Domains;
 using ComputerStore.BusinessLogic.Interfaces;
 using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
@@ -13,11 +14,18 @@ namespace ComputerStore.BusinessLogic.Services
 {
     public class OrdersService : IOrdersService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IEntityToModelAdapter<Order, OrderModel> _orderAdapter;
+        private readonly IEntityToModelAdapter<Item, ItemModel> _itemAdapter;
 
-        public OrdersService(IUnitOfWork unitOfWork) 
+
+        public OrdersService(IUnitOfWork unitOfWork, 
+            IEntityToModelAdapter<Order, OrderModel> orderAdapter,
+            IEntityToModelAdapter<Item, ItemModel> itemAdapter) 
         {
             _unitOfWork = unitOfWork;
+            _orderAdapter = orderAdapter;
+            _itemAdapter = itemAdapter;
         }
 
         public async Task Delete(string orderId)
@@ -53,7 +61,7 @@ namespace ComputerStore.BusinessLogic.Services
                     var entity = await _unitOfWork.Orders.GetAsync(id);
                     if (entity != null)
                     {
-                        var order = Convertor.ConvertEntityToModel(entity);
+                        var order = _orderAdapter.ToModel(entity);
                         
                         
                         order.Items = await GetItems(order.Items);
@@ -73,7 +81,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             if (order != null)
             {
-                await _unitOfWork.Orders.AddAsync(Convertor.ConvertModelToEntity(order));
+                await _unitOfWork.Orders.AddAsync(_orderAdapter.ToEntity(order));
                 await _unitOfWork.CommitAsync();
             }
             else throw new ArgumentNullException("order model");
@@ -83,7 +91,7 @@ namespace ComputerStore.BusinessLogic.Services
         {
             if(!string.IsNullOrEmpty(id))
             {
-                if (Convertor.OrderStatusStringToEnum(status) == OrderStatus.Unknown)
+                if (OrderStatuses.StringToEnum(status) == OrderStatus.Unknown)
                     throw new Exception("Unknown status");
                 var order = await _unitOfWork.Orders.GetAsync(id);
                 order.Status = status.ToString();
@@ -98,7 +106,7 @@ namespace ComputerStore.BusinessLogic.Services
             {
                 try
                 {
-                    await _unitOfWork.Orders.UpdateInfoAsync(Convertor.ConvertModelToEntity(order));
+                    await _unitOfWork.Orders.UpdateInfoAsync(_orderAdapter.ToEntity(order));
                     await _unitOfWork.CommitAsync();
                 }
                 catch (Exception ex)
@@ -114,7 +122,7 @@ namespace ComputerStore.BusinessLogic.Services
             var models = new List<OrderModel>();
             foreach (var entity in entities)
             {
-                models.Add(Convertor.ConvertEntityToModel(entity));
+                models.Add(_orderAdapter.ToModel(entity));
             }
             return models;
         }
@@ -124,7 +132,7 @@ namespace ComputerStore.BusinessLogic.Services
             var newItems = new Dictionary<ItemModel, int>();
             foreach (var itemKey in items)
             {
-                var item = Convertor.EntityToModel(await _unitOfWork.Items.GetAsync(itemKey.Key.Id));
+                var item = _itemAdapter.ToModel(await _unitOfWork.Items.GetAsync(itemKey.Key.Id));
                 if(item != null)
                 {
                     newItems.Add(item, itemKey.Value);
