@@ -53,8 +53,7 @@ namespace ComputerStore.BusinessLogic
                 Price = entity.Price,
                 Category = new CategoryModel
                 {
-                    Id = entity.Category.Id,
-                    Name = entity.Category.Name
+                    Id = entity.CategoryID,
                 },
             };
         }
@@ -67,7 +66,7 @@ namespace ComputerStore.BusinessLogic
                 Price = model.Price,
                 Description = model.Description,
                 ImageBytes = model.Image.Bytes,
-                Category = new Category() { Id = model.Category.Id }
+                CategoryID = model.Category.Id
             };
         }
 

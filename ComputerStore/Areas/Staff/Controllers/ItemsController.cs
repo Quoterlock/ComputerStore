@@ -120,8 +120,7 @@ namespace ComputerStore.Areas.Staff.Controllers
             {
                 if (!string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.Id))
                 {
-                    if (!string.IsNullOrEmpty(model.SelectedCategoryId))
-                        item.Category = await _categoriesService.GetAsync(model.SelectedCategoryId);
+                    item.Category = new CategoryModel { Id = model.SelectedCategoryId };
                     await _itemsService.UpdateAsync(item);
                     return RedirectToAction(nameof(Index));
                 }

@@ -11,7 +11,7 @@ using System.Net.WebSockets;
 namespace ComputerStore.Areas.Staff.Controllers
 {
     [Area("Staff")]
-    [Authorize(Roles = RolesContainer.ADMINISTRATOR)]
+    //[Authorize(Roles = RolesContainer.ADMINISTRATOR)]
     public class RolesController : Controller
     {
         private RoleManager<IdentityRole> _roleManager;

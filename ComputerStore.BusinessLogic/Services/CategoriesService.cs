@@ -13,7 +13,7 @@ namespace ComputerStore.BusinessLogic.Services
 {
     public class CategoriesService : ICategoriesService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         
         public CategoriesService(IUnitOfWork unitOfWork)
         {
@@ -51,31 +51,31 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task UpdateAsync(CategoryModel model)
         {
-            if(model != null)
+            if(model != null && !string.IsNullOrEmpty(model.Id))
             {
-                var entity = Convertor.ConvertModelToEntity(model);
-                await _unitOfWork.Categories.UpdateAsync(entity);
-                await _unitOfWork.CommitAsync();
+                var entity = await _unitOfWork.Categories.GetAsync(model.Id);
+                if (entity != null)
+                {
+                    if (model.Thumbnail != null && model.Thumbnail.Bytes.Length != 0)
+                        entity.ImageBytes = model.Thumbnail.Bytes;
+                    entity.Name = model.Name;
+
+                    await _unitOfWork.Categories.UpdateAsync(entity);
+                    await _unitOfWork.CommitAsync();
+                }
+                else throw new Exception("Category is not found with id: " + model.Id);
             }
             else throw new Exception("Model in null!");
         }
 
         public async Task RemoveAsync(string id)
         {
-            await _unitOfWork.Categories.DeleteAsync(id);
-            await _unitOfWork.CommitAsync();
-        }
-
-        private List<CategoryModel> ConvertEntitiesToModels(List<Category> entities)
-        {
-            var models = new List<CategoryModel>();
-            foreach (var entity in entities)
+            if (!string.IsNullOrEmpty(id))
             {
-                var model = Convertor.ConvertEntityToModel(entity);
-                if(model != null)
-                    models.Add(model);
+                await _unitOfWork.Categories.DeleteAsync(id);
+                await _unitOfWork.CommitAsync();
             }
-            return models;
+            else throw new ArgumentNullException("category id");
         }
 
         public async Task<bool> IsExistsAsync(string id)
@@ -89,6 +89,18 @@ namespace ComputerStore.BusinessLogic.Services
             var entities = new List<Category>();
             entities.AddRange(await _unitOfWork.Categories.GetAsync(c => c.Name.ToLower().Contains(value)));
             return ConvertEntitiesToModels(entities);
+        }
+
+        private static List<CategoryModel> ConvertEntitiesToModels(List<Category> entities)
+        {
+            var models = new List<CategoryModel>();
+            foreach (var entity in entities)
+            {
+                var model = Convertor.ConvertEntityToModel(entity);
+                if(model != null)
+                    models.Add(model);
+            }
+            return models;
         }
     }
 }

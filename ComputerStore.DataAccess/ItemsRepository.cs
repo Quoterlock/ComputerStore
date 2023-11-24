@@ -18,7 +18,6 @@ namespace ComputerStore.DataAccess
             if (id != null && id != string.Empty)
             {
                 var result = await _context.Items
-                    .Include(item => item.Category)
                     .Where(item => item.Id == id)
                     .FirstOrDefaultAsync();
 
@@ -34,7 +33,6 @@ namespace ComputerStore.DataAccess
         public async Task<List<Item>> GetAsync(Func<Item, bool> predicate)
         {
             var items = _context.Items
-                .Include(item => item.Category)
                 .Where(predicate).ToList();
             if (items == null) items = new List<Item>();
             return items;
@@ -43,7 +41,6 @@ namespace ComputerStore.DataAccess
         public async Task<List<Item>> GetAsync()
         {
             var items = await _context.Items
-                .Include(item => item.Category)
                 .ToListAsync();
             if (items == null) items = new List<Item>();
             return items;
@@ -53,20 +50,12 @@ namespace ComputerStore.DataAccess
         {
             if (IsValid(item))
             {
-                if (item.Category != null && !string.IsNullOrEmpty(item.Category.Id))
-                {
-                    var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == item.Category.Id);
-
-                    if (category != null) 
-                        item.Category = category;
-                    else 
-                        throw new Exception("Cannot find category id: " + item.Category.Id);
-                }
+                if(await _context.Categories.AnyAsync(i=>i.Id == item.CategoryID))
+                    _context.Add(item);
                 else 
-                    throw new Exception("Category is null!");
-                _context.Add(item);
+                    throw new Exception("Category is not found with id: " + item.CategoryID);
             }
-            else throw new Exception("Item is not valid!!!");
+            else throw new Exception("Item is not valid!");
         }
 
         public async Task UpdateAsync(Item item)
@@ -92,7 +81,7 @@ namespace ComputerStore.DataAccess
 
         private static bool IsValid(Item item)
         {
-            return item != null && !string.IsNullOrEmpty(item.Name);
+            return item != null && !string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.CategoryID);
         }
 
         public async Task<bool> IsExists(string id)

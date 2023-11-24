@@ -98,7 +98,8 @@ namespace ComputerStore.Areas.Staff.Controllers
                             await _categoriesService.UpdateAsync(category);
                             return RedirectToAction(nameof(Index));
                         }
-                        return View(nameof(Edit), model);
+                        await _categoriesService.UpdateAsync(category);
+                        return RedirectToAction(nameof(Index));
                     }
                     catch (Exception ex)
                     {
