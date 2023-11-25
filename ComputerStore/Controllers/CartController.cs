@@ -9,8 +9,9 @@ namespace ComputerStore.Controllers
     [Authorize]
     public class CartController : Controller
     {
-        private ICartService _cartService;
-        private IOrdersService _ordersService;
+        private readonly ICartService _cartService;
+        private readonly IOrdersService _ordersService;
+
         public CartController(ICartService cartService, IOrdersService ordersService)
         { 
             _cartService = cartService;
@@ -21,12 +22,13 @@ namespace ComputerStore.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
-            var model = new OrderFormViewModel();
-            model.Items = await _cartService.GetItems(userId);
-            model.TotalCost = await _cartService.GetTotalCost(userId);
+            var model = new OrderFormViewModel() 
+            {
+                Items = await _cartService.GetItemsAsync(userId),
+                TotalCost = await _cartService.GetTotalCostAsync(userId)
+            };
             return View(model);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> MakeOrder(OrderFormViewModel model)
@@ -47,9 +49,10 @@ namespace ComputerStore.Controllers
 
             try
             {
-                await _cartService.MakeOrder(order, userId);
+                await _cartService.MakeOrderAsync(order, userId);
                 return RedirectToAction(nameof(Success));
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -57,44 +60,40 @@ namespace ComputerStore.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Add(string itemId)
-        {
-            var previousUrl = Request.Headers["Referer"].ToString();
-            
+        {            
             var userId = GetUserId();
-            if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Login", "Account", new { area = "Identity" });
-
-            if (!string.IsNullOrEmpty(itemId))
-                try
+            if (!string.IsNullOrEmpty(userId))
+            {
+                if (!string.IsNullOrEmpty(itemId))
                 {
-                    await _cartService.AddItem(userId, itemId);
+                    try
+                    {
+                        await _cartService.AddItemAsync(userId, itemId);
+                    }
+                    catch (Exception ex) 
+                    { 
+                        // TODO: notify user 
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch(Exception ex) 
-                { 
-                    return RedirectToAction(nameof(Index)); 
-                }
-            else 
-                return NotFound(itemId);
-
-            if (!string.IsNullOrEmpty(previousUrl) && Url.IsLocalUrl(previousUrl))
-                return Redirect(previousUrl);
-            else 
-                return RedirectToAction(nameof(Index));
+                else return NotFound(itemId);
+            }
+            else return RedirectToAction("Login", "Account", new { area = "Identity" });
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Remove(string itemId)
         {
             if (!string.IsNullOrEmpty(itemId))
             {
                 var userId = GetUserId();
+
                 if(userId != null)
-                    await _cartService.RemoveItem(userId, itemId);
+                    await _cartService.RemoveItemAsync(userId, itemId);
+
                 return RedirectToAction(nameof(Index));
             }
-            else 
-                return NotFound(itemId);         
+            else return NotFound(itemId);         
         }
 
         [HttpGet]
@@ -104,11 +103,10 @@ namespace ComputerStore.Controllers
             {
                 var userId = GetUserId();
                 if (userId != null)
-                    await _cartService.RemoveAllById(userId, itemId);
+                    await _cartService.RemoveAllByIdAsync(userId, itemId);
                 return RedirectToAction(nameof(Index));
             }
-            else
-                return NotFound(itemId);
+            else return NotFound(itemId);
         }
 
         [HttpGet]

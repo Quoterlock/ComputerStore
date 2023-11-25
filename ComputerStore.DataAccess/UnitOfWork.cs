@@ -1,9 +1,4 @@
 ﻿using ComputerStore.DataAccess.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputerStore.DataAccess
 {
@@ -14,12 +9,14 @@ namespace ComputerStore.DataAccess
         public IItemsRepository Items { get; set; }
         public ICategoriesRepository Categories { get;  set; }
         public IOrdersRepository Orders { get; set; }
+
         public UnitOfWork(
             ApplicationDbContext context, 
             IOrdersRepository orders,
             ICategoriesRepository categories,
             IItemsRepository items,
-            IUserCartRepository userCart){ 
+            IUserCartRepository userCart)
+        { 
 
             _context = context;
             UserCart = userCart;
@@ -33,7 +30,7 @@ namespace ComputerStore.DataAccess
             await _context.SaveChangesAsync();
         }
 
-        public async Task Rollback()
+        public async Task RollbackAsync()
         {
             //RollBack Here
         }

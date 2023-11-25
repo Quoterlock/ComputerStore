@@ -3,12 +3,6 @@ using ComputerStore.BusinessLogic.Domains;
 using ComputerStore.BusinessLogic.Interfaces;
 using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputerStore.BusinessLogic.Services
 {
@@ -62,6 +56,7 @@ namespace ComputerStore.BusinessLogic.Services
                 {
                     if (model.Thumbnail != null && model.Thumbnail.Bytes.Length != 0)
                         entity.ImageBytes = model.Thumbnail.Bytes;
+                    
                     entity.Name = model.Name;
 
                     await _unitOfWork.Categories.UpdateAsync(entity);
@@ -69,7 +64,7 @@ namespace ComputerStore.BusinessLogic.Services
                 }
                 else throw new Exception("Category is not found with id: " + model.Id);
             }
-            else throw new Exception("Model in null!");
+            else throw new ArgumentNullException("Category model");
         }
 
         public async Task RemoveAsync(string id)
@@ -84,14 +79,15 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task<bool> IsExistsAsync(string id)
         {
-            return await _unitOfWork.Categories.IsExists(id);
+            return await _unitOfWork.Categories.IsExistsAsync(id);
         }
 
-        public async Task<List<CategoryModel>> Search(string value)
+        public async Task<List<CategoryModel>> SearchAsync(string value)
         {
             value = value.ToLower();
-            var entities = new List<Category>();
-            entities.AddRange(await _unitOfWork.Categories.GetAsync(c => c.Name.ToLower().Contains(value)));
+            var entities = await _unitOfWork.Categories
+                .GetAsync(c => c.Name.ToLower().Contains(value));
+
             return ConvertEntitiesToModels(entities);
         }
 

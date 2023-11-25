@@ -134,7 +134,7 @@ namespace ComputerStore.Areas.Staff.Controllers
             if(!string.IsNullOrEmpty(value))
             {
                 ViewData["SearchValue"] = value;
-                return View(nameof(Index), await _categoriesService.Search(value));
+                return View(nameof(Index), await _categoriesService.SearchAsync(value));
             }
             return RedirectToAction();
         }

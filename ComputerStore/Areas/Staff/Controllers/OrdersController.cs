@@ -53,7 +53,7 @@ namespace ComputerStore.Areas.Staff.Controllers
         {
             if (!string.IsNullOrEmpty(id))
             {
-                await _ordersService.Delete(id);
+                await _ordersService.DeleteAsync(id);
                 return RedirectToAction(nameof(Index));
             }
             else return NotFound(id);
@@ -65,7 +65,7 @@ namespace ComputerStore.Areas.Staff.Controllers
 
             if (IsValid(model))
             {
-                await _ordersService.Update(model);
+                await _ordersService.UpdateAsync(model);
             }
             return RedirectToAction(nameof(Details), "Orders", new { orderId = model.Id });
         }
@@ -84,7 +84,7 @@ namespace ComputerStore.Areas.Staff.Controllers
             {
                 try
                 {
-                    await _ordersService.SetStatus(orderId, newOrderStatus);
+                    await _ordersService.SetStatusAsync(orderId, newOrderStatus);
                 } 
                 catch(Exception ex)
                 {
@@ -99,7 +99,7 @@ namespace ComputerStore.Areas.Staff.Controllers
         {
             if(!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
             {
-                await _ordersService.RemoveItem(itemId, orderId);
+                await _ordersService.RemoveItemAsync(itemId, orderId);
                 return RedirectToAction(nameof(Edit), new { orderId });
             }
             return NotFound();
@@ -110,7 +110,7 @@ namespace ComputerStore.Areas.Staff.Controllers
         {
             if (!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
             {
-                await _ordersService.AddItem(itemId, orderId);
+                await _ordersService.AddItemAsync(itemId, orderId);
                 return RedirectToAction(nameof(Edit), new { orderId });
             }
             return NotFound();

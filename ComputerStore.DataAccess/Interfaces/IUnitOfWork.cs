@@ -13,6 +13,6 @@ namespace ComputerStore.DataAccess.Interfaces
         ICategoriesRepository Categories { get; set; }
         IOrdersRepository Orders { get; set; }
         Task CommitAsync();
-        Task Rollback();
+        Task RollbackAsync();
     }
 }

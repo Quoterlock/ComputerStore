@@ -4,11 +4,6 @@ using ComputerStore.BusinessLogic.Interfaces;
 using ComputerStore.DataAccess.Entities;
 using ComputerStore.DataAccess.Interfaces;
 using ComputerStore.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputerStore.BusinessLogic.Services
 {
@@ -17,7 +12,6 @@ namespace ComputerStore.BusinessLogic.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityToModelAdapter<Order, OrderModel> _orderAdapter;
         private readonly IEntityToModelAdapter<Item, ItemModel> _itemAdapter;
-
 
         public OrdersService(IUnitOfWork unitOfWork, 
             IEntityToModelAdapter<Order, OrderModel> orderAdapter,
@@ -28,27 +22,32 @@ namespace ComputerStore.BusinessLogic.Services
             _itemAdapter = itemAdapter;
         }
 
-        public async Task Delete(string orderId)
+        public async Task DeleteAsync(string orderId)
         {
-            if(!string.IsNullOrEmpty(orderId))
+            if (!string.IsNullOrEmpty(orderId))
             {
                 try
                 {
                     await _unitOfWork.Orders.DeleteAsync(orderId);
                     await _unitOfWork.CommitAsync();
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
             }
+            else throw new ArgumentNullException("order id"); 
+
         }
 
         public async Task<List<OrderModel>> GetAll()
         {
             var entities = await _unitOfWork.Orders.GetAsync();
             var orders = ConvertEntitiesToModels(entities);
+            
             for (int i = 0; i < orders.Count; i++)
-                orders[i].Items = await GetItems(orders[i].Items);
+                orders[i].Items = await GetItemsAsync(orders[i].Items);
+            
             return orders;
         }
 
@@ -62,9 +61,7 @@ namespace ComputerStore.BusinessLogic.Services
                     if (entity != null)
                     {
                         var order = _orderAdapter.ToModel(entity);
-                        
-                        
-                        order.Items = await GetItems(order.Items);
+                        order.Items = await GetItemsAsync(order.Items);
                         return order;
                     }
                     else throw new Exception("Order doesn't exist id: " + id);
@@ -77,7 +74,7 @@ namespace ComputerStore.BusinessLogic.Services
             else throw new ArgumentNullException("order id");
         }
 
-        public async Task Add(OrderModel order)
+        public async Task AddAsync(OrderModel order)
         {
             if (order != null)
             {
@@ -87,25 +84,28 @@ namespace ComputerStore.BusinessLogic.Services
             else throw new ArgumentNullException("order model");
         }
 
-        public async Task SetStatus(string id, string status)
+        public async Task SetStatusAsync(string id, string status)
         {
-            if(!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
             {
                 if (OrderStatuses.StringToEnum(status) == OrderStatus.Unknown)
                     throw new Exception("Unknown status");
+
                 var order = await _unitOfWork.Orders.GetAsync(id);
                 order.Status = status.ToString();
                 order.LastUpdateTime = DateTime.Now.ToUniversalTime();
                 await _unitOfWork.CommitAsync();
             }
+            else throw new ArgumentNullException("order id");
         }
 
-        public async Task Update(OrderModel order)
+        public async Task UpdateAsync(OrderModel order)
         {
             if (order != null && !string.IsNullOrEmpty(order.Id))
             {
                 try
                 {
+                    order.LastUpdateTime = DateTime.Now.ToUniversalTime();
                     await _unitOfWork.Orders.UpdateInfoAsync(_orderAdapter.ToEntity(order));
                     await _unitOfWork.CommitAsync();
                 }
@@ -117,31 +117,7 @@ namespace ComputerStore.BusinessLogic.Services
             else throw new ArgumentNullException("order model");
         }
 
-        private List<OrderModel> ConvertEntitiesToModels(List<Order> entities)
-        {
-            var models = new List<OrderModel>();
-            foreach (var entity in entities)
-            {
-                models.Add(_orderAdapter.ToModel(entity));
-            }
-            return models;
-        }
-
-        private async Task<Dictionary<ItemModel, int>> GetItems(Dictionary<ItemModel, int> items)
-        {
-            var newItems = new Dictionary<ItemModel, int>();
-            foreach (var itemKey in items)
-            {
-                var item = _itemAdapter.ToModel(await _unitOfWork.Items.GetAsync(itemKey.Key.Id));
-                if(item != null)
-                {
-                    newItems.Add(item, itemKey.Value);
-                }
-            }
-            return newItems;
-        }
-
-        public async Task RemoveItem(string itemId, string orderId)
+        public async Task RemoveItemAsync(string itemId, string orderId)
         {
             if (!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
             {
@@ -152,7 +128,7 @@ namespace ComputerStore.BusinessLogic.Services
             else throw new ArgumentNullException("itemID or orderID");
         }
 
-        public async Task AddItem(string itemId, string orderId)
+        public async Task AddItemAsync(string itemId, string orderId)
         {
             if (!string.IsNullOrEmpty(itemId) && !string.IsNullOrEmpty(orderId))
             {
@@ -176,8 +152,29 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task<List<OrderModel>> GetByStatus(string status)
         {
-            var entities = await _unitOfWork.Orders.GetAsync(o => o.Status.Equals(status));
+            var entities = await _unitOfWork.Orders
+                .GetAsync(o => o.Status.Equals(status));
             return ConvertEntitiesToModels(entities);
+        }
+
+        private List<OrderModel> ConvertEntitiesToModels(List<Order> entities)
+        {
+            var models = new List<OrderModel>();
+            foreach (var entity in entities)
+                models.Add(_orderAdapter.ToModel(entity));
+            return models;
+        }
+
+        private async Task<Dictionary<ItemModel, int>> GetItemsAsync(Dictionary<ItemModel, int> items)
+        {
+            var newItems = new Dictionary<ItemModel, int>();
+            foreach (var itemKey in items)
+            {
+                var item = _itemAdapter.ToModel(await _unitOfWork.Items.GetAsync(itemKey.Key.Id));
+                if (item != null)
+                    newItems.Add(item, itemKey.Value);
+            }
+            return newItems;
         }
     }
 }

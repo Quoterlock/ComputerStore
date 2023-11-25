@@ -7,7 +7,7 @@ namespace ComputerStore.DataAccess
 
     public class ItemsRepository : IItemsRepository
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public ItemsRepository(ApplicationDbContext context)
         {
@@ -23,8 +23,7 @@ namespace ComputerStore.DataAccess
                     .FirstOrDefaultAsync();
                 return result ?? throw new Exception("Item not found");
             }
-            else 
-                throw new Exception("Repo: Item id is null!");
+            else throw new Exception("Repo: Item id is null!");
         }
 
         public async Task<List<Item>> GetAsync(Func<Item, bool> predicate)
@@ -48,15 +47,14 @@ namespace ComputerStore.DataAccess
                 else 
                     throw new Exception("Category is not found with id: " + item.CategoryID);
             }
-            else 
-                throw new Exception("Item is not valid!");
+            else throw new Exception("Item is not valid!");
         }
 
         public async Task UpdateAsync(Item item)
         {
             if (IsValid(item) && !string.IsNullOrEmpty(item.Id))
                 _context.Update(item);
-            else
+            else 
                 throw new Exception("Item entity is not valid");
         }
 
@@ -73,11 +71,10 @@ namespace ComputerStore.DataAccess
                 else 
                     throw new Exception("Item doesn't exist => id : " + id);
             }
-            else 
-                throw new Exception("Item id is null!");
+            else throw new Exception("Item id is null!");
         }
 
-        public async Task<bool> IsExists(string id)
+        public async Task<bool> IsExistsAsync(string id)
         {
             return await _context.Items.AnyAsync(item => item.Id == id);
         }

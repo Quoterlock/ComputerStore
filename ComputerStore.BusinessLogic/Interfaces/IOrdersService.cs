@@ -10,14 +10,14 @@ namespace ComputerStore.BusinessLogic.Interfaces
 {
     public interface IOrdersService
     {
-        Task Add(OrderModel order);
-        Task Update(OrderModel order);
-        Task Delete(string orderId);
+        Task AddAsync(OrderModel order);
+        Task UpdateAsync(OrderModel order);
+        Task DeleteAsync(string orderId);
         Task<OrderModel> GetById(string id);
         Task<List<OrderModel>> GetAll();
-        Task SetStatus(string id, string status);
-        Task RemoveItem(string itemId, string orderId);
-        Task AddItem(string itemId, string orderId);
+        Task SetStatusAsync(string id, string status);
+        Task RemoveItemAsync(string itemId, string orderId);
+        Task AddItemAsync(string itemId, string orderId);
         Task<List<OrderModel>> SearchAsync(string value);
         Task<List<OrderModel>> GetByStatus(string status);
     }

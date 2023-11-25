@@ -10,6 +10,6 @@ namespace ComputerStore.DataAccess.Interfaces
         Task AddAsync(TEntity item);
         Task UpdateAsync(TEntity item);
         Task DeleteAsync(string id);
-        Task<bool> IsExists(string id);
+        Task<bool> IsExistsAsync(string id);
     }
 }

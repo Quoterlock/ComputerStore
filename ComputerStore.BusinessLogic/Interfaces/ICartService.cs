@@ -10,12 +10,12 @@ namespace ComputerStore.BusinessLogic.Interfaces
 {
     public interface ICartService
     {
-        Task AddItem(string userId, string itemId);
-        Task RemoveItem(string userId, string itemId);
-        Task<Dictionary<ItemModel, int>> GetItems(string userId);
-        Task<int> GetTotalCost(string userId);
-        Task Clear(string userId);
-        Task MakeOrder(OrderModel order, string userId);
-        Task RemoveAllById(string userId, string itemId);
+        Task AddItemAsync(string userId, string itemId);
+        Task RemoveItemAsync(string userId, string itemId);
+        Task<Dictionary<ItemModel, int>> GetItemsAsync(string userId);
+        Task<int> GetTotalCostAsync(string userId);
+        Task ClearAsync(string userId);
+        Task MakeOrderAsync(OrderModel order, string userId);
+        Task RemoveAllByIdAsync(string userId, string itemId);
     }
 }

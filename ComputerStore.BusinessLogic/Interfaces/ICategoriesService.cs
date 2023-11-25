@@ -16,6 +16,6 @@ namespace ComputerStore.BusinessLogic.Interfaces
         Task UpdateAsync(CategoryModel category);
         Task RemoveAsync(string id);
         Task<bool> IsExistsAsync(string id);
-        Task<List<CategoryModel>> Search(string value);
+        Task<List<CategoryModel>> SearchAsync(string value);
     }
 }
