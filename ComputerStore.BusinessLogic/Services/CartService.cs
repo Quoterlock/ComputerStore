@@ -46,7 +46,7 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task<Dictionary<ItemModel, int>> GetItemsAsync(string userId)
         {
-            if(string.IsNullOrEmpty(userId))
+            if(!string.IsNullOrEmpty(userId))
             {
                 try
                 {
@@ -80,7 +80,7 @@ namespace ComputerStore.BusinessLogic.Services
 
         public async Task<int> GetTotalCostAsync(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrEmpty(userId))
             {
                 var cart = await _unitOfWork.UserCart.GetUserCartAsync(userId);
                 int sum = 0;
