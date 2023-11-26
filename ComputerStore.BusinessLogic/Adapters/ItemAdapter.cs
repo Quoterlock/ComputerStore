@@ -17,6 +17,7 @@ namespace ComputerStore.BusinessLogic.Adapters
                 Name = model.Name,
                 Price = model.Price,
                 Description = model.Description,
+                Brief = model.Brief,
                 ImageBytes = model.Image.Bytes,
                 CategoryID = model.Category.Id
             };
@@ -29,6 +30,7 @@ namespace ComputerStore.BusinessLogic.Adapters
                 Id = entity.Id,
                 Name = entity.Name,
                 Description = entity.Description,
+                Brief = entity.Brief,
                 Image = new ImageModel
                 {
                     Bytes = entity.ImageBytes,

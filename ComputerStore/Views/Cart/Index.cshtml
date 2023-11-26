@@ -24,7 +24,7 @@
                         <div class="col text-end">
                             @item.Key.Price
                             <span>$</span>
-                            <a class="btn btn-light btn-sm ms-1" asp-action="RemoveAll" asp-route-itemId="@item.Key.Id">&#10005;</a>
+                            <a class="btn danger-btn btn-sm ms-1" asp-action="RemoveAll" asp-route-itemId="@item.Key.Id">&#10005;</a>
                         </div>
                     </div>
                 </div>
@@ -41,32 +41,32 @@
             <div class="row mb-3">
                 <div class="col">
                     <label class="form-label">First name</label>
-                    <input asp-for="FirstName" type="text" class="form-control" placeholder="First name" required>
+                    <input asp-for="FirstName" type="text" class="form-control textbox-style" placeholder="First name" required>
                 </div>
                 <div class="col">
                     <label class="form-label">Last name</label>
-                    <input asp-for="LastName" type="text" class="form-control" placeholder="Last name" required>
+                    <input asp-for="LastName" type="text" class="form-control textbox-style" placeholder="Last name" required>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col">
                     <label class="form-label">Email</label>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="example@mail.com">
+                    <input asp-for="Email" type="email" class="form-control textbox-style" placeholder="example@mail.com">
                 </div>
                 <div class="col">
                     <label class="form-label">Phone number</label>
-                    <input asp-for="PhoneNumber" type="number" class="form-control" placeholder="00-00-000-00" required>
+                    <input asp-for="PhoneNumber" type="number" class="form-control textbox-style" placeholder="00-00-000-00" required>
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Post-office address</label>
-                <input asp-for="PostOfficeAddress" type="text" class="form-control" required>
+                <input asp-for="PostOfficeAddress" type="text" class="form-control textbox-style" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Comment</label>
-                <textarea asp-for="Comment" class="form-control" rows="3"></textarea>
+                <textarea asp-for="Comment" class="form-control textbox-style" rows="3"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Confirm</button>
+            <button type="submit" class="btn active-btn">Confirm</button>
         </form>
     </div>
 </div>

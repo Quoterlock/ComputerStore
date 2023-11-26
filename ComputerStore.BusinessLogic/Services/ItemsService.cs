@@ -117,6 +117,7 @@ namespace ComputerStore.BusinessLogic.Services
                     var entity = await _unitOfWork.Items.GetAsync(model.Id);
                     entity.Price = model.Price;
                     entity.Description = model.Description;
+                    entity.Brief = model.Brief;
                     entity.Name = model.Name;
                     if (entity.CategoryID != model.Category.Id && !string.IsNullOrEmpty(model.Category.Id))
                         entity.CategoryID = model.Category.Id;

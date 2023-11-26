@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace ComputerStore.BusinessLogic.Domains
 {
@@ -8,6 +9,7 @@ namespace ComputerStore.BusinessLogic.Domains
         public string? Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string Brief { get; set; } = string.Empty;
         public int Price { get; set; } = 0;
         public CategoryModel Category { get; set; } = new CategoryModel();
         public ImageModel Image { get; set; } = new ImageModel();

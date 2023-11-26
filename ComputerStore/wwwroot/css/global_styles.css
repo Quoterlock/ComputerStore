@@ -39,3 +39,7 @@
         transition: 0.1s;
         background-color: rgb(161, 161, 161);
     }
+
+    .textbox-style {
+        border-radius: 12px !important;
+    }

@@ -14,7 +14,12 @@
             </div>
             <div class="form-group mb-3">
                 <label asp-for="Item.Description" class="control-label">Description</label>
-                <input asp-for="Item.Description" value="@Model.Item.Description" class="form-control" />
+                <textarea asp-for="Item.Description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Item.Brief" class="control-label">Description</label>
+                <textarea asp-for="Item.Brief" class="form-control" oninput="limitTextarea(this, 200)" rows="3"></textarea>
+                <p id="charCountMessage" style="color: red"></p>
             </div>
             <div class="form-group mb-3">
                 <label asp-for="Item.Price" class="control-label">Cost</label>
@@ -41,3 +46,17 @@
         </form>
     </div>
 </div>
+
+<script>
+    function limitTextarea(element, maxLength) {
+        let text = element.value;
+        let charCountMessage = document.getElementById("charCountMessage");
+
+        if (text.length > maxLength) {
+            element.value = text.substring(0, maxLength);
+            charCountMessage.textContent = "Character limit exceeded! Only the first 100 characters are allowed.";
+        } else {
+            charCountMessage.textContent = "";
+        }
+    }
+</script>
