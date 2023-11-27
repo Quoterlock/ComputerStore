@@ -15,43 +15,45 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ComputerStore</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ComputerStore</a>
+                    @if (User.IsInRole(RolesContainer.ADMINISTRATOR) || User.IsInRole(RolesContainer.MANAGER))
+                    {
+                        <a class="nav-item styless-link my-1" asp-area="Staff" asp-controller="Home" asp-action="Index">Staff</a>
+                    }
+                    <div class="container my-1">
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 mx-auto">
+                                <form class="d-flex" id="search-form" method="get" action="/Items/Search">
+                                    <div class="input-group">
+                                        <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
+                                               name="value">
 
-                @if (User.IsInRole(RolesContainer.ADMINISTRATOR) || User.IsInRole(RolesContainer.MANAGER))
-                {
-                    <a class="nav-item styless-link" asp-area="Staff" asp-controller="Home" asp-action="Index">Staff</a>
-                }
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-5 col-sm-12 mx-auto">
-                            <form class="d-flex" id="search-form" method="get" action="/Items/Search">
-                                <div class="input-group">
-                                    <input id="search-input" class="form-control search-textbox-style" type="text" placeholder="Search..."
-                                           name="value">
+                                        <button class="btn search-btn-style" type="submit">
+                                            <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;" />
+                                        </button>
+                                    </div>
+                                </form>
 
-                                    <button class="btn search-btn-style" type="submit">
-                                        <img src="~/icons/icons8-search-64.png" width="24" height="24" style="opacity:50%;"/>
-                                    </button>
-                                </div>
-                            </form>
+                                <script>
+                                    document.getElementById('search-form').addEventListener('submit', function () {
+                                        var searchValue = document.getElementById('search-input').value;
+                                        this.action = "/Items/Search?value=" + encodeURIComponent(searchValue);
+                                    });
+                                </script>
 
-                            <script>
-                                document.getElementById('search-form').addEventListener('submit', function () {
-                                    var searchValue = document.getElementById('search-input').value;
-                                    this.action = "/Items/Search?value=" + encodeURIComponent(searchValue);
-                                });
-                            </script>
-
+                            </div>
                         </div>
                     </div>
+                    <partial name="_LoginPartial" style="width:100%" class="text-center" />
                 </div>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <partial name="_LoginPartial"/>
-                </div>
+                <a asp-area="" asp-action="Index" asp-controller="Cart" class="btn">
+                    <img src="~/icons/cart-icon.png" width="24" height="24" />
+                </a>
             </div>
         </nav>
     </header>
